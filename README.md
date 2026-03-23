@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 타래 — 뜨개 장소 지도 플랫폼
 
-## Getting Started
+뜨개 관련 장소(실 가게, 공방, 뜨개카페 등)를 지도로 탐색할 수 있는 정보 플랫폼입니다.
 
-First, run the development server:
+## 기술 스택
+
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript (strict mode)
+- **Styling:** Tailwind CSS + shadcn/ui
+- **지도:** 카카오맵 JavaScript API v3
+
+## 로컬 실행 방법
+
+### 1. 카카오 앱키 발급
+
+1. [카카오 개발자센터](https://developers.kakao.com)에 접속하여 로그인
+2. **내 애플리케이션** → **애플리케이션 추가하기**
+3. 앱 생성 후 **앱 키** 메뉴에서 **JavaScript 키** 복사
+4. **플랫폼** → **Web 플랫폼 등록** → `http://localhost:3000` 추가
+
+### 2. 환경 변수 설정
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# .env.local 파일에 발급받은 앱키 입력
+NEXT_PUBLIC_KAKAO_MAP_KEY=발급받은_JavaScript_키
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. 의존성 설치 및 실행
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인합니다.
 
-## Learn More
+## 디렉토리 구조
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  layout.tsx           # 루트 레이아웃
+  page.tsx             # 메인 지도 페이지
+  place/[id]/page.tsx  # 장소 상세 페이지 (SSG)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+components/
+  map/                 # 지도 관련 컴포넌트
+  place/               # 장소 관련 컴포넌트
+  ui/                  # shadcn/ui 컴포넌트
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+lib/
+  places.ts            # 데이터 레이어
+  types.ts             # 타입 정의
 
-## Deploy on Vercel
+data/
+  places.json          # 장소 데이터
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 데이터 구조
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`data/places.json`에서 장소 데이터를 관리하며, 추후 Supabase DB로 교체 시 `lib/places.ts`만 수정하면 됩니다.
