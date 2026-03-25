@@ -1,7 +1,5 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { getPlaceById, getPlaces } from '@/lib/places'
 import { CATEGORY_LABEL, CATEGORY_COLOR } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -36,71 +34,92 @@ export default async function PlaceDetailPage({ params }: PageProps) {
   if (!place) notFound()
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b px-4 py-3 flex items-center gap-3">
-        <Link href="/" className="text-lg font-bold text-yarn-purple">타래</Link>
-        <span className="text-sm text-muted-foreground">뜨개 장소 지도</span>
+    <div className="min-h-screen bg-surface">
+      {/* Header */}
+      <header className="fixed top-0 w-full z-50 glass flex justify-between items-center px-6 py-4">
+        <Link
+          href="/"
+          className="text-primary font-bold text-sm uppercase tracking-wider hover:underline decoration-2 underline-offset-4"
+        >
+          ← 지도로
+        </Link>
+        <h1 className="font-display font-extrabold tracking-tighter text-2xl text-primary">
+          Tarae
+        </h1>
+        <div className="w-16" />
       </header>
 
-      <main className="max-w-2xl mx-auto p-6 space-y-6">
+      <main className="pt-24 pb-32 px-6 md:px-8 max-w-2xl mx-auto">
         {/* Title + Category */}
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-2xl font-bold">{place.name}</h1>
-            <Badge
-              style={{ backgroundColor: CATEGORY_COLOR[place.category], color: 'white' }}
+        <section className="mb-12">
+          <div className="flex items-center gap-3 mb-3">
+            <span
+              className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white"
+              style={{ backgroundColor: CATEGORY_COLOR[place.category] }}
             >
               {CATEGORY_LABEL[place.category]}
-            </Badge>
+            </span>
           </div>
-          <p className="text-muted-foreground">{place.address}</p>
-        </div>
+          <h2 className="font-display font-extrabold text-display-sm tracking-editorial text-on-surface mb-3">
+            {place.name}
+          </h2>
+          <p className="text-on-surface-variant text-body-lg">{place.address}</p>
+        </section>
 
-        {/* Info */}
-        <div className="space-y-3 border rounded-lg p-4">
-          <div className="flex gap-2">
-            <span className="font-medium min-w-[80px]">영업시간</span>
-            <span>{place.hours}</span>
+        {/* Info Card */}
+        <section className="bg-surface-container rounded-2xl p-8 mb-8 editorial-shadow">
+          <div className="space-y-5">
+            <div className="flex gap-4">
+              <span className="font-display font-bold text-on-surface min-w-[80px]">영업시간</span>
+              <span className="text-on-surface-variant">{place.hours}</span>
+            </div>
+            {place.closedDays.length > 0 && (
+              <div className="flex gap-4">
+                <span className="font-display font-bold text-on-surface min-w-[80px]">휴무일</span>
+                <span className="text-on-surface-variant">{place.closedDays.join(', ')}</span>
+              </div>
+            )}
+            {place.brands.length > 0 && (
+              <div className="flex gap-4">
+                <span className="font-display font-bold text-on-surface min-w-[80px]">취급 브랜드</span>
+                <span className="text-on-surface-variant">{place.brands.join(', ')}</span>
+              </div>
+            )}
           </div>
-          {place.closedDays.length > 0 && (
-            <div className="flex gap-2">
-              <span className="font-medium min-w-[80px]">휴무일</span>
-              <span>{place.closedDays.join(', ')}</span>
-            </div>
-          )}
-          {place.brands.length > 0 && (
-            <div className="flex gap-2">
-              <span className="font-medium min-w-[80px]">취급 브랜드</span>
-              <span>{place.brands.join(', ')}</span>
-            </div>
-          )}
-        </div>
+        </section>
 
         {/* Note */}
         {place.note && (
-          <div className="border rounded-lg p-4">
-            <p className="text-sm">{place.note}</p>
-          </div>
+          <section className="bg-primary-fixed/30 rounded-2xl p-8 mb-8">
+            <p className="text-on-surface italic text-body-lg leading-relaxed">
+              &ldquo;{place.note}&rdquo;
+            </p>
+          </section>
         )}
 
         {/* Tags */}
         {place.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-8">
             {place.tags.map(tag => (
-              <Badge key={tag} variant="secondary">{tag}</Badge>
+              <span
+                key={tag}
+                className="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-medium"
+              >
+                {tag}
+              </span>
             ))}
           </div>
         )}
 
         {/* Links */}
         {(place.links.instagram || place.links.website) && (
-          <div className="flex gap-3">
+          <div className="flex gap-4 mb-8">
             {place.links.instagram && (
               <a
                 href={place.links.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-yarn-purple hover:underline"
+                className="text-primary font-bold text-sm tracking-wide uppercase hover:underline decoration-2 underline-offset-4"
               >
                 Instagram
               </a>
@@ -110,7 +129,7 @@ export default async function PlaceDetailPage({ params }: PageProps) {
                 href={place.links.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-yarn-purple hover:underline"
+                className="text-primary font-bold text-sm tracking-wide uppercase hover:underline decoration-2 underline-offset-4"
               >
                 웹사이트
               </a>
@@ -118,11 +137,12 @@ export default async function PlaceDetailPage({ params }: PageProps) {
           </div>
         )}
 
-        {/* Map button */}
-        <Link href={`/?placeId=${place.id}`}>
-          <Button className="w-full" size="lg">
-            지도에서 보기
-          </Button>
+        {/* Map CTA */}
+        <Link
+          href={`/?placeId=${place.id}`}
+          className="signature-gradient text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 w-full"
+        >
+          지도에서 보기
         </Link>
       </main>
     </div>

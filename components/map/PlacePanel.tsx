@@ -1,11 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import type { Place } from '@/lib/types'
 import { CATEGORY_LABEL, CATEGORY_COLOR } from '@/lib/types'
+import { X, Clock, MapPin, ExternalLink } from 'lucide-react'
 
 interface PlacePanelProps {
   place: Place | null
@@ -14,85 +12,102 @@ interface PlacePanelProps {
 }
 
 export default function PlacePanel({ place, open, onClose }: PlacePanelProps) {
-  if (!place) return null
+  if (!place || !open) return null
 
-  const content = (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <Badge
-          style={{ backgroundColor: CATEGORY_COLOR[place.category], color: 'white' }}
-        >
-          {CATEGORY_LABEL[place.category]}
-        </Badge>
-      </div>
-      <div className="space-y-2 text-sm">
-        <p className="text-muted-foreground">{place.address}</p>
-        <div>
-          <span className="font-medium">영업시간: </span>
-          {place.hours}
-        </div>
-        {place.closedDays.length > 0 && (
-          <div>
-            <span className="font-medium">휴무: </span>
-            {place.closedDays.join(', ')}
-          </div>
-        )}
-        {place.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 pt-1">
-            {place.tags.map(tag => (
-              <Badge key={tag} variant="secondary" className="text-xs">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )}
-        {place.links.instagram && (
-          <a
-            href={place.links.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-yarn-purple hover:underline inline-block"
-          >
-            Instagram
-          </a>
-        )}
-      </div>
-      <Link href={`/place/${place.id}`}>
-        <Button className="w-full mt-2">상세보기</Button>
-      </Link>
-    </div>
-  )
-
-  // Desktop: side panel
   return (
     <>
-      {/* Desktop side panel */}
-      <div className="hidden md:block">
-        {open && (
-          <div className="absolute top-0 left-0 w-80 h-full bg-background border-r z-10 p-6 overflow-y-auto shadow-lg">
-            <div className="flex justify-between items-start mb-4">
-              <h2 className="text-lg font-bold">{place.name}</h2>
-              <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-xl">
-                &times;
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 z-30 bg-on-surface/10 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
+
+      {/* Bottom Sheet */}
+      <div className="fixed bottom-0 left-0 w-full z-40">
+        <div className="bg-surface-container-low rounded-t-[2.5rem] shadow-[0_-12px_48px_rgba(29,27,22,0.12)] pt-6 pb-32 px-6">
+          {/* Handle */}
+          <div className="flex justify-center mb-6">
+            <div className="w-12 h-1.5 bg-outline-variant rounded-full" />
+          </div>
+
+          <div className="max-w-2xl mx-auto">
+            {/* Header */}
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="font-display text-2xl font-extrabold tracking-tight text-on-surface">
+                    {place.name}
+                  </h2>
+                  <span
+                    className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white"
+                    style={{ backgroundColor: CATEGORY_COLOR[place.category] }}
+                  >
+                    {CATEGORY_LABEL[place.category]}
+                  </span>
+                </div>
+                <p className="text-on-surface-variant text-sm flex items-center gap-1.5">
+                  <MapPin className="w-4 h-4" />
+                  {place.address}
+                </p>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-surface-container rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-outline" />
               </button>
             </div>
-            {content}
-          </div>
-        )}
-      </div>
 
-      {/* Mobile bottom sheet */}
-      <div className="md:hidden">
-        <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-          <SheetContent side="bottom" className="h-auto max-h-[70vh] rounded-t-2xl">
-            <SheetHeader>
-              <SheetTitle>{place.name}</SheetTitle>
-            </SheetHeader>
-            <div className="pt-4">
-              {content}
+            {/* Info */}
+            <div className="space-y-4 mb-6">
+              <div className="flex items-center gap-3 text-on-surface-variant">
+                <Clock className="w-5 h-5 text-outline" />
+                <span className="text-sm">{place.hours}</span>
+              </div>
+
+              {place.closedDays.length > 0 && (
+                <p className="text-sm text-on-surface-variant pl-8">
+                  휴무: {place.closedDays.join(', ')}
+                </p>
+              )}
             </div>
-          </SheetContent>
-        </Sheet>
+
+            {/* Tags */}
+            {place.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-6">
+                {place.tags.map(tag => (
+                  <span
+                    key={tag}
+                    className="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full text-xs font-medium"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Links */}
+            {place.links.instagram && (
+              <a
+                href={place.links.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-primary font-medium hover:underline decoration-2 underline-offset-4 mb-6"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Instagram
+              </a>
+            )}
+
+            {/* CTA */}
+            <Link
+              href={`/place/${place.id}`}
+              className="signature-gradient text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 w-full"
+            >
+              상세보기
+            </Link>
+          </div>
+        </div>
       </div>
     </>
   )

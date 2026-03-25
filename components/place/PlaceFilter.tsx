@@ -25,19 +25,21 @@ export default function PlaceFilter({
   onRegionChange,
 }: PlaceFilterProps) {
   return (
-    <div className="space-y-3">
-      {/* Category filter */}
+    <div className="space-y-4">
+      {/* Category chips */}
       <div>
-        <p className="text-xs font-medium text-muted-foreground mb-1.5">카테고리</p>
-        <div className="flex flex-wrap gap-1.5">
+        <p className="text-label-md font-bold text-on-surface-variant mb-2 uppercase tracking-widest">
+          카테고리
+        </p>
+        <div className="flex flex-wrap gap-2">
           {categories.map(({ value, label }) => (
             <button
               key={value}
               onClick={() => onCategoryChange(value)}
-              className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${
+              className={`px-4 py-2 text-body-sm rounded-full transition-all ${
                 selectedCategory === value
-                  ? 'bg-foreground text-background border-foreground'
-                  : 'bg-background hover:bg-accent border-border'
+                  ? 'signature-gradient text-white font-bold shadow-lg shadow-primary/20'
+                  : 'bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80'
               }`}
             >
               {label}
@@ -46,16 +48,18 @@ export default function PlaceFilter({
         </div>
       </div>
 
-      {/* Region filter */}
+      {/* Region chips */}
       <div>
-        <p className="text-xs font-medium text-muted-foreground mb-1.5">지역</p>
-        <div className="flex flex-wrap gap-1.5">
+        <p className="text-label-md font-bold text-on-surface-variant mb-2 uppercase tracking-widest">
+          지역
+        </p>
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => onRegionChange('all')}
-            className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${
+            className={`px-4 py-2 text-body-sm rounded-full transition-all ${
               selectedRegion === 'all'
-                ? 'bg-foreground text-background border-foreground'
-                : 'bg-background hover:bg-accent border-border'
+                ? 'signature-gradient text-white font-bold shadow-lg shadow-primary/20'
+                : 'bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80'
             }`}
           >
             전체
@@ -64,10 +68,10 @@ export default function PlaceFilter({
             <button
               key={region}
               onClick={() => onRegionChange(region)}
-              className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${
+              className={`px-4 py-2 text-body-sm rounded-full transition-all ${
                 selectedRegion === region
-                  ? 'bg-foreground text-background border-foreground'
-                  : 'bg-background hover:bg-accent border-border'
+                  ? 'signature-gradient text-white font-bold shadow-lg shadow-primary/20'
+                  : 'bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80'
               }`}
             >
               {region}
