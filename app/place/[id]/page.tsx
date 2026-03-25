@@ -19,14 +19,64 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const place = getPlaceById(id)
   if (!place) return { title: '장소를 찾을 수 없습니다' }
 
+  const description = [
+    place.address,
+    CATEGORY_LABEL[place.category],
+    place.hours,
+    place.brands.length > 0 ? `취급: ${place.brands.slice(0, 3).join(', ')}` : '',
+  ].filter(Boolean).join(' | ')
+
   return {
-    title: `${place.name} — 타래`,
-    description: `${place.address} | ${CATEGORY_LABEL[place.category]} | ${place.hours}`,
+    title: place.name,
+    description,
     openGraph: {
+      type: 'article',
       title: `${place.name} — 타래`,
-      description: `${place.address} | ${CATEGORY_LABEL[place.category]}`,
+      description,
+      ...(place.images[0] && { images: [{ url: place.images[0], alt: place.name }] }),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${place.name} — 타래`,
+      description,
+      ...(place.images[0] && { images: [place.images[0]] }),
+    },
+    alternates: {
+      canonical: `/place/${id}`,
     },
   }
+}
+
+function PlaceJsonLd({ place }: { place: ReturnType<typeof getPlaceById> & {} }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: place.name,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: place.address,
+      addressRegion: place.region,
+      addressCountry: 'KR',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: place.lat,
+      longitude: place.lng,
+    },
+    openingHours: place.hours,
+    ...(place.images[0] && { image: place.images[0] }),
+    ...(place.links.website && { url: place.links.website }),
+    ...(place.links.instagram && {
+      sameAs: [place.links.instagram],
+    }),
+  }
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
+  )
 }
 
 export default async function PlaceDetailPage({ params }: PageProps) {
@@ -36,6 +86,8 @@ export default async function PlaceDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-surface">
+      <PlaceJsonLd place={place} />
+
       {/* Header */}
       <header className="fixed top-0 w-full z-50 glass flex justify-between items-center px-6 py-4">
         <Link
