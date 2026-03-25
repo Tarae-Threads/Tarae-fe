@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import type { Place } from '@/lib/types'
-import { CATEGORY_LABEL, CATEGORY_COLOR } from '@/lib/types'
+import CategoryBadge from '@/components/ui/CategoryBadge'
 import { X, Clock, MapPin, ExternalLink } from 'lucide-react'
 
 interface PlacePanelProps {
@@ -38,12 +38,7 @@ export default function PlacePanel({ place, open, onClose }: PlacePanelProps) {
                   <h2 className="font-display text-2xl font-extrabold tracking-tight text-on-surface">
                     {place.name}
                   </h2>
-                  <span
-                    className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white"
-                    style={{ backgroundColor: CATEGORY_COLOR[place.category] }}
-                  >
-                    {CATEGORY_LABEL[place.category]}
-                  </span>
+                  <CategoryBadge category={place.category} size="md" />
                 </div>
                 <p className="text-on-surface-variant text-sm flex items-center gap-1.5">
                   <MapPin className="w-4 h-4" />

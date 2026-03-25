@@ -1,8 +1,8 @@
 'use client'
 
 import type { Place } from '@/lib/types'
-import { CATEGORY_LABEL, CATEGORY_COLOR } from '@/lib/types'
-import { Clock, MapPin, Star } from 'lucide-react'
+import CategoryBadge from '@/components/ui/CategoryBadge'
+import { Clock } from 'lucide-react'
 
 interface PlaceCardProps {
   place: Place
@@ -26,25 +26,16 @@ export default function PlaceCard({ place, onClick }: PlaceCardProps) {
         ) : (
           <div className="w-full h-full signature-gradient opacity-30" />
         )}
-        <div
-          className="absolute top-4 left-4 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white"
-          style={{ backgroundColor: CATEGORY_COLOR[place.category] }}
-        >
-          {CATEGORY_LABEL[place.category]}
+        <div className="absolute top-4 left-4">
+          <CategoryBadge category={place.category} size="md" />
         </div>
       </div>
 
       {/* Content */}
       <div className="p-5">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="font-display font-bold text-lg text-on-surface">
-            {place.name}
-          </h3>
-          <div className="flex items-center gap-1 text-primary">
-            <Star className="w-4 h-4 fill-current" />
-            <span className="text-xs font-extrabold">4.8</span>
-          </div>
-        </div>
+        <h3 className="font-display font-bold text-lg text-on-surface mb-2">
+          {place.name}
+        </h3>
 
         <p className="text-on-surface-variant text-sm line-clamp-2 mb-4 leading-relaxed">
           {place.address}

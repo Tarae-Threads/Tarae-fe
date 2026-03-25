@@ -3,13 +3,13 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import type { Place, PlaceCategory } from '@/lib/types'
-import { CATEGORY_LABEL, CATEGORY_COLOR } from '@/lib/types'
+import CategoryBadge from '@/components/ui/CategoryBadge'
 import PlaceFilter from '@/components/place/PlaceFilter'
 import {
-  X, Search, Clock, MapPin, ExternalLink, Star,
+  X, Search, Clock, MapPin, ExternalLink,
 } from 'lucide-react'
 
-interface MobilePanelProps {
+interface SidePanelProps {
   places: Place[]
   selectedPlace: Place | null
   panelOpen: boolean
@@ -22,7 +22,7 @@ interface MobilePanelProps {
   onClose: () => void
 }
 
-export default function MobilePanel({
+export default function SidePanel({
   places,
   selectedPlace,
   panelOpen,
@@ -33,18 +33,16 @@ export default function MobilePanel({
   onCategoryChange,
   onRegionChange,
   onClose,
-}: MobilePanelProps) {
+}: SidePanelProps) {
   const [tab, setTab] = useState<'list' | 'filter'>('list')
 
   return (
     <div className="h-full flex flex-col bg-surface overflow-hidden">
       {/* Header */}
       <header className="flex items-center justify-between px-5 py-4 shrink-0">
-        <div className="flex items-center gap-4">
-          <h2 className="font-display font-extrabold tracking-tighter text-xl text-primary">
-            Tarae
-          </h2>
-        </div>
+        <h2 className="font-display font-extrabold tracking-tighter text-xl text-primary">
+          Tarae
+        </h2>
         <button
           onClick={onClose}
           className="p-1.5 hover:bg-surface-container rounded-full transition-colors"
@@ -139,12 +137,7 @@ function PlaceList({ places, onSelect }: { places: Place[]; onSelect: (p: Place)
           <div className="p-4">
             <div className="flex items-center justify-between mb-1.5">
               <h3 className="font-display font-bold text-sm text-on-surface">{place.name}</h3>
-              <span
-                className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest text-white"
-                style={{ backgroundColor: CATEGORY_COLOR[place.category] }}
-              >
-                {CATEGORY_LABEL[place.category]}
-              </span>
+              <CategoryBadge category={place.category} />
             </div>
             <p className="text-on-surface-variant text-xs line-clamp-1 mb-2">{place.address}</p>
             <div className="flex items-center gap-1.5">
@@ -171,12 +164,9 @@ function PlaceDetail({ place, onClose }: { place: Place; onClose: () => void }) 
         ← 목록으로
       </button>
 
-      <span
-        className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest text-white mb-3"
-        style={{ backgroundColor: CATEGORY_COLOR[place.category] }}
-      >
-        {CATEGORY_LABEL[place.category]}
-      </span>
+      <div className="mb-3">
+        <CategoryBadge category={place.category} />
+      </div>
 
       <h2 className="font-display font-extrabold text-2xl tracking-editorial text-on-surface mb-2">
         {place.name}

@@ -2,6 +2,7 @@
 
 import type { PlaceCategory } from '@/lib/types'
 import { CATEGORY_LABEL, REGION_ORDER } from '@/lib/types'
+import FilterChip from '@/components/ui/FilterChip'
 
 interface PlaceFilterProps {
   selectedCategory: PlaceCategory | 'all'
@@ -33,17 +34,12 @@ export default function PlaceFilter({
         </p>
         <div className="flex flex-wrap gap-2">
           {categories.map(({ value, label }) => (
-            <button
+            <FilterChip
               key={value}
+              label={label}
+              selected={selectedCategory === value}
               onClick={() => onCategoryChange(value)}
-              className={`px-4 py-2 text-body-sm rounded-full transition-all ${
-                selectedCategory === value
-                  ? 'signature-gradient text-white font-bold shadow-lg shadow-primary/20'
-                  : 'bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80'
-              }`}
-            >
-              {label}
-            </button>
+            />
           ))}
         </div>
       </div>
@@ -54,28 +50,18 @@ export default function PlaceFilter({
           지역
         </p>
         <div className="flex flex-wrap gap-2">
-          <button
+          <FilterChip
+            label="전체"
+            selected={selectedRegion === 'all'}
             onClick={() => onRegionChange('all')}
-            className={`px-4 py-2 text-body-sm rounded-full transition-all ${
-              selectedRegion === 'all'
-                ? 'signature-gradient text-white font-bold shadow-lg shadow-primary/20'
-                : 'bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80'
-            }`}
-          >
-            전체
-          </button>
+          />
           {REGION_ORDER.map(region => (
-            <button
+            <FilterChip
               key={region}
+              label={region}
+              selected={selectedRegion === region}
               onClick={() => onRegionChange(region)}
-              className={`px-4 py-2 text-body-sm rounded-full transition-all ${
-                selectedRegion === region
-                  ? 'signature-gradient text-white font-bold shadow-lg shadow-primary/20'
-                  : 'bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80'
-              }`}
-            >
-              {region}
-            </button>
+            />
           ))}
         </div>
       </div>

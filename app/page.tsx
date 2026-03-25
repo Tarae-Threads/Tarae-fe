@@ -3,17 +3,17 @@
 import { useState, useMemo, useCallback, useRef, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { getPlaces } from '@/lib/places'
+import { getPlaces, filterPlaces } from '@/lib/places'
 import type { Place, PlaceCategory } from '@/lib/types'
 import type { NaverMapHandle } from '@/components/map/NaverMap'
-import PlaceFilter from '@/components/place/PlaceFilter'
 import PlaceCard from '@/components/place/PlaceCard'
 import PlacePanel from '@/components/map/PlacePanel'
 import MapControls from '@/components/map/MapControls'
+import SearchBar from '@/components/ui/SearchBar'
 import TopAppBar from '@/components/layout/TopAppBar'
 import BottomNav from '@/components/layout/BottomNav'
-import MobilePanel from '@/components/layout/MobilePanel'
-import { Search, MapPinPlus } from 'lucide-react'
+import SidePanel from '@/components/layout/SidePanel'
+import { MapPinPlus } from 'lucide-react'
 
 const NaverMap = dynamic(() => import('@/components/map/NaverMap'), { ssr: false })
 
@@ -33,13 +33,10 @@ function HomeContent() {
   const [filterOpen, setFilterOpen] = useState(false)
   const [sidePanelOpen, setSidePanelOpen] = useState(true)
 
-  const filteredPlaces = useMemo(() => {
-    return allPlaces.filter(place => {
-      if (selectedCategory !== 'all' && place.category !== selectedCategory) return false
-      if (selectedRegion !== 'all' && place.region !== selectedRegion) return false
-      return true
-    })
-  }, [allPlaces, selectedCategory, selectedRegion])
+  const filteredPlaces = useMemo(
+    () => filterPlaces(allPlaces, selectedCategory, selectedRegion),
+    [allPlaces, selectedCategory, selectedRegion],
+  )
 
   const handlePlaceSelect = useCallback((place: Place) => {
     setSelectedPlace(place)
@@ -48,6 +45,10 @@ function HomeContent() {
 
   const handlePanelClose = useCallback(() => {
     setPanelOpen(false)
+  }, [])
+
+  const toggleFilter = useCallback(() => {
+    setFilterOpen(prev => !prev)
   }, [])
 
   return (
@@ -75,26 +76,15 @@ function HomeContent() {
         />
 
         {/* Floating Search — desktop */}
-        <div className="hidden md:block absolute top-6 left-6 z-20">
-          <div className="relative w-[420px]">
-            <button
-              onClick={() => setFilterOpen(!filterOpen)}
-              className="w-full bg-surface/80 backdrop-blur-2xl h-14 pl-14 pr-6 rounded-2xl editorial-shadow text-left text-outline font-medium flex items-center"
-            >
-              <Search className="absolute left-5 w-5 h-5 text-primary" />
-              <span>뜨개 장소 검색...</span>
-            </button>
-            {filterOpen && (
-              <div className="mt-3 bg-surface-container-low backdrop-blur-2xl rounded-2xl editorial-shadow p-5">
-                <PlaceFilter
-                  selectedCategory={selectedCategory}
-                  selectedRegion={selectedRegion}
-                  onCategoryChange={(c) => { setSelectedCategory(c); setFilterOpen(false) }}
-                  onRegionChange={(r) => { setSelectedRegion(r); setFilterOpen(false) }}
-                />
-              </div>
-            )}
-          </div>
+        <div className="hidden md:block absolute top-6 left-6 z-20 w-[420px]">
+          <SearchBar
+            filterOpen={filterOpen}
+            onToggleFilter={toggleFilter}
+            selectedCategory={selectedCategory}
+            selectedRegion={selectedRegion}
+            onCategoryChange={setSelectedCategory}
+            onRegionChange={setSelectedRegion}
+          />
         </div>
 
         {/* FAB — desktop */}
@@ -106,23 +96,14 @@ function HomeContent() {
         <div className="md:hidden">
           {/* Floating Search */}
           <div className="absolute top-24 left-6 right-20 z-20">
-            <button
-              onClick={() => setFilterOpen(!filterOpen)}
-              className="w-full bg-surface/80 backdrop-blur-2xl h-14 pl-14 pr-6 rounded-2xl editorial-shadow text-left text-outline font-medium flex items-center"
-            >
-              <Search className="absolute left-5 w-5 h-5 text-primary" />
-              <span>뜨개 장소 검색...</span>
-            </button>
-            {filterOpen && (
-              <div className="mt-3 bg-surface-container-low backdrop-blur-2xl rounded-2xl editorial-shadow p-5">
-                <PlaceFilter
-                  selectedCategory={selectedCategory}
-                  selectedRegion={selectedRegion}
-                  onCategoryChange={(c) => { setSelectedCategory(c); setFilterOpen(false) }}
-                  onRegionChange={(r) => { setSelectedRegion(r); setFilterOpen(false) }}
-                />
-              </div>
-            )}
+            <SearchBar
+              filterOpen={filterOpen}
+              onToggleFilter={toggleFilter}
+              selectedCategory={selectedCategory}
+              selectedRegion={selectedRegion}
+              onCategoryChange={setSelectedCategory}
+              onRegionChange={setSelectedRegion}
+            />
           </div>
 
           {/* Bottom Sheet */}
@@ -165,7 +146,7 @@ function HomeContent() {
       {/* ===== Right: Side Panel — desktop only ===== */}
       {sidePanelOpen && (
         <div className="hidden md:block w-[380px] shrink-0 h-full border-l border-border">
-          <MobilePanel
+          <SidePanel
             places={filteredPlaces}
             selectedPlace={selectedPlace}
             panelOpen={panelOpen}

@@ -1,22 +1,36 @@
 import placesData from '@/data/places.json'
 import type { Place, PlaceCategory } from './types'
 
+const places: Place[] = placesData as Place[]
+
 export function getPlaces(): Place[] {
-  return placesData as Place[]
+  return places
 }
 
 export function getPlaceById(id: string): Place | undefined {
-  return (placesData as Place[]).find(p => p.id === id)
+  return places.find(p => p.id === id)
 }
 
 export function getPlacesByRegion(region: string): Place[] {
-  return (placesData as Place[]).filter(p => p.region === region)
+  return places.filter(p => p.region === region)
 }
 
 export function getPlacesByCategory(category: PlaceCategory): Place[] {
-  return (placesData as Place[]).filter(p => p.category === category)
+  return places.filter(p => p.category === category)
 }
 
 export function getRegions(): string[] {
-  return [...new Set((placesData as Place[]).map(p => p.region))].sort()
+  return [...new Set(places.map(p => p.region))].sort()
+}
+
+export function filterPlaces(
+  allPlaces: Place[],
+  category: PlaceCategory | 'all',
+  region: string,
+): Place[] {
+  return allPlaces.filter(place => {
+    if (category !== 'all' && place.category !== category) return false
+    if (region !== 'all' && place.region !== region) return false
+    return true
+  })
 }

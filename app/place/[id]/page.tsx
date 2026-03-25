@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPlaceById, getPlaces } from '@/lib/places'
-import { CATEGORY_LABEL, CATEGORY_COLOR } from '@/lib/types'
+import { CATEGORY_LABEL } from '@/lib/types'
+import CategoryBadge from '@/components/ui/CategoryBadge'
 import type { Metadata } from 'next'
 
 interface PageProps {
@@ -53,12 +54,7 @@ export default async function PlaceDetailPage({ params }: PageProps) {
         {/* Title + Category */}
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-3">
-            <span
-              className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white"
-              style={{ backgroundColor: CATEGORY_COLOR[place.category] }}
-            >
-              {CATEGORY_LABEL[place.category]}
-            </span>
+            <CategoryBadge category={place.category} size="md" />
           </div>
           <h2 className="font-display font-extrabold text-display-sm tracking-editorial text-on-surface mb-3">
             {place.name}
