@@ -17,11 +17,11 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   metadataBase: new URL("https://tarae.vercel.app"),
   title: {
-    default: "타래 — 뜨개 장소 지도",
+    default: "타래 — 뜨개 장소, 정보, 모임을 한 곳에서",
     template: "%s — 타래",
   },
   description:
-    "전국 뜨개 장소(실 가게, 공방, 뜨개카페, 팝업)를 지도에서 탐색하세요. 영업시간, 취급 브랜드, 위치 정보를 한눈에 확인할 수 있습니다.",
+    "흩어져 있는 뜨개 정보를 한 곳에서. 실 가게, 공방, 뜨개카페를 지도로 탐색하고, 정보와 모임까지 연결하는 뜨개인을 위한 플랫폼입니다.",
   keywords: [
     "뜨개질",
     "뜨개",
@@ -30,22 +30,24 @@ export const metadata: Metadata = {
     "뜨개카페",
     "니트",
     "털실",
+    "뜨개 모임",
     "뜨개 지도",
     "핸드메이드",
+    "뜨개 커뮤니티",
   ],
   openGraph: {
     type: "website",
     locale: "ko_KR",
     siteName: "타래",
-    title: "타래 — 뜨개 장소 지도",
+    title: "타래 — 뜨개 장소, 정보, 모임을 한 곳에서",
     description:
-      "전국 뜨개 장소를 지도에서 탐색하세요. 실 가게, 공방, 뜨개카페 정보를 한눈에.",
+      "흩어져 있는 뜨개 정보를 한 곳에서 탐색하고 연결하세요. 뜨개인을 위한 플랫폼.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "타래 — 뜨개 장소 지도",
+    title: "타래 — 뜨개 장소, 정보, 모임을 한 곳에서",
     description:
-      "전국 뜨개 장소를 지도에서 탐색하세요. 실 가게, 공방, 뜨개카페 정보를 한눈에.",
+      "흩어져 있는 뜨개 정보를 한 곳에서 탐색하고 연결하세요. 뜨개인을 위한 플랫폼.",
   },
   alternates: {
     canonical: "/",

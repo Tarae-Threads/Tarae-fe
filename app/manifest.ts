@@ -2,9 +2,9 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: '타래 — 뜨개 장소 지도',
+    name: '타래 — 뜨개 장소, 정보, 모임을 한 곳에서',
     short_name: '타래',
-    description: '전국 뜨개 장소를 지도에서 탐색하세요',
+    description: '뜨개 관련 장소, 정보, 모임을 한 곳에서 탐색할 수 있는 서비스',
     start_url: '/',
     display: 'standalone',
     background_color: '#fff9ef',
