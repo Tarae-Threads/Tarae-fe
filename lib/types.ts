@@ -31,10 +31,17 @@ export const CATEGORY_LABEL: Record<PlaceCategory, string> = {
 }
 
 export const CATEGORY_COLOR: Record<PlaceCategory, string> = {
-  yarn_store: '#7C3AED',
-  studio: '#059669',
-  cafe: '#D97706',
-  popup: '#2563EB',
+  yarn_store: '#91472b',
+  studio: '#53624f',
+  cafe: '#68594a',
+  popup: '#af5f41',
+}
+
+export const CATEGORY_BG: Record<PlaceCategory, string> = {
+  yarn_store: '#ffdbcf',
+  studio: '#d4e5cc',
+  cafe: '#f4dfcb',
+  popup: '#ffdbcf',
 }
 
 export const REGION_ORDER = ['서울', '경기', '인천', '강원', '충청', '경상', '전라', '제주']
