@@ -20,10 +20,11 @@ export default function PlacePanel({ place, open, onClose }: PlacePanelProps) {
       <div
         className="fixed inset-0 z-30 bg-on-surface/10 backdrop-blur-sm transition-opacity"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Bottom Sheet */}
-      <div className="fixed bottom-0 left-0 w-full z-40">
+      <div role="dialog" aria-label={`${place.name} 장소 정보`} className="fixed bottom-0 left-0 w-full z-40">
         <div className="bg-surface-container-low rounded-t-[2.5rem] shadow-[0_-12px_48px_rgba(29,27,22,0.12)] pt-6 pb-32 px-6">
           {/* Handle */}
           <div className="flex justify-center mb-6">
@@ -47,6 +48,7 @@ export default function PlacePanel({ place, open, onClose }: PlacePanelProps) {
               </div>
               <button
                 onClick={onClose}
+                aria-label="닫기"
                 className="p-2 hover:bg-surface-container rounded-full transition-colors"
               >
                 <X className="w-5 h-5 text-outline" />

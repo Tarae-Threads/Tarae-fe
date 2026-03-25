@@ -25,9 +25,11 @@ export default function SearchBar({
     <div className="relative">
       <button
         onClick={onToggleFilter}
+        aria-expanded={filterOpen}
+        aria-label="뜨개 장소 필터 열기"
         className="w-full bg-surface/80 backdrop-blur-2xl h-14 pl-14 pr-6 rounded-2xl editorial-shadow text-left text-outline font-medium flex items-center"
       >
-        <Search className="absolute left-5 w-5 h-5 text-primary" />
+        <Search className="absolute left-5 w-5 h-5 text-primary" aria-hidden="true" />
         <span>뜨개 장소 검색...</span>
       </button>
       {filterOpen && (

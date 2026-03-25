@@ -52,7 +52,7 @@ function HomeContent() {
   }, [])
 
   return (
-    <div className="h-screen w-full overflow-hidden bg-surface-container-lowest flex">
+    <main className="h-screen w-full overflow-hidden bg-surface-container-lowest flex">
       {/* ===== Left: Map Area (flex-grow) ===== */}
       <div className="flex-1 relative h-full">
         {/* Top App Bar — mobile only */}
@@ -88,7 +88,7 @@ function HomeContent() {
         </div>
 
         {/* FAB — desktop */}
-        <button className="hidden md:flex absolute bottom-8 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl items-center justify-center z-20 active:scale-95 transition-transform">
+        <button aria-label="장소 추가" className="hidden md:flex absolute bottom-8 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl items-center justify-center z-20 active:scale-95 transition-transform">
           <MapPinPlus className="w-7 h-7" />
         </button>
 
@@ -135,7 +135,7 @@ function HomeContent() {
           <PlacePanel place={selectedPlace} open={panelOpen} onClose={handlePanelClose} />
 
           {/* FAB */}
-          <button className="fixed bottom-32 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
+          <button aria-label="장소 추가" className="fixed bottom-32 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
             <MapPinPlus className="w-7 h-7" />
           </button>
 
@@ -160,7 +160,7 @@ function HomeContent() {
           />
         </div>
       )}
-    </div>
+    </main>
   )
 }
 

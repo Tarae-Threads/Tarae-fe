@@ -45,6 +45,7 @@ export default function SidePanel({
         </h2>
         <button
           onClick={onClose}
+          aria-label="패널 닫기"
           className="p-1.5 hover:bg-surface-container rounded-full transition-colors"
         >
           <X className="w-5 h-5 text-outline" />
@@ -78,9 +79,10 @@ export default function SidePanel({
       {/* Search */}
       <div className="px-5 py-3 shrink-0">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" aria-hidden="true" />
           <input
             type="text"
+            aria-label="뜨개 장소 검색"
             placeholder="뜨개 장소 검색..."
             className="w-full bg-surface-container-low h-10 pl-10 pr-4 rounded-xl text-sm text-on-surface placeholder:text-outline font-medium focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
