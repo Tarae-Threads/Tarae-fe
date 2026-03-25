@@ -7,6 +7,7 @@ import type { Place } from '@/lib/types'
 declare global {
   interface Window {
     naver: any
+    MarkerClustering: any
   }
 }
 
@@ -22,11 +23,32 @@ export interface NaverMapHandle {
   locate: () => void
 }
 
+function loadScript(src: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    // 이미 로드 완료된 경우
+    if (window.MarkerClustering) {
+      resolve()
+      return
+    }
+    // 이전에 실패한 스크립트 태그 제거
+    const existing = document.querySelector(`script[src="${src}"]`)
+    if (existing) existing.remove()
+
+    const script = document.createElement('script')
+    script.src = src
+    script.onload = () => resolve()
+    script.onerror = reject
+    document.head.appendChild(script)
+  })
+}
+
 const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(
   function NaverMap({ places, onPlaceSelect, selectedPlaceId }, ref) {
     const mapRef = useRef<HTMLDivElement>(null)
     const mapInstanceRef = useRef<any>(null)
     const markersRef = useRef<any[]>([])
+    const clusterRef = useRef<any>(null)
+    const initializedRef = useRef(false)
 
     useImperativeHandle(ref, () => ({
       zoomIn() {
@@ -50,8 +72,15 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(
       },
     }))
 
-    const initMap = useCallback(() => {
+    const initMap = useCallback(async () => {
+      if (initializedRef.current) return
       if (!mapRef.current || !window.naver?.maps) return
+
+      // 네이버 맵이 로드된 후에 MarkerClustering.js 로드
+      await loadScript('/js/MarkerClustering.js')
+      if (!window.MarkerClustering) return
+
+      initializedRef.current = true
 
       const map = new window.naver.maps.Map(mapRef.current, {
         center: new window.naver.maps.LatLng(37.5665, 126.9780),
@@ -70,14 +99,20 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(
     }, [places, onPlaceSelect])
 
     const renderMarkers = useCallback((map: any) => {
-      // Clear existing markers
+      // 기존 클러스터 제거
+      if (clusterRef.current) {
+        clusterRef.current.setMap(null)
+        clusterRef.current = null
+      }
       markersRef.current.forEach(m => m.setMap(null))
       markersRef.current = []
 
-      places.forEach((place) => {
-        const position = new window.naver.maps.LatLng(place.lat, place.lng)
+      const markers: any[] = []
+      const N = window.naver.maps
 
-        // Terracotta yarn ball pin HTML
+      places.forEach((place) => {
+        const position = new N.LatLng(place.lat, place.lng)
+
         const markerHtml = `
           <div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
             <div style="
@@ -103,22 +138,66 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(
           </div>
         `
 
-        const marker = new window.naver.maps.Marker({
+        const marker = new N.Marker({
           position,
-          map,
           icon: {
             content: markerHtml,
-            anchor: new window.naver.maps.Point(16, 44),
+            anchor: new N.Point(16, 44),
           },
         })
 
-        window.naver.maps.Event.addListener(marker, 'click', () => {
+        N.Event.addListener(marker, 'click', () => {
           onPlaceSelect(place)
-          map.panTo(position)
+          map.morph(position, 15, { duration: 500 })
         })
 
-        markersRef.current.push(marker)
+        markers.push(marker)
       })
+
+      markersRef.current = markers
+
+      // 클러스터 아이콘 (테라코타 톤 3단계)
+      function makeIcon(size: number, bg: string) {
+        return {
+          content: `<div style="
+            cursor:pointer;width:${size}px;height:${size}px;
+            border-radius:9999px;
+            background:${bg};
+            border:3px solid #ffffff;
+            box-shadow:0 4px 16px rgba(29,27,22,0.18);
+            display:flex;align-items:center;justify-content:center;
+            color:#ffffff;font-weight:800;font-size:${Math.round(size * 0.32)}px;
+            letter-spacing:-0.02em;
+          "></div>`,
+          size: new N.Size(size, size),
+          anchor: new N.Point(size / 2, size / 2),
+        }
+      }
+
+      const clustering = new window.MarkerClustering({
+        minClusterSize: 2,
+        maxZoom: 12,
+        map: map,
+        markers: markers,
+        disableClickZoom: false,
+        gridSize: 120,
+        icons: [
+          makeIcon(44, 'linear-gradient(135deg, #af5f41 0%, #d4856a 100%)'),
+          makeIcon(52, 'linear-gradient(135deg, #91472b 0%, #af5f41 100%)'),
+          makeIcon(60, 'linear-gradient(135deg, #6b2f18 0%, #91472b 100%)'),
+        ],
+        indexGenerator: [5, 10, 20],
+        averageCenter: true,
+        stylingFunction: (clusterMarker: any, count: number) => {
+          const el = clusterMarker.getElement()
+          if (el) {
+            const div = el.querySelector('div')
+            if (div) div.textContent = String(count)
+          }
+        },
+      })
+
+      clusterRef.current = clustering
     }, [places, onPlaceSelect])
 
     useEffect(() => {
@@ -133,8 +212,7 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(
       const place = places.find(p => p.id === selectedPlaceId)
       if (place) {
         const position = new window.naver.maps.LatLng(place.lat, place.lng)
-        mapInstanceRef.current.panTo(position)
-        mapInstanceRef.current.setZoom(14, true)
+        mapInstanceRef.current.morph(position, 15, { duration: 500 })
       }
     }, [selectedPlaceId, places])
 
