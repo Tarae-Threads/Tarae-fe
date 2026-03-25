@@ -10,10 +10,50 @@ import {
 import Script from "next/script";
 import type { Place } from "@/lib/types";
 
+/* ---- Naver Maps 최소 타입 정의 ---- */
+interface NaverLatLng {
+  lat(): number;
+  lng(): number;
+}
+
+interface NaverMap {
+  getZoom(): number;
+  setZoom(zoom: number, animate?: boolean): void;
+  panTo(position: NaverLatLng): void;
+  morph(
+    position: NaverLatLng,
+    zoom: number,
+    options?: { duration?: number },
+  ): void;
+}
+
+interface NaverMarker {
+  setMap(map: NaverMap | null): void;
+  getElement(): HTMLElement | null;
+}
+
+interface NaverMapsNamespace {
+  Map: new (el: HTMLElement, options: Record<string, unknown>) => NaverMap;
+  LatLng: new (lat: number, lng: number) => NaverLatLng;
+  Marker: new (options: Record<string, unknown>) => NaverMarker;
+  Point: new (x: number, y: number) => unknown;
+  Size: new (w: number, h: number) => unknown;
+  Event: {
+    addListener(target: unknown, event: string, handler: () => void): void;
+  };
+  Position: { BOTTOM_LEFT: unknown };
+}
+
+interface MarkerClusteringConstructor {
+  new (options: Record<string, unknown>): {
+    setMap(map: NaverMap | null): void;
+  };
+}
+
 declare global {
   interface Window {
-    naver: any;
-    MarkerClustering: any;
+    naver: { maps: NaverMapsNamespace };
+    MarkerClustering: MarkerClusteringConstructor;
   }
 }
 
@@ -53,9 +93,11 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
   ref,
 ) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
-  const clusterRef = useRef<any>(null);
+  const mapInstanceRef = useRef<NaverMap | null>(null);
+  const markersRef = useRef<NaverMarker[]>([]);
+  const clusterRef = useRef<{ setMap(map: NaverMap | null): void } | null>(
+    null,
+  );
   const initializedRef = useRef(false);
 
   useImperativeHandle(ref, () => ({
@@ -72,16 +114,18 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
     locate() {
       if (!mapInstanceRef.current || !navigator.geolocation) return;
       navigator.geolocation.getCurrentPosition((pos) => {
+        const map = mapInstanceRef.current;
+        if (!map) return;
         const { latitude, longitude } = pos.coords;
         const position = new window.naver.maps.LatLng(latitude, longitude);
-        mapInstanceRef.current.panTo(position);
-        mapInstanceRef.current.setZoom(14, true);
+        map.panTo(position);
+        map.setZoom(14, true);
       });
     },
   }));
 
   const renderMarkers = useCallback(
-    (map: any) => {
+    (map: NaverMap) => {
       // 기존 클러스터 제거
       if (clusterRef.current) {
         clusterRef.current.setMap(null);
@@ -90,7 +134,7 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
       markersRef.current.forEach((m) => m.setMap(null));
       markersRef.current = [];
 
-      const markers: any[] = [];
+      const markers: NaverMarker[] = [];
       const N = window.naver.maps;
 
       places.forEach((place) => {
@@ -171,7 +215,7 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
         ],
         indexGenerator: [5, 10, 20],
         averageCenter: true,
-        stylingFunction: (clusterMarker: any, count: number) => {
+        stylingFunction: (clusterMarker: NaverMarker, count: number) => {
           const el = clusterMarker.getElement();
           if (el) {
             const div = el.querySelector("div");
