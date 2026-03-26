@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import type { NaverMapHandle } from '@/domains/place/components/NaverMap'
 import { usePlaceExplorer } from '@/domains/place/hooks/usePlaceExplorer'
-import PlaceCard from '@/domains/place/components/PlaceCard'
+import MobileBottomSheet from '@/domains/place/components/MobileBottomSheet'
 import PlacePanel from '@/domains/place/components/PlacePanel'
 import MapControls from '@/domains/place/components/MapControls'
 import PlaceSearchBar from '@/domains/place/components/PlaceSearchBar'
@@ -100,28 +100,7 @@ function HomeContent() {
 
           {/* Bottom Sheet */}
           {!panelOpen && (
-            <div className="fixed bottom-0 left-0 w-full z-30">
-              <div className="absolute -top-12 left-0 w-full flex justify-center pb-4">
-                <div className="w-12 h-1.5 bg-outline-variant rounded-full" />
-              </div>
-              <div className="bg-surface-container-low rounded-t-[2.5rem] shadow-[0_-12px_48px_rgba(29,27,22,0.12)] pt-8 pb-32 px-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h2 className="font-display text-xl font-extrabold tracking-tight text-on-surface">
-                      뜨개 장소
-                    </h2>
-                    <p className="text-sm text-outline font-medium">
-                      {filteredPlaces.length}개 장소
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4 overflow-x-auto hide-scrollbar -mx-6 px-6 pb-4">
-                  {filteredPlaces.slice(0, 10).map(place => (
-                    <PlaceCard key={place.id} place={place} onClick={handlePlaceSelect} />
-                  ))}
-                </div>
-              </div>
-            </div>
+            <MobileBottomSheet places={filteredPlaces} onPlaceSelect={handlePlaceSelect} />
           )}
 
           <PlacePanel place={selectedPlace} open={panelOpen} onClose={handlePanelClose} />
