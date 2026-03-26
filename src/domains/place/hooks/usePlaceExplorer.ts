@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { getPlaces, filterPlaces } from '../utils/places'
 import type { Place, PlaceCategory } from '../types'
 
 export function usePlaceExplorer(initialPlaceId: string | null) {
   const allPlaces = getPlaces()
 
-  const [selectedCategory, setSelectedCategory] = useState<PlaceCategory | 'all'>('all')
+  const [selectedCategories, setSelectedCategories] = useState<Set<PlaceCategory>>(new Set())
   const [selectedRegion, setSelectedRegion] = useState<string>('all')
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
     initialPlaceId ? allPlaces.find(p => p.id === initialPlaceId) ?? null : null
@@ -16,10 +16,43 @@ export function usePlaceExplorer(initialPlaceId: string | null) {
   const [filterOpen, setFilterOpen] = useState(false)
   const [sidePanelOpen, setSidePanelOpen] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedQuery, setDebouncedQuery] = useState('')
+
+  // Debounce search query
+  const debounceTimer = useRef<ReturnType<typeof setTimeout>>(null)
+  useEffect(() => {
+    debounceTimer.current = setTimeout(() => {
+      setDebouncedQuery(searchQuery)
+    }, 300)
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current)
+    }
+  }, [searchQuery])
+
+  const toggleCategory = useCallback((category: PlaceCategory) => {
+    setSelectedCategories(prev => {
+      const next = new Set(prev)
+      if (next.has(category)) {
+        next.delete(category)
+      } else {
+        next.add(category)
+      }
+      return next
+    })
+  }, [])
+
+  const clearCategories = useCallback(() => {
+    setSelectedCategories(new Set())
+  }, [])
 
   const filteredPlaces = useMemo(
-    () => filterPlaces(allPlaces, selectedCategory, selectedRegion, searchQuery),
-    [allPlaces, selectedCategory, selectedRegion, searchQuery],
+    () => filterPlaces(
+      allPlaces,
+      selectedCategories.size > 0 ? selectedCategories : 'all',
+      selectedRegion,
+      debouncedQuery,
+    ),
+    [allPlaces, selectedCategories, selectedRegion, debouncedQuery],
   )
 
   const handlePlaceSelect = useCallback((place: Place) => {
@@ -40,8 +73,9 @@ export function usePlaceExplorer(initialPlaceId: string | null) {
     filteredPlaces,
     selectedPlace,
     // filter state
-    selectedCategory,
-    setSelectedCategory,
+    selectedCategories,
+    toggleCategory,
+    clearCategories,
     selectedRegion,
     setSelectedRegion,
     searchQuery,

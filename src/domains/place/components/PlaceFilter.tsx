@@ -5,26 +5,24 @@ import { CATEGORY_LABEL, REGION_ORDER } from '../constants'
 import FilterChip from '@/shared/components/ui/FilterChip'
 
 interface PlaceFilterProps {
-  selectedCategory: PlaceCategory | 'all'
+  selectedCategories: Set<PlaceCategory>
   selectedRegion: string
-  onCategoryChange: (category: PlaceCategory | 'all') => void
+  onToggleCategory: (category: PlaceCategory) => void
+  onClearCategories: () => void
   onRegionChange: (region: string) => void
 }
 
-const categories: { value: PlaceCategory | 'all'; label: string }[] = [
-  { value: 'all', label: '전체' },
-  { value: 'yarn_store', label: CATEGORY_LABEL.yarn_store },
-  { value: 'studio', label: CATEGORY_LABEL.studio },
-  { value: 'cafe', label: CATEGORY_LABEL.cafe },
-  { value: 'popup', label: CATEGORY_LABEL.popup },
-]
+const categoryList: PlaceCategory[] = ['yarn_store', 'studio', 'cafe', 'dye_shop', 'craft_supply']
 
 export default function PlaceFilter({
-  selectedCategory,
+  selectedCategories,
   selectedRegion,
-  onCategoryChange,
+  onToggleCategory,
+  onClearCategories,
   onRegionChange,
 }: PlaceFilterProps) {
+  const isAllCategories = selectedCategories.size === 0
+
   return (
     <div className="space-y-4">
       {/* Category chips */}
@@ -33,12 +31,17 @@ export default function PlaceFilter({
           카테고리
         </p>
         <div className="flex flex-wrap gap-2">
-          {categories.map(({ value, label }) => (
+          <FilterChip
+            label="전체"
+            selected={isAllCategories}
+            onClick={onClearCategories}
+          />
+          {categoryList.map(cat => (
             <FilterChip
-              key={value}
-              label={label}
-              selected={selectedCategory === value}
-              onClick={() => onCategoryChange(value)}
+              key={cat}
+              label={CATEGORY_LABEL[cat]}
+              selected={selectedCategories.has(cat)}
+              onClick={() => onToggleCategory(cat)}
             />
           ))}
         </div>

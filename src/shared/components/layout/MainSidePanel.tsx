@@ -3,14 +3,17 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import type { Place, PlaceCategory } from '../types'
-import CategoryBadge from './CategoryBadge'
-import PlaceFilter from './PlaceFilter'
-import {
-  X, Search, Clock, MapPin, ExternalLink,
-} from 'lucide-react'
+import type { Place, PlaceCategory } from '@/domains/place/types'
+import CategoryBadge from '@/domains/place/components/CategoryBadge'
+import StatusBadge from '@/domains/place/components/StatusBadge'
+import PlaceFilter from '@/domains/place/components/PlaceFilter'
+import EventSidePanelContent from '@/domains/event/components/EventSidePanelContent'
+import { X, Search, Clock, MapPin, ExternalLink, Map, Calendar } from 'lucide-react'
 
-interface PlaceSidePanelProps {
+type MainTab = 'places' | 'events'
+
+interface MainSidePanelProps {
+  // Place props
   places: Place[]
   selectedPlace: Place | null
   panelOpen: boolean
@@ -24,9 +27,11 @@ interface PlaceSidePanelProps {
   onClearCategories: () => void
   onRegionChange: (region: string) => void
   onClose: () => void
+  // Event → map callback
+  onEventPlaceClick?: (placeId: string) => void
 }
 
-export default function PlaceSidePanel({
+export default function MainSidePanel({
   places,
   selectedPlace,
   panelOpen,
@@ -40,8 +45,10 @@ export default function PlaceSidePanel({
   onClearCategories,
   onRegionChange,
   onClose,
-}: PlaceSidePanelProps) {
-  const [tab, setTab] = useState<'list' | 'filter'>('list')
+  onEventPlaceClick,
+}: MainSidePanelProps) {
+  const [mainTab, setMainTab] = useState<MainTab>('places')
+  const [placeSubTab, setPlaceSubTab] = useState<'list' | 'filter'>('list')
 
   return (
     <div className="h-full flex flex-col bg-surface overflow-hidden">
@@ -59,70 +66,106 @@ export default function PlaceSidePanel({
         </button>
       </header>
 
-      {/* Tabs */}
-      <div className="flex px-5 gap-1 shrink-0 mb-1">
+      {/* Main Tabs: 장소 / 정보 */}
+      <div className="flex px-5 gap-1 shrink-0 mb-2">
         <button
-          onClick={() => { setTab('list'); if (panelOpen) onPanelClose() }}
-          className={`px-4 py-2 text-sm font-bold rounded-full transition-all ${
-            tab === 'list' && !panelOpen
-              ? 'signature-gradient text-white'
+          onClick={() => { setMainTab('places'); if (panelOpen) onPanelClose() }}
+          className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-full transition-all ${
+            mainTab === 'places'
+              ? 'signature-gradient text-white shadow-lg shadow-primary/20'
               : 'text-on-surface-variant hover:bg-surface-container'
           }`}
         >
-          장소 목록
+          <Map className="w-4 h-4" />
+          장소
         </button>
         <button
-          onClick={() => setTab('filter')}
-          className={`px-4 py-2 text-sm font-bold rounded-full transition-all ${
-            tab === 'filter'
-              ? 'signature-gradient text-white'
+          onClick={() => setMainTab('events')}
+          className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-full transition-all ${
+            mainTab === 'events'
+              ? 'signature-gradient text-white shadow-lg shadow-primary/20'
               : 'text-on-surface-variant hover:bg-surface-container'
           }`}
         >
-          필터
+          <Calendar className="w-4 h-4" />
+          정보
         </button>
-      </div>
-
-      {/* Search */}
-      <div className="px-5 py-3 shrink-0">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" aria-hidden="true" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            aria-label="뜨개 장소 검색"
-            placeholder="장소, 브랜드, 태그 검색..."
-            className="w-full bg-surface-container-low h-10 pl-10 pr-4 rounded-xl text-sm text-on-surface placeholder:text-outline font-medium focus:outline-none focus:ring-2 focus:ring-primary/20"
-          />
-        </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto hide-scrollbar">
-        {tab === 'filter' ? (
-          <div className="px-5 py-3">
-            <PlaceFilter
-              selectedCategories={selectedCategories}
-              selectedRegion={selectedRegion}
-              onToggleCategory={(c) => { onToggleCategory(c); setTab('list') }}
-              onClearCategories={() => { onClearCategories(); setTab('list') }}
-              onRegionChange={(r) => { onRegionChange(r); setTab('list') }}
-            />
+      {mainTab === 'places' ? (
+        <>
+          {/* Place sub-tabs */}
+          <div className="flex px-5 gap-1 shrink-0 mb-1">
+            <button
+              onClick={() => { setPlaceSubTab('list'); if (panelOpen) onPanelClose() }}
+              className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all ${
+                placeSubTab === 'list' && !panelOpen
+                  ? 'bg-primary-fixed text-primary'
+                  : 'text-on-surface-variant hover:bg-surface-container'
+              }`}
+            >
+              목록
+            </button>
+            <button
+              onClick={() => setPlaceSubTab('filter')}
+              className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all ${
+                placeSubTab === 'filter'
+                  ? 'bg-primary-fixed text-primary'
+                  : 'text-on-surface-variant hover:bg-surface-container'
+              }`}
+            >
+              필터
+            </button>
           </div>
-        ) : panelOpen && selectedPlace ? (
-          <PlaceDetail place={selectedPlace} onClose={onPanelClose} />
-        ) : (
-          <PlaceList places={places} onSelect={onPlaceSelect} />
-        )}
-      </div>
 
-      {/* Footer info */}
-      <div className="px-5 py-3 text-center shrink-0 bg-surface-container-low">
-        <p className="text-[10px] text-outline font-medium uppercase tracking-widest">
-          {places.length}개 장소 발견
-        </p>
-      </div>
+          {/* Search */}
+          <div className="px-5 py-3 shrink-0">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" aria-hidden="true" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                aria-label="뜨개 장소 검색"
+                placeholder="장소, 브랜드, 태그 검색..."
+                className="w-full bg-surface-container-low h-10 pl-10 pr-4 rounded-xl text-sm text-on-surface placeholder:text-outline font-medium focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+          </div>
+
+          {/* Place content */}
+          <div className="flex-1 overflow-y-auto hide-scrollbar">
+            {placeSubTab === 'filter' ? (
+              <div className="px-5 py-3">
+                <PlaceFilter
+                  selectedCategories={selectedCategories}
+                  selectedRegion={selectedRegion}
+                  onToggleCategory={(c) => { onToggleCategory(c); setPlaceSubTab('list') }}
+                  onClearCategories={() => { onClearCategories(); setPlaceSubTab('list') }}
+                  onRegionChange={(r) => { onRegionChange(r); setPlaceSubTab('list') }}
+                />
+              </div>
+            ) : panelOpen && selectedPlace ? (
+              <PlaceDetail place={selectedPlace} onClose={onPanelClose} />
+            ) : (
+              <PlaceList places={places} onSelect={onPlaceSelect} />
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="px-5 py-3 text-center shrink-0 bg-surface-container-low">
+            <p className="text-[10px] text-outline font-medium uppercase tracking-widest">
+              {places.length}개 장소 발견
+            </p>
+          </div>
+        </>
+      ) : (
+        /* Events content */
+        <div className="flex-1 overflow-y-auto hide-scrollbar">
+          <EventSidePanelContent onPlaceClick={onEventPlaceClick} />
+        </div>
+      )}
     </div>
   )
 }
@@ -150,7 +193,10 @@ function PlaceList({ places, onSelect }: { places: Place[]; onSelect: (p: Place)
           )}
           <div className="p-4">
             <div className="flex items-center justify-between mb-1.5">
-              <h3 className="font-display font-bold text-sm text-on-surface">{place.name}</h3>
+              <div className="flex items-center gap-1.5">
+                <h3 className="font-display font-bold text-sm text-on-surface">{place.name}</h3>
+                <StatusBadge status={place.status} />
+              </div>
               <CategoryBadge category={place.category} />
             </div>
             <p className="text-on-surface-variant text-xs line-clamp-1 mb-2">{place.address}</p>
@@ -178,8 +224,9 @@ function PlaceDetail({ place, onClose }: { place: Place; onClose: () => void }) 
         ← 목록으로
       </button>
 
-      <div className="mb-3">
+      <div className="flex items-center gap-2 mb-3">
         <CategoryBadge category={place.category} />
+        <StatusBadge status={place.status} />
       </div>
 
       <h2 className="font-display font-extrabold text-2xl tracking-editorial text-on-surface mb-2">

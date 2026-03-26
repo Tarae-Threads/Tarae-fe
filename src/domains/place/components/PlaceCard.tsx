@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import type { Place } from '../types'
 import CategoryBadge from './CategoryBadge'
+import StatusBadge from './StatusBadge'
 import { Clock } from 'lucide-react'
 
 interface PlaceCardProps {
@@ -29,20 +30,37 @@ export default function PlaceCard({ place, onClick }: PlaceCardProps) {
         ) : (
           <div className="w-full h-full signature-gradient opacity-30" />
         )}
-        <div className="absolute top-4 left-4">
+        <div className="absolute top-4 left-4 flex items-center gap-1.5">
           <CategoryBadge category={place.category} size="md" />
+          <StatusBadge status={place.status} />
         </div>
       </div>
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="font-display font-bold text-lg text-on-surface mb-2">
+        <h3 className="font-display font-bold text-lg text-on-surface mb-1">
           {place.name}
         </h3>
 
-        <p className="text-on-surface-variant text-sm line-clamp-2 mb-4 leading-relaxed">
+        <p className="text-on-surface-variant text-sm line-clamp-1 mb-2 leading-relaxed">
           {place.address}
         </p>
+
+        {place.note && (
+          <p className="text-on-surface-variant text-xs line-clamp-1 mb-3">
+            {place.note}
+          </p>
+        )}
+
+        {place.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3">
+            {place.tags.slice(0, 3).map(tag => (
+              <span key={tag} className="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full text-[10px] font-medium">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
 
         <div className="flex items-center gap-2">
           <Clock className="w-[18px] h-[18px] text-outline" />

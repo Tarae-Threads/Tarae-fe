@@ -62,12 +62,14 @@ interface NaverMapProps {
   places: Place[];
   onPlaceSelect: (place: Place) => void;
   selectedPlaceId?: string | null;
+  eventPlaceIds?: Set<string>;
 }
 
 export interface NaverMapHandle {
   zoomIn: () => void;
   zoomOut: () => void;
   locate: () => void;
+  panTo: (lat: number, lng: number, zoom?: number) => void;
 }
 
 function loadScript(src: string): Promise<void> {
@@ -90,7 +92,7 @@ function loadScript(src: string): Promise<void> {
 }
 
 const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
-  { places, onPlaceSelect, selectedPlaceId },
+  { places, onPlaceSelect, selectedPlaceId, eventPlaceIds },
   ref,
 ) {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -124,6 +126,16 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
         map.setZoom(14, true);
       });
     },
+    panTo(lat: number, lng: number, zoom?: number) {
+      const map = mapInstanceRef.current;
+      if (!map) return;
+      const position = new window.naver.maps.LatLng(lat, lng);
+      if (zoom) {
+        map.morph(position, zoom, { duration: 500 });
+      } else {
+        map.panTo(position);
+      }
+    },
   }));
 
   const renderMarkers = useCallback(
@@ -141,12 +153,17 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
 
       places.forEach((place) => {
         const position = new N.LatLng(place.lat, place.lng);
+        const hasEvent = eventPlaceIds?.has(place.id) ?? false;
+        const pinGradient = hasEvent
+          ? 'linear-gradient(135deg,#53624f 0%,#7a8c73 100%)'
+          : 'linear-gradient(135deg,#91472b 0%,#af5f41 100%)';
+        const labelColor = hasEvent ? '#53624f' : '#91472b';
 
         const markerHtml = `
           <div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
             <div style="
               width:32px;height:32px;border-radius:9999px;
-              background:linear-gradient(135deg,#91472b 0%,#af5f41 100%);
+              background:${pinGradient};
               border:3px solid #ffffff;
               box-shadow:0 4px 12px rgba(29,27,22,0.15);
               transition:transform 0.2s ease;
@@ -157,10 +174,11 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
             <div style="
               margin-top:6px;background:rgba(255,249,239,0.9);
               backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-              padding:2px 8px;border-radius:9999px;
+              padding:1px 8px 3px;border-radius:9999px;
               box-shadow:0 2px 8px rgba(29,27,22,0.08);
+              white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis;
             ">
-              <span style="font-size:10px;font-weight:700;letter-spacing:-0.02em;color:#91472b;">
+              <span style="font-size:10px;font-weight:700;letter-spacing:-0.02em;color:${labelColor};white-space:nowrap;">
                 ${place.name}
               </span>
             </div>
@@ -228,7 +246,7 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
 
       clusterRef.current = clustering;
     },
-    [places, onPlaceSelect],
+    [places, onPlaceSelect, eventPlaceIds],
   );
 
   const initMap = useCallback(async () => {

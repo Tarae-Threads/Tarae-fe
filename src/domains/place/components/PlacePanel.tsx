@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import type { Place } from '../types'
 import CategoryBadge from './CategoryBadge'
+import StatusBadge from './StatusBadge'
 import { X, Clock, MapPin, ExternalLink } from 'lucide-react'
 
 interface PlacePanelProps {
@@ -40,6 +41,7 @@ export default function PlacePanel({ place, open, onClose }: PlacePanelProps) {
                     {place.name}
                   </h2>
                   <CategoryBadge category={place.category} size="md" />
+                  <StatusBadge status={place.status} />
                 </div>
                 <p className="text-on-surface-variant text-sm flex items-center gap-1.5">
                   <MapPin className="w-4 h-4" />

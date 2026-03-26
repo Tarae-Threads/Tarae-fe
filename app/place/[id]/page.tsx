@@ -3,6 +3,9 @@ import { notFound } from 'next/navigation'
 import { getPlaceById, getPlaces } from '@/domains/place/utils/places'
 import { CATEGORY_LABEL } from '@/domains/place/constants'
 import CategoryBadge from '@/domains/place/components/CategoryBadge'
+import StatusBadge from '@/domains/place/components/StatusBadge'
+import { getEventsByPlaceId } from '@/domains/event/utils/events'
+import { EVENT_TYPE_LABEL, EVENT_TYPE_COLOR } from '@/domains/event/constants'
 import type { Metadata } from 'next'
 
 interface PageProps {
@@ -107,6 +110,7 @@ export default async function PlaceDetailPage({ params }: PageProps) {
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-3">
             <CategoryBadge category={place.category} size="md" />
+            <StatusBadge status={place.status} />
           </div>
           <h2 className="font-display font-extrabold text-display-sm tracking-editorial text-on-surface mb-3">
             {place.name}
@@ -184,6 +188,41 @@ export default async function PlaceDetailPage({ params }: PageProps) {
             )}
           </div>
         )}
+
+        {/* Linked Events */}
+        {(() => {
+          const placeEvents = getEventsByPlaceId(place.id)
+          if (placeEvents.length === 0) return null
+          return (
+            <section className="mb-8">
+              <h3 className="font-display font-bold text-lg text-on-surface mb-4">예정된 일정</h3>
+              <div className="space-y-3">
+                {placeEvents.map(event => (
+                  <Link
+                    key={event.id}
+                    href={`/events/${event.id}`}
+                    className="block bg-surface-container rounded-2xl p-4 hover:shadow-lg transition-shadow"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <span
+                        className="px-2 py-0.5 rounded-full text-[9px] font-bold text-white"
+                        style={{ backgroundColor: EVENT_TYPE_COLOR[event.type] }}
+                      >
+                        {EVENT_TYPE_LABEL[event.type]}
+                      </span>
+                      <span className="text-[11px] text-outline">
+                        {event.startDate.slice(5).replace('-', '.')}
+                        {event.startDate !== event.endDate && ` — ${event.endDate.slice(5).replace('-', '.')}`}
+                      </span>
+                    </div>
+                    <h4 className="font-display font-bold text-sm text-on-surface">{event.title}</h4>
+                    <p className="text-on-surface-variant text-xs line-clamp-1 mt-1">{event.description}</p>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )
+        })()}
 
         {/* Map CTA */}
         <Link

@@ -4,12 +4,15 @@ import { useRef, useState, useCallback, useEffect } from 'react'
 import type { Place } from '../types'
 import PlaceCard from './PlaceCard'
 import PlaceCardCompact from './PlaceCardCompact'
+import EventSidePanelContent from '@/domains/event/components/EventSidePanelContent'
+import { Map, Calendar } from 'lucide-react'
 
 type SnapPoint = 'peek' | 'half' | 'full'
+type MainTab = 'places' | 'events'
 
-const SNAP_PEEK = 0.22  // 22% of viewport
-const SNAP_HALF = 0.50  // 50%
-const SNAP_FULL = 0.92  // 92%
+const SNAP_PEEK = 0.22
+const SNAP_HALF = 0.50
+const SNAP_FULL = 0.92
 
 function getSnapHeight(snap: SnapPoint) {
   if (typeof window === 'undefined') return 0
@@ -27,19 +30,15 @@ function closestSnap(height: number, velocity: number): SnapPoint {
   const halfH = vh * SNAP_HALF
   const fullH = vh * SNAP_FULL
 
-  // Velocity-based flick detection (px/ms threshold)
   if (velocity < -0.5) {
-    // Flicking down
     if (height > halfH) return 'half'
     return 'peek'
   }
   if (velocity > 0.5) {
-    // Flicking up
     if (height < halfH) return 'half'
     return 'full'
   }
 
-  // Position-based snap
   const distPeek = Math.abs(height - peekH)
   const distHalf = Math.abs(height - halfH)
   const distFull = Math.abs(height - fullH)
@@ -52,16 +51,17 @@ function closestSnap(height: number, velocity: number): SnapPoint {
 interface Props {
   places: Place[]
   onPlaceSelect: (place: Place) => void
+  onEventPlaceClick?: (placeId: string) => void
 }
 
-export default function MobileBottomSheet({ places, onPlaceSelect }: Props) {
+export default function MobileBottomSheet({ places, onPlaceSelect, onEventPlaceClick }: Props) {
   const sheetRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const [snap, setSnap] = useState<SnapPoint>('peek')
   const [sheetHeight, setSheetHeight] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+  const [mainTab, setMainTab] = useState<MainTab>('places')
 
-  // Touch tracking refs (avoid re-renders during drag)
   const dragState = useRef({
     startY: 0,
     startHeight: 0,
@@ -71,12 +71,10 @@ export default function MobileBottomSheet({ places, onPlaceSelect }: Props) {
     isScrolling: false,
   })
 
-  // Initialize height
   useEffect(() => {
     setSheetHeight(getSnapHeight('peek'))
   }, [])
 
-  // Animate to snap point
   const animateTo = useCallback((target: SnapPoint) => {
     setSnap(target)
     setSheetHeight(getSnapHeight(target))
@@ -86,7 +84,6 @@ export default function MobileBottomSheet({ places, onPlaceSelect }: Props) {
     const touch = e.touches[0]
     const ds = dragState.current
 
-    // If fully expanded and content is scrolled, let native scroll handle it
     if (snap === 'full' && contentRef.current) {
       const scrollTop = contentRef.current.scrollTop
       if (scrollTop > 0) {
@@ -116,7 +113,6 @@ export default function MobileBottomSheet({ places, onPlaceSelect }: Props) {
       Math.min(window.innerHeight * 0.95, ds.startHeight + deltaY)
     )
 
-    // Calculate velocity (positive = upward)
     const dt = now - ds.lastTime
     if (dt > 0) {
       ds.velocity = (ds.lastY - touch.clientY) / dt
@@ -125,8 +121,6 @@ export default function MobileBottomSheet({ places, onPlaceSelect }: Props) {
     ds.lastTime = now
 
     setSheetHeight(newHeight)
-
-    // Prevent background scroll
     e.preventDefault()
   }, [])
 
@@ -140,6 +134,14 @@ export default function MobileBottomSheet({ places, onPlaceSelect }: Props) {
   }, [sheetHeight, animateTo])
 
   const isExpanded = snap === 'half' || snap === 'full'
+
+  // When switching to events tab, expand to half if peeked
+  const handleTabChange = (tab: MainTab) => {
+    setMainTab(tab)
+    if (tab === 'events' && snap === 'peek') {
+      animateTo('half')
+    }
+  }
 
   return (
     <div
@@ -162,23 +164,51 @@ export default function MobileBottomSheet({ places, onPlaceSelect }: Props) {
         <div className="w-10 h-1 bg-outline-variant rounded-full" />
       </div>
 
-      {/* Header */}
+      {/* Tab + Header */}
       <div
-        className="flex-shrink-0 px-6 pb-4"
+        className="flex-shrink-0 px-6 pb-3"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-display text-xl font-extrabold tracking-tight text-on-surface">
-              뜨개 장소
-            </h2>
-            <p className="text-sm text-outline font-medium">
-              {places.length}개 장소
-            </p>
-          </div>
+        {/* Main Tabs */}
+        <div className="flex gap-2 mb-3">
+          <button
+            onClick={() => handleTabChange('places')}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-full transition-all ${
+              mainTab === 'places'
+                ? 'signature-gradient text-white shadow-md shadow-primary/20'
+                : 'bg-surface-container text-on-surface-variant'
+            }`}
+          >
+            <Map className="w-3.5 h-3.5" />
+            장소
+          </button>
+          <button
+            onClick={() => handleTabChange('events')}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-full transition-all ${
+              mainTab === 'events'
+                ? 'signature-gradient text-white shadow-md shadow-primary/20'
+                : 'bg-surface-container text-on-surface-variant'
+            }`}
+          >
+            <Calendar className="w-3.5 h-3.5" />
+            정보
+          </button>
         </div>
+
+        {mainTab === 'places' && (
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-display text-lg font-extrabold tracking-tight text-on-surface">
+                뜨개 장소
+              </h2>
+              <p className="text-xs text-outline font-medium">
+                {places.length}개 장소
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content Area */}
@@ -190,21 +220,25 @@ export default function MobileBottomSheet({ places, onPlaceSelect }: Props) {
           WebkitOverflowScrolling: 'touch',
         }}
       >
-        {!isExpanded ? (
-          /* Peek: Horizontal scroll cards */
-          <div className="flex gap-4 overflow-x-auto hide-scrollbar px-6 pb-4"
-            style={{ WebkitOverflowScrolling: 'touch' }}
-          >
-            {places.slice(0, 10).map(place => (
-              <PlaceCard key={place.id} place={place} onClick={onPlaceSelect} />
-            ))}
-          </div>
+        {mainTab === 'places' ? (
+          !isExpanded ? (
+            <div className="flex gap-4 overflow-x-auto hide-scrollbar px-6 pb-4"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
+              {places.slice(0, 10).map(place => (
+                <PlaceCard key={place.id} place={place} onClick={onPlaceSelect} />
+              ))}
+            </div>
+          ) : (
+            <div className="px-6 pb-32 space-y-3">
+              {places.map(place => (
+                <PlaceCardCompact key={place.id} place={place} onClick={onPlaceSelect} />
+              ))}
+            </div>
+          )
         ) : (
-          /* Half/Full: Vertical list */
-          <div className="px-6 pb-32 space-y-3">
-            {places.map(place => (
-              <PlaceCardCompact key={place.id} place={place} onClick={onPlaceSelect} />
-            ))}
+          <div className="pb-32">
+            <EventSidePanelContent onPlaceClick={onEventPlaceClick} />
           </div>
         )}
       </div>

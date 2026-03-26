@@ -1,17 +1,20 @@
 'use client'
 
-import { useRef, Suspense } from 'react'
+import { useRef, useState, useMemo, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import type { NaverMapHandle } from '@/domains/place/components/NaverMap'
 import { usePlaceExplorer } from '@/domains/place/hooks/usePlaceExplorer'
+import { getPlaceById } from '@/domains/place/utils/places'
+import { getEvents } from '@/domains/event/utils/events'
 import MobileBottomSheet from '@/domains/place/components/MobileBottomSheet'
 import PlacePanel from '@/domains/place/components/PlacePanel'
 import MapControls from '@/domains/place/components/MapControls'
 import PlaceSearchBar from '@/domains/place/components/PlaceSearchBar'
 import TopAppBar from '@/shared/components/layout/TopAppBar'
-import BottomNav from '@/shared/components/layout/BottomNav'
-import PlaceSidePanel from '@/domains/place/components/PlaceSidePanel'
+import MainSidePanel from '@/shared/components/layout/MainSidePanel'
+import PlaceSubmitForm from '@/domains/place/components/PlaceSubmitForm'
+import { REGION_CENTER } from '@/domains/place/constants'
 import { MapPinPlus } from 'lucide-react'
 
 const NaverMap = dynamic(() => import('@/domains/place/components/NaverMap'), { ssr: false })
@@ -20,12 +23,14 @@ function HomeContent() {
   const searchParams = useSearchParams()
   const initialPlaceId = searchParams.get('placeId')
   const mapRef = useRef<NaverMapHandle>(null)
+  const [submitOpen, setSubmitOpen] = useState(false)
 
   const {
     filteredPlaces,
     selectedPlace,
-    selectedCategory,
-    setSelectedCategory,
+    selectedCategories,
+    toggleCategory,
+    clearCategories,
     selectedRegion,
     setSelectedRegion,
     searchQuery,
@@ -38,6 +43,38 @@ function HomeContent() {
     handlePanelClose,
     toggleFilter,
   } = usePlaceExplorer(initialPlaceId)
+
+  // Compute event-linked placeIds
+  const eventPlaceIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const event of getEvents()) {
+      if (event.placeId) ids.add(event.placeId)
+    }
+    return ids
+  }, [])
+
+  // Region filter → pan map
+  useEffect(() => {
+    if (selectedRegion === 'all') return
+    const center = REGION_CENTER[selectedRegion]
+    if (center) {
+      mapRef.current?.panTo(center.lat, center.lng, center.zoom)
+    }
+  }, [selectedRegion])
+
+  // Place select → pan map
+  const handlePlaceSelectWithPan = useCallback((place: Parameters<typeof handlePlaceSelect>[0]) => {
+    handlePlaceSelect(place)
+    mapRef.current?.panTo(place.lat, place.lng, 14)
+  }, [handlePlaceSelect])
+
+  // Event card click → pan map to linked place
+  const handleEventPlaceClick = useCallback((placeId: string) => {
+    const place = getPlaceById(placeId)
+    if (place) {
+      mapRef.current?.panTo(place.lat, place.lng, 14)
+    }
+  }, [])
 
   return (
     <main className="h-screen w-full overflow-hidden bg-surface-container-lowest flex">
@@ -52,8 +89,9 @@ function HomeContent() {
         <NaverMap
           ref={mapRef}
           places={filteredPlaces}
-          onPlaceSelect={handlePlaceSelect}
+          onPlaceSelect={handlePlaceSelectWithPan}
           selectedPlaceId={initialPlaceId}
+          eventPlaceIds={eventPlaceIds}
         />
 
         {/* Map Controls */}
@@ -70,15 +108,16 @@ function HomeContent() {
             onSearchChange={setSearchQuery}
             filterOpen={filterOpen}
             onToggleFilter={toggleFilter}
-            selectedCategory={selectedCategory}
+            selectedCategories={selectedCategories}
             selectedRegion={selectedRegion}
-            onCategoryChange={setSelectedCategory}
+            onToggleCategory={toggleCategory}
+            onClearCategories={clearCategories}
             onRegionChange={setSelectedRegion}
           />
         </div>
 
         {/* FAB — desktop */}
-        <button aria-label="장소 추가" className="hidden md:flex absolute bottom-8 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl items-center justify-center z-20 active:scale-95 transition-transform">
+        <button onClick={() => setSubmitOpen(true)} aria-label="장소 추가" className="hidden md:flex absolute bottom-8 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl items-center justify-center z-20 active:scale-95 transition-transform">
           <MapPinPlus className="w-7 h-7" />
         </button>
 
@@ -91,48 +130,54 @@ function HomeContent() {
               onSearchChange={setSearchQuery}
               filterOpen={filterOpen}
               onToggleFilter={toggleFilter}
-              selectedCategory={selectedCategory}
+              selectedCategories={selectedCategories}
               selectedRegion={selectedRegion}
-              onCategoryChange={setSelectedCategory}
+              onToggleCategory={toggleCategory}
+              onClearCategories={clearCategories}
               onRegionChange={setSelectedRegion}
             />
           </div>
 
           {/* Bottom Sheet */}
           {!panelOpen && (
-            <MobileBottomSheet places={filteredPlaces} onPlaceSelect={handlePlaceSelect} />
+            <MobileBottomSheet
+              places={filteredPlaces}
+              onPlaceSelect={handlePlaceSelectWithPan}
+              onEventPlaceClick={handleEventPlaceClick}
+            />
           )}
 
           <PlacePanel place={selectedPlace} open={panelOpen} onClose={handlePanelClose} />
 
           {/* FAB */}
-          <button aria-label="장소 추가" className="fixed bottom-32 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
+          <button onClick={() => setSubmitOpen(true)} aria-label="장소 추가" className="fixed bottom-32 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
             <MapPinPlus className="w-7 h-7" />
           </button>
-
-          <BottomNav />
         </div>
       </div>
 
       {/* ===== Right: Side Panel — desktop only ===== */}
       {sidePanelOpen && (
-        <div className="hidden md:block w-[380px] shrink-0 h-full border-l border-border">
-          <PlaceSidePanel
+        <div className="hidden md:block w-[400px] shrink-0 h-full border-l border-border">
+          <MainSidePanel
             places={filteredPlaces}
             selectedPlace={selectedPlace}
             panelOpen={panelOpen}
-            selectedCategory={selectedCategory}
+            selectedCategories={selectedCategories}
             selectedRegion={selectedRegion}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
-            onPlaceSelect={handlePlaceSelect}
+            onPlaceSelect={handlePlaceSelectWithPan}
             onPanelClose={handlePanelClose}
-            onCategoryChange={setSelectedCategory}
+            onToggleCategory={toggleCategory}
+            onClearCategories={clearCategories}
             onRegionChange={setSelectedRegion}
             onClose={() => setSidePanelOpen(false)}
+            onEventPlaceClick={handleEventPlaceClick}
           />
         </div>
       )}
+      <PlaceSubmitForm open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </main>
   )
 }

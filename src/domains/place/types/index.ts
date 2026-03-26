@@ -1,9 +1,12 @@
-export type PlaceCategory = 'yarn_store' | 'studio' | 'cafe' | 'popup'
+export type PlaceCategory = 'yarn_store' | 'studio' | 'cafe' | 'dye_shop' | 'craft_supply'
+
+export type PlaceStatus = 'open' | 'relocated' | 'closed' | 'unverified'
 
 export interface Place {
   id: string
   name: string
   category: PlaceCategory
+  status: PlaceStatus
   region: string
   district: string
   address: string

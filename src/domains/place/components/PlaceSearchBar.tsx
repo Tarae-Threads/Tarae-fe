@@ -9,9 +9,10 @@ interface PlaceSearchBarProps {
   onSearchChange: (query: string) => void
   filterOpen: boolean
   onToggleFilter: () => void
-  selectedCategory: PlaceCategory | 'all'
+  selectedCategories: Set<PlaceCategory>
   selectedRegion: string
-  onCategoryChange: (category: PlaceCategory | 'all') => void
+  onToggleCategory: (category: PlaceCategory) => void
+  onClearCategories: () => void
   onRegionChange: (region: string) => void
 }
 
@@ -20,9 +21,10 @@ export default function PlaceSearchBar({
   onSearchChange,
   filterOpen,
   onToggleFilter,
-  selectedCategory,
+  selectedCategories,
   selectedRegion,
-  onCategoryChange,
+  onToggleCategory,
+  onClearCategories,
   onRegionChange,
 }: PlaceSearchBarProps) {
   return (
@@ -51,10 +53,11 @@ export default function PlaceSearchBar({
       {filterOpen && (
         <div className="mt-3 bg-surface-container-low backdrop-blur-2xl rounded-2xl editorial-shadow p-5">
           <PlaceFilter
-            selectedCategory={selectedCategory}
+            selectedCategories={selectedCategories}
             selectedRegion={selectedRegion}
-            onCategoryChange={(c) => { onCategoryChange(c); onToggleFilter() }}
-            onRegionChange={(r) => { onRegionChange(r); onToggleFilter() }}
+            onToggleCategory={onToggleCategory}
+            onClearCategories={onClearCategories}
+            onRegionChange={onRegionChange}
           />
         </div>
       )}

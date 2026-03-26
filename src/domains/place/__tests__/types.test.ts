@@ -7,7 +7,7 @@ import {
 } from '../constants'
 import type { PlaceCategory } from '../types'
 
-const ALL_CATEGORIES: PlaceCategory[] = ['yarn_store', 'studio', 'cafe', 'popup']
+const ALL_CATEGORIES: PlaceCategory[] = ['yarn_store', 'studio', 'cafe', 'dye_shop', 'craft_supply']
 
 describe('CATEGORY_LABEL', () => {
   it('has a label for every category', () => {

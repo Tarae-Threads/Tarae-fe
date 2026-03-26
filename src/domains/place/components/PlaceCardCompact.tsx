@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import type { Place } from '../types'
 import CategoryBadge from './CategoryBadge'
+import StatusBadge from './StatusBadge'
 import { Clock } from 'lucide-react'
 
 interface Props {
@@ -38,10 +39,20 @@ export default function PlaceCardCompact({ place, onClick }: Props) {
             {place.name}
           </h3>
           <CategoryBadge category={place.category} />
+          <StatusBadge status={place.status} />
         </div>
-        <p className="text-on-surface-variant text-sm line-clamp-1 mb-1.5">
+        <p className="text-on-surface-variant text-sm line-clamp-1 mb-1">
           {place.address}
         </p>
+        {place.tags.length > 0 && (
+          <div className="flex gap-1 mb-1">
+            {place.tags.slice(0, 2).map(tag => (
+              <span key={tag} className="bg-secondary-container text-on-secondary-container px-1.5 py-0.5 rounded-full text-[9px] font-medium">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5 text-outline" />
           <span className="text-[11px] font-bold text-outline uppercase tracking-wider">

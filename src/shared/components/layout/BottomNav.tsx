@@ -1,14 +1,14 @@
 'use client'
 
-import { Map, MessageCircle, Search, User } from 'lucide-react'
+import { Map, Calendar, Database, Users } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
 const navItems = [
   { href: '/', icon: Map, label: '지도' },
-  { href: '/threads', icon: MessageCircle, label: '스레드' },
-  { href: '/search', icon: Search, label: '검색' },
-  { href: '/profile', icon: User, label: '프로필' },
+  { href: '/events', icon: Calendar, label: '캘린더' },
+  { href: '/data', icon: Database, label: '데이터' },
+  { href: '/community', icon: Users, label: '함뜨' },
 ]
 
 export default function BottomNav() {
