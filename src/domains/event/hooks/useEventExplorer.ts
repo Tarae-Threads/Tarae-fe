@@ -65,6 +65,14 @@ export function useEventExplorer() {
     setSelectedDate(date);
   }, []);
 
+  const goToday = useCallback(() => {
+    const now = new Date();
+    setCurrentYear(now.getFullYear());
+    setCurrentMonth(now.getMonth() + 1);
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    setSelectedDate(todayStr);
+  }, [setCurrentYear, setCurrentMonth, setSelectedDate]);
+
   return {
     currentYear,
     currentMonth,
@@ -77,5 +85,6 @@ export function useEventExplorer() {
     nextMonth,
     prevMonth,
     selectDate,
+    goToday,
   };
 }

@@ -22,6 +22,7 @@ export default function EventSidePanelContent({ onPlaceClick }: Props) {
     nextMonth,
     prevMonth,
     selectDate,
+    goToday,
   } = useEventExplorer()
 
   return (
@@ -34,6 +35,7 @@ export default function EventSidePanelContent({ onPlaceClick }: Props) {
         onSelectDate={selectDate}
         onPrevMonth={prevMonth}
         onNextMonth={nextMonth}
+        onToday={goToday}
       />
 
       <EventTypeFilter

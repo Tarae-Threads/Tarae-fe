@@ -2,6 +2,7 @@
 
 import type { EventType } from '../types'
 import { WEEKDAY_NAMES, EVENT_TYPE_COLOR } from '../constants'
+import { Undo2 } from 'lucide-react'
 
 interface Props {
   year: number
@@ -11,6 +12,7 @@ interface Props {
   onSelectDate: (date: string | null) => void
   onPrevMonth: () => void
   onNextMonth: () => void
+  onToday?: () => void
 }
 
 export default function CalendarGrid({
@@ -21,11 +23,13 @@ export default function CalendarGrid({
   onSelectDate,
   onPrevMonth,
   onNextMonth,
+  onToday,
 }: Props) {
   const firstDayOfMonth = new Date(year, month - 1, 1).getDay()
   const daysInMonth = new Date(year, month, 0).getDate()
   const today = new Date()
   const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+  const isCurrentMonth = year === today.getFullYear() && month === today.getMonth() + 1
 
   const cells: (number | null)[] = []
   for (let i = 0; i < firstDayOfMonth; i++) cells.push(null)
@@ -40,9 +44,20 @@ export default function CalendarGrid({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <h3 className="font-display font-extrabold text-xl text-on-surface">
-          {year}년 {month}월
-        </h3>
+        <div className="flex items-center gap-2">
+          <h3 className="font-display font-extrabold text-xl text-on-surface">
+            {year}년 {month}월
+          </h3>
+          {!isCurrentMonth && onToday && (
+            <button
+              onClick={onToday}
+              aria-label="오늘로 이동"
+              className="p-1.5 text-secondary hover:bg-secondary-container rounded-full transition-colors"
+            >
+              <Undo2 className="w-4 h-4" />
+            </button>
+          )}
+        </div>
         <button onClick={onNextMonth} className="p-2 hover:bg-surface-container rounded-full text-on-surface-variant">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
