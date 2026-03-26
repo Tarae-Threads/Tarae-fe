@@ -70,6 +70,7 @@ export interface NaverMapHandle {
   zoomOut: () => void;
   locate: () => void;
   panTo: (lat: number, lng: number, zoom?: number) => void;
+  getZoom: () => number;
 }
 
 function loadScript(src: string): Promise<void> {
@@ -136,6 +137,9 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
         map.panTo(position);
       }
     },
+    getZoom() {
+      return mapInstanceRef.current?.getZoom() ?? 10;
+    },
   }));
 
   const renderMarkers = useCallback(
@@ -195,7 +199,6 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
 
         N.Event.addListener(marker, "click", () => {
           onPlaceSelect(place);
-          map.morph(position, 13, { duration: 500 });
         });
 
         markers.push(marker);

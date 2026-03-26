@@ -62,19 +62,35 @@ function HomeContent() {
     }
   }, [selectedRegion])
 
-  // Place select → pan map
-  const handlePlaceSelectWithPan = useCallback((place: Parameters<typeof handlePlaceSelect>[0]) => {
+  // Smart zoom: only zoom in if currently too far out
+  const smartPanTo = useCallback((lat: number, lng: number, minZoom: number) => {
+    const currentZoom = mapRef.current?.getZoom() ?? 10
+    if (currentZoom <= 12) {
+      mapRef.current?.panTo(lat, lng, minZoom)
+    } else {
+      mapRef.current?.panTo(lat, lng)
+    }
+  }, [])
+
+  // Marker click → smart zoom (don't zoom out if already close)
+  const handleMarkerSelect = useCallback((place: Parameters<typeof handlePlaceSelect>[0]) => {
+    handlePlaceSelect(place)
+    smartPanTo(place.lat, place.lng, 13)
+  }, [handlePlaceSelect, smartPanTo])
+
+  // List click → always zoom 14 (user picked from list, show it up close)
+  const handleListSelect = useCallback((place: Parameters<typeof handlePlaceSelect>[0]) => {
     handlePlaceSelect(place)
     mapRef.current?.panTo(place.lat, place.lng, 14)
   }, [handlePlaceSelect])
 
-  // Event card click → pan map to linked place
+  // Event card click → smart zoom, no panel change
   const handleEventPlaceClick = useCallback((placeId: string) => {
     const place = getPlaceById(placeId)
     if (place) {
-      mapRef.current?.panTo(place.lat, place.lng, 14)
+      smartPanTo(place.lat, place.lng, 13)
     }
-  }, [])
+  }, [smartPanTo])
 
   return (
     <main className="h-screen w-full overflow-hidden bg-surface-container-lowest flex">
@@ -89,7 +105,7 @@ function HomeContent() {
         <NaverMap
           ref={mapRef}
           places={filteredPlaces}
-          onPlaceSelect={handlePlaceSelectWithPan}
+          onPlaceSelect={handleMarkerSelect}
           selectedPlaceId={initialPlaceId}
           eventPlaceIds={eventPlaceIds}
         />
@@ -142,7 +158,7 @@ function HomeContent() {
           {!panelOpen && (
             <MobileBottomSheet
               places={filteredPlaces}
-              onPlaceSelect={handlePlaceSelectWithPan}
+              onPlaceSelect={handleListSelect}
               onEventPlaceClick={handleEventPlaceClick}
             />
           )}
@@ -167,7 +183,7 @@ function HomeContent() {
             selectedRegion={selectedRegion}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
-            onPlaceSelect={handlePlaceSelectWithPan}
+            onPlaceSelect={handleListSelect}
             onPanelClose={handlePanelClose}
             onToggleCategory={toggleCategory}
             onClearCategories={clearCategories}
