@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import CategoryBadge from '../ui/CategoryBadge'
+import CategoryBadge from '../components/CategoryBadge'
 
 describe('CategoryBadge', () => {
   it('renders the correct label for yarn_store', () => {

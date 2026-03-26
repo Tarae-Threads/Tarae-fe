@@ -2,14 +2,15 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import type { Place, PlaceCategory } from '@/lib/types'
-import CategoryBadge from '@/components/ui/CategoryBadge'
-import PlaceFilter from '@/components/place/PlaceFilter'
+import Image from 'next/image'
+import type { Place, PlaceCategory } from '../types'
+import CategoryBadge from './CategoryBadge'
+import PlaceFilter from './PlaceFilter'
 import {
   X, Search, Clock, MapPin, ExternalLink,
 } from 'lucide-react'
 
-interface SidePanelProps {
+interface PlaceSidePanelProps {
   places: Place[]
   selectedPlace: Place | null
   panelOpen: boolean
@@ -24,7 +25,7 @@ interface SidePanelProps {
   onClose: () => void
 }
 
-export default function SidePanel({
+export default function PlaceSidePanel({
   places,
   selectedPlace,
   panelOpen,
@@ -37,7 +38,7 @@ export default function SidePanel({
   onCategoryChange,
   onRegionChange,
   onClose,
-}: SidePanelProps) {
+}: PlaceSidePanelProps) {
   const [tab, setTab] = useState<'list' | 'filter'>('list')
 
   return (
@@ -134,11 +135,13 @@ function PlaceList({ places, onSelect }: { places: Place[]; onSelect: (p: Place)
           className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow text-left group transition-all hover:shadow-xl"
         >
           {place.images[0] && (
-            <div className="h-36 overflow-hidden">
-              <img
+            <div className="h-36 overflow-hidden relative">
+              <Image
                 src={place.images[0]}
                 alt={place.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                fill
+                sizes="340px"
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
               />
             </div>
           )}

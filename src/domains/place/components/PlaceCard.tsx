@@ -1,7 +1,8 @@
 'use client'
 
-import type { Place } from '@/lib/types'
-import CategoryBadge from '@/components/ui/CategoryBadge'
+import Image from 'next/image'
+import type { Place } from '../types'
+import CategoryBadge from './CategoryBadge'
 import { Clock } from 'lucide-react'
 
 interface PlaceCardProps {
@@ -18,10 +19,12 @@ export default function PlaceCard({ place, onClick }: PlaceCardProps) {
       {/* Image area */}
       <div className="h-44 relative overflow-hidden">
         {place.images[0] ? (
-          <img
+          <Image
             src={place.images[0]}
             alt={place.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            fill
+            sizes="280px"
+            className="object-cover group-hover:scale-105 transition-transform duration-700"
           />
         ) : (
           <div className="w-full h-full signature-gradient opacity-30" />

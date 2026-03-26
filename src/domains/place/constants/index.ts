@@ -1,27 +1,4 @@
-export type PlaceCategory = 'yarn_store' | 'studio' | 'cafe' | 'popup'
-
-export interface Place {
-  id: string
-  name: string
-  category: PlaceCategory
-  region: string
-  district: string
-  address: string
-  lat: number
-  lng: number
-  hours: string
-  closedDays: string[]
-  note: string
-  tags: string[]
-  brands: string[]
-  links: {
-    instagram?: string
-    website?: string
-    naver_map?: string
-  }
-  images: string[]
-  updatedAt: string
-}
+import type { PlaceCategory } from '../types'
 
 export const CATEGORY_LABEL: Record<PlaceCategory, string> = {
   yarn_store: '실 가게',

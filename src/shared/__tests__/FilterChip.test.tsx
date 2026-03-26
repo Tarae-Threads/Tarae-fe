@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import FilterChip from '../ui/FilterChip'
+import FilterChip from '@/shared/components/ui/FilterChip'
 
 describe('FilterChip', () => {
   it('renders the label', () => {

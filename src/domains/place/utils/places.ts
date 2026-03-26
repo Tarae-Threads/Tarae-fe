@@ -1,7 +1,12 @@
-import placesData from '@/data/places.json'
-import type { Place, PlaceCategory } from './types'
+import placesData from '../data/places.json'
+import type { Place, PlaceCategory } from '../types'
+import { placesArraySchema } from '../schemas'
 
-const places: Place[] = placesData as Place[]
+const parsed = placesArraySchema.safeParse(placesData)
+if (!parsed.success) {
+  console.error('places.json validation failed:', parsed.error.issues)
+}
+const places: Place[] = parsed.success ? parsed.data : (placesData as Place[])
 
 export function getPlaces(): Place[] {
   return places

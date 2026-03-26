@@ -1,10 +1,10 @@
 'use client'
 
-import type { PlaceCategory } from '@/lib/types'
-import PlaceFilter from '@/components/place/PlaceFilter'
+import type { PlaceCategory } from '../types'
+import PlaceFilter from './PlaceFilter'
 import { Search, SlidersHorizontal } from 'lucide-react'
 
-interface SearchBarProps {
+interface PlaceSearchBarProps {
   searchQuery: string
   onSearchChange: (query: string) => void
   filterOpen: boolean
@@ -15,7 +15,7 @@ interface SearchBarProps {
   onRegionChange: (region: string) => void
 }
 
-export default function SearchBar({
+export default function PlaceSearchBar({
   searchQuery,
   onSearchChange,
   filterOpen,
@@ -24,7 +24,7 @@ export default function SearchBar({
   selectedRegion,
   onCategoryChange,
   onRegionChange,
-}: SearchBarProps) {
+}: PlaceSearchBarProps) {
   return (
     <div className="relative">
       <div className="flex items-center bg-surface/80 backdrop-blur-2xl h-14 rounded-2xl editorial-shadow">

@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getPlaceById, getPlaces } from '@/lib/places'
-import { CATEGORY_LABEL } from '@/lib/types'
-import CategoryBadge from '@/components/ui/CategoryBadge'
+import { getPlaceById, getPlaces } from '@/domains/place/utils/places'
+import { CATEGORY_LABEL } from '@/domains/place/constants'
+import CategoryBadge from '@/domains/place/components/CategoryBadge'
 import type { Metadata } from 'next'
 
 interface PageProps {

@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import type { Place } from '@/lib/types'
-import CategoryBadge from '@/components/ui/CategoryBadge'
+import type { Place } from '../types'
+import CategoryBadge from './CategoryBadge'
 import { X, Clock, MapPin, ExternalLink } from 'lucide-react'
 
 interface PlacePanelProps {

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useState,
   useEffect,
   useRef,
   useCallback,
@@ -8,7 +9,7 @@ import {
   forwardRef,
 } from "react";
 import Script from "next/script";
-import type { Place } from "@/lib/types";
+import type { Place } from "../types";
 
 /* ---- Naver Maps 최소 타입 정의 ---- */
 interface NaverLatLng {
@@ -99,6 +100,7 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
     null,
   );
   const initializedRef = useRef(false);
+  const [mapError, setMapError] = useState<string | null>(null);
 
   useImperativeHandle(ref, () => ({
     zoomIn() {
@@ -233,26 +235,33 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
     if (initializedRef.current) return;
     if (!mapRef.current || !window.naver?.maps) return;
 
-    // 네이버 맵이 로드된 후에 MarkerClustering.js 로드
-    await loadScript("/js/MarkerClustering.js");
-    if (!window.MarkerClustering) return;
+    try {
+      // 네이버 맵이 로드된 후에 MarkerClustering.js 로드
+      await loadScript("/js/MarkerClustering.js");
+      if (!window.MarkerClustering) {
+        setMapError("마커 클러스터링 스크립트를 불러올 수 없습니다.");
+        return;
+      }
 
-    initializedRef.current = true;
+      initializedRef.current = true;
 
-    const map = new window.naver.maps.Map(mapRef.current, {
-      center: new window.naver.maps.LatLng(37.5665, 126.978),
-      zoom: 7,
-      zoomControl: false,
-      mapTypeControl: false,
-      scaleControl: false,
-      logoControl: true,
-      logoControlOptions: {
-        position: window.naver.maps.Position.BOTTOM_LEFT,
-      },
-    });
+      const map = new window.naver.maps.Map(mapRef.current, {
+        center: new window.naver.maps.LatLng(37.5665, 126.978),
+        zoom: 7,
+        zoomControl: false,
+        mapTypeControl: false,
+        scaleControl: false,
+        logoControl: true,
+        logoControlOptions: {
+          position: window.naver.maps.Position.BOTTOM_LEFT,
+        },
+      });
 
-    mapInstanceRef.current = map;
-    renderMarkers(map);
+      mapInstanceRef.current = map;
+      renderMarkers(map);
+    } catch {
+      setMapError("지도를 불러오는 중 문제가 발생했습니다.");
+    }
   }, [renderMarkers]);
 
   useEffect(() => {
@@ -271,12 +280,29 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
     }
   }, [selectedPlaceId, places]);
 
+  if (mapError) {
+    return (
+      <div className="w-full h-full min-h-[400px] flex items-center justify-center bg-surface-container-low">
+        <div className="text-center px-6">
+          <p className="text-on-surface-variant text-sm mb-4">{mapError}</p>
+          <button
+            onClick={() => { setMapError(null); initializedRef.current = false; initMap(); }}
+            className="signature-gradient text-white font-bold py-2 px-6 rounded-xl text-sm active:scale-95 transition-transform"
+          >
+            다시 시도
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Script
         src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID}`}
         strategy="afterInteractive"
         onLoad={initMap}
+        onError={() => setMapError("네이버 지도 API를 불러올 수 없습니다. 네트워크를 확인해 주세요.")}
       />
       <div ref={mapRef} className="w-full h-full min-h-[400px]" />
     </>

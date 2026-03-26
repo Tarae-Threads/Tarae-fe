@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { getPlaces } from '@/lib/places'
+import { getPlaces } from '@/domains/place/utils/places'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const places = getPlaces()

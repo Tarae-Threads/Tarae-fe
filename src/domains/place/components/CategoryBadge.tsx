@@ -1,5 +1,5 @@
-import type { PlaceCategory } from '@/lib/types'
-import { CATEGORY_LABEL, CATEGORY_COLOR } from '@/lib/types'
+import type { PlaceCategory } from '../types'
+import { CATEGORY_LABEL, CATEGORY_COLOR } from '../constants'
 
 interface CategoryBadgeProps {
   category: PlaceCategory

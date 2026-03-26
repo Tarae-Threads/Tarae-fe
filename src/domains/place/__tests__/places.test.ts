@@ -6,7 +6,7 @@ import {
   getPlacesByCategory,
   getRegions,
   filterPlaces,
-} from '../places'
+} from '../utils/places'
 
 describe('getPlaces', () => {
   it('returns all places as an array', () => {

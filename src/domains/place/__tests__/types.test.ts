@@ -4,7 +4,7 @@ import {
   CATEGORY_COLOR,
   CATEGORY_BG,
   REGION_ORDER,
-} from '../types'
+} from '../constants'
 import type { PlaceCategory } from '../types'
 
 const ALL_CATEGORIES: PlaceCategory[] = ['yarn_store', 'studio', 'cafe', 'popup']

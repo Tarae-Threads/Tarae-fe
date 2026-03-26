@@ -1,8 +1,8 @@
 'use client'
 
-import type { PlaceCategory } from '@/lib/types'
-import { CATEGORY_LABEL, REGION_ORDER } from '@/lib/types'
-import FilterChip from '@/components/ui/FilterChip'
+import type { PlaceCategory } from '../types'
+import { CATEGORY_LABEL, REGION_ORDER } from '../constants'
+import FilterChip from '@/shared/components/ui/FilterChip'
 
 interface PlaceFilterProps {
   selectedCategory: PlaceCategory | 'all'
