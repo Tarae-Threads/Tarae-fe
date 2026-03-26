@@ -4,14 +4,23 @@ import { useState, useMemo, useCallback } from "react";
 import { getEvents, filterEvents, getDatesWithEvents } from "../utils/events";
 import type { EventType } from "../types";
 
+interface YearMonth {
+  year: number;
+  month: number;
+}
+
 export function useEventExplorer() {
   const allEvents = getEvents();
   const today = new Date();
 
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
+  const [yearMonth, setYearMonth] = useState<YearMonth>({
+    year: today.getFullYear(),
+    month: today.getMonth() + 1,
+  });
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTypes, setSelectedTypes] = useState<Set<EventType>>(new Set());
+
+  const { year: currentYear, month: currentMonth } = yearMonth;
 
   const datesWithEvents = useMemo(
     () => getDatesWithEvents(currentYear, currentMonth),
@@ -42,24 +51,20 @@ export function useEventExplorer() {
   }, []);
 
   const nextMonth = useCallback(() => {
-    setCurrentMonth((prev) => {
-      if (prev === 12) {
-        setCurrentYear((y) => y + 1);
-        return 1;
-      }
-      return prev + 1;
-    });
-  }, [setCurrentYear]);
+    setYearMonth((prev) =>
+      prev.month === 12
+        ? { year: prev.year + 1, month: 1 }
+        : { year: prev.year, month: prev.month + 1 },
+    );
+  }, []);
 
   const prevMonth = useCallback(() => {
-    setCurrentMonth((prev) => {
-      if (prev === 1) {
-        setCurrentYear((y) => y - 1);
-        return 12;
-      }
-      return prev - 1;
-    });
-  }, [setCurrentYear]);
+    setYearMonth((prev) =>
+      prev.month === 1
+        ? { year: prev.year - 1, month: 12 }
+        : { year: prev.year, month: prev.month - 1 },
+    );
+  }, []);
 
   const selectDate = useCallback((date: string | null) => {
     setSelectedDate(date);
@@ -67,11 +72,10 @@ export function useEventExplorer() {
 
   const goToday = useCallback(() => {
     const now = new Date();
-    setCurrentYear(now.getFullYear());
-    setCurrentMonth(now.getMonth() + 1);
+    setYearMonth({ year: now.getFullYear(), month: now.getMonth() + 1 });
     const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     setSelectedDate(todayStr);
-  }, [setCurrentYear, setCurrentMonth, setSelectedDate]);
+  }, []);
 
   return {
     currentYear,

@@ -20,7 +20,7 @@ describe('FilterChip', () => {
       <FilterChip label="서울" selected={true} onClick={() => {}} />
     )
     const button = container.querySelector('button')
-    expect(button?.className).toContain('signature-gradient')
+    expect(button?.className).toContain('bg-secondary')
   })
 
   it('applies unselected styles when not selected', () => {
