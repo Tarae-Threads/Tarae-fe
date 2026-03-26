@@ -50,15 +50,15 @@ export default function EventCard({ event, onPlaceClick }: Props) {
         )}
       </div>
 
-      <h3 className="font-display font-bold text-base text-on-surface mb-2 group-hover:text-primary transition-colors">
+      <h3 className="font-display font-bold text-body-lg text-on-surface mb-2 group-hover:text-primary transition-colors">
         {event.title}
       </h3>
 
-      <p className="text-on-surface-variant text-sm line-clamp-2 mb-3">
+      <p className="text-on-surface-variant text-body-sm line-clamp-2 mb-3">
         {event.description}
       </p>
 
-      <div className="flex flex-wrap gap-3 text-xs text-outline">
+      <div className="flex flex-wrap gap-3 text-label-md text-outline">
         <span className="flex items-center gap-1">
           <Calendar className="w-3.5 h-3.5" />
           {formatDateRange(event.startDate, event.endDate)}
@@ -86,7 +86,7 @@ export default function EventCard({ event, onPlaceClick }: Props) {
         <Link
           href={`/events/${event.id}`}
           onClick={e => e.stopPropagation()}
-          className="inline-flex items-center gap-1 text-xs text-primary font-bold hover:underline decoration-2 underline-offset-4"
+          className="inline-flex items-center gap-1 text-label-md text-primary font-bold hover:underline decoration-2 underline-offset-4"
         >
           <ExternalLink className="w-3 h-3" />
           상세보기

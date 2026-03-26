@@ -45,7 +45,7 @@ export default function CalendarGrid({
           </svg>
         </button>
         <div className="flex items-center gap-2">
-          <h3 className="font-display font-extrabold text-xl text-on-surface">
+          <h3 className="font-display font-extrabold text-title-lg text-on-surface">
             {year}년 {month}월
           </h3>
           {!isCurrentMonth && onToday && (
@@ -96,7 +96,7 @@ export default function CalendarGrid({
                     : 'hover:bg-surface-container text-on-surface'
               }`}
             >
-              <span className="text-sm font-bold">{day}</span>
+              <span className="text-label-lg font-bold">{day}</span>
               {eventTypes && eventTypes.length > 0 && (
                 <div className="flex gap-0.5 mt-0.5">
                   {eventTypes.slice(0, 3).map(type => (

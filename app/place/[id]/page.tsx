@@ -95,11 +95,11 @@ export default async function PlaceDetailPage({ params }: PageProps) {
       <header className="fixed top-0 w-full z-50 glass flex justify-between items-center px-6 py-4">
         <Link
           href="/"
-          className="text-primary font-bold text-sm uppercase tracking-wider hover:underline decoration-2 underline-offset-4"
+          className="text-primary font-bold text-label-lg uppercase tracking-wider hover:underline decoration-2 underline-offset-4"
         >
           ← 지도로
         </Link>
-        <h1 className="font-display font-extrabold tracking-tighter text-2xl text-primary">
+        <h1 className="font-display font-extrabold tracking-tighter text-headline-sm text-primary">
           타래
         </h1>
         <div className="w-16" />
@@ -155,7 +155,7 @@ export default async function PlaceDetailPage({ params }: PageProps) {
             {place.tags.map(tag => (
               <span
                 key={tag}
-                className="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-medium"
+                className="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-label-lg font-medium"
               >
                 {tag}
               </span>
@@ -171,7 +171,7 @@ export default async function PlaceDetailPage({ params }: PageProps) {
                 href={place.links.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary font-bold text-sm tracking-wide uppercase hover:underline decoration-2 underline-offset-4"
+                className="text-primary font-bold text-label-lg tracking-wide uppercase hover:underline decoration-2 underline-offset-4"
               >
                 Instagram
               </a>
@@ -181,7 +181,7 @@ export default async function PlaceDetailPage({ params }: PageProps) {
                 href={place.links.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary font-bold text-sm tracking-wide uppercase hover:underline decoration-2 underline-offset-4"
+                className="text-primary font-bold text-label-lg tracking-wide uppercase hover:underline decoration-2 underline-offset-4"
               >
                 웹사이트
               </a>
@@ -195,7 +195,7 @@ export default async function PlaceDetailPage({ params }: PageProps) {
           if (placeEvents.length === 0) return null
           return (
             <section className="mb-8">
-              <h3 className="font-display font-bold text-lg text-on-surface mb-4">예정된 일정</h3>
+              <h3 className="font-display font-bold text-title-sm text-on-surface mb-4">예정된 일정</h3>
               <div className="space-y-3">
                 {placeEvents.map(event => (
                   <Link
@@ -215,8 +215,8 @@ export default async function PlaceDetailPage({ params }: PageProps) {
                         {event.startDate !== event.endDate && ` — ${event.endDate.slice(5).replace('-', '.')}`}
                       </span>
                     </div>
-                    <h4 className="font-display font-bold text-sm text-on-surface">{event.title}</h4>
-                    <p className="text-on-surface-variant text-xs line-clamp-1 mt-1">{event.description}</p>
+                    <h4 className="font-display font-bold text-label-lg text-on-surface">{event.title}</h4>
+                    <p className="text-on-surface-variant text-label-md line-clamp-1 mt-1">{event.description}</p>
                   </Link>
                 ))}
               </div>

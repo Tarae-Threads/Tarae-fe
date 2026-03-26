@@ -102,7 +102,7 @@ export default function SubmitForm({ open, onClose }: Props) {
     }, 1500)
   }
 
-  const inputClass = 'w-full bg-surface-container h-11 px-4 rounded-xl text-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30'
+  const inputClass = 'w-full bg-surface-container h-11 px-4 rounded-xl text-label-lg text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30'
 
   return (
     <>
@@ -115,7 +115,7 @@ export default function SubmitForm({ open, onClose }: Props) {
         <div className="bg-surface-container-low rounded-3xl editorial-shadow p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-display font-extrabold text-xl text-on-surface">제보하기</h3>
+            <h3 className="font-display font-extrabold text-title-lg text-on-surface">제보하기</h3>
             <button onClick={onClose} className="p-1.5 hover:bg-surface-container rounded-full">
               <X className="w-5 h-5 text-outline" />
             </button>
@@ -126,7 +126,7 @@ export default function SubmitForm({ open, onClose }: Props) {
             <button
               type="button"
               onClick={() => setTab('place')}
-              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-full transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-2 text-label-lg font-bold rounded-full transition-all ${
                 tab === 'place'
                   ? 'bg-secondary text-secondary-foreground'
                   : 'bg-surface-container text-on-surface-variant'
@@ -138,7 +138,7 @@ export default function SubmitForm({ open, onClose }: Props) {
             <button
               type="button"
               onClick={() => setTab('event')}
-              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-full transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-2 text-label-lg font-bold rounded-full transition-all ${
                 tab === 'event'
                   ? 'bg-secondary text-secondary-foreground'
                   : 'bg-surface-container text-on-surface-variant'
@@ -151,8 +151,8 @@ export default function SubmitForm({ open, onClose }: Props) {
 
           {submitted ? (
             <div className="text-center py-8">
-              <p className="font-display font-bold text-lg text-primary mb-2">제보 완료!</p>
-              <p className="text-sm text-on-surface-variant">제보 내용은 이 기기에 저장됩니다.</p>
+              <p className="font-display font-bold text-title-sm text-primary mb-2">제보 완료!</p>
+              <p className="text-body-sm text-on-surface-variant">제보 내용은 이 기기에 저장됩니다.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -174,7 +174,7 @@ export default function SubmitForm({ open, onClose }: Props) {
                           key={cat}
                           type="button"
                           onClick={() => toggleCat(cat)}
-                          className="px-3 py-1.5 text-xs font-bold rounded-full transition-all border-2"
+                          className="px-3 py-1.5 text-label-md font-bold rounded-full transition-all border-2"
                           style={categories.has(cat)
                             ? { backgroundColor: CATEGORY_BG[cat], borderColor: CATEGORY_COLOR[cat], color: CATEGORY_COLOR[cat] }
                             : { backgroundColor: CATEGORY_BG[cat], borderColor: 'transparent', color: CATEGORY_COLOR[cat] }
@@ -187,7 +187,7 @@ export default function SubmitForm({ open, onClose }: Props) {
                   </div>
                   <div>
                     <label className="text-label-md font-bold text-on-surface-variant mb-1 block">설명</label>
-                    <textarea value={placeDesc} onChange={e => setPlaceDesc(e.target.value)} placeholder="추가 정보 (운영시간, 특징 등)" rows={3} className="w-full bg-surface-container px-4 py-3 rounded-xl text-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
+                    <textarea value={placeDesc} onChange={e => setPlaceDesc(e.target.value)} placeholder="추가 정보 (운영시간, 특징 등)" rows={3} className="w-full bg-surface-container px-4 py-3 rounded-xl text-label-lg text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
                   </div>
                 </>
               ) : (
@@ -204,7 +204,7 @@ export default function SubmitForm({ open, onClose }: Props) {
                           key={type}
                           type="button"
                           onClick={() => selectEventType(type)}
-                          className="px-3 py-1.5 text-xs font-bold rounded-full transition-all border-2"
+                          className="px-3 py-1.5 text-label-md font-bold rounded-full transition-all border-2"
                           style={eventType === type
                             ? { backgroundColor: EVENT_TYPE_BG[type], borderColor: EVENT_TYPE_COLOR[type], color: EVENT_TYPE_COLOR[type] }
                             : { backgroundColor: EVENT_TYPE_BG[type], borderColor: 'transparent', color: EVENT_TYPE_COLOR[type] }
@@ -231,7 +231,7 @@ export default function SubmitForm({ open, onClose }: Props) {
                   </div>
                   <div>
                     <label className="text-label-md font-bold text-on-surface-variant mb-1 block">설명</label>
-                    <textarea value={eventDesc} onChange={e => setEventDesc(e.target.value)} placeholder="이벤트 상세 내용" rows={3} className="w-full bg-surface-container px-4 py-3 rounded-xl text-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
+                    <textarea value={eventDesc} onChange={e => setEventDesc(e.target.value)} placeholder="이벤트 상세 내용" rows={3} className="w-full bg-surface-container px-4 py-3 rounded-xl text-label-lg text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
                   </div>
                 </>
               )}

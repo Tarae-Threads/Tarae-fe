@@ -46,7 +46,7 @@ export default function EventSidePanelContent({ onPlaceClick }: Props) {
 
       <div>
         <div className="flex items-center justify-between mb-2">
-          <h3 className="font-display font-bold text-sm text-on-surface">
+          <h3 className="font-display font-bold text-label-lg text-on-surface">
             {selectedDate
               ? `${selectedDate.slice(5).replace('-', '월 ')}일`
               : '전체 일정'}

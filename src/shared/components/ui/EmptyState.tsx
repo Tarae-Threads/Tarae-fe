@@ -16,8 +16,8 @@ export default function EmptyState({
       <div className="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-5">
         {icon || <Inbox className="w-8 h-8 text-outline" />}
       </div>
-      <h3 className="font-display font-bold text-lg text-on-surface mb-2">{title}</h3>
-      <p className="text-sm text-on-surface-variant max-w-[280px]">{description}</p>
+      <h3 className="font-display font-bold text-title-sm text-on-surface mb-2">{title}</h3>
+      <p className="text-body-sm text-on-surface-variant max-w-[280px]">{description}</p>
     </div>
   )
 }

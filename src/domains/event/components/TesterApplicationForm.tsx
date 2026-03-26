@@ -42,8 +42,8 @@ export default function TesterApplicationForm({ recruitmentId }: Props) {
   if (submitted) {
     return (
       <div className="bg-secondary-container rounded-2xl p-6 text-center mb-6">
-        <p className="font-display font-bold text-lg text-on-secondary-container mb-1">신청 완료!</p>
-        <p className="text-sm text-on-secondary-container/80">모집자의 연락을 기다려주세요.</p>
+        <p className="font-display font-bold text-title-sm text-on-secondary-container mb-1">신청 완료!</p>
+        <p className="text-body-sm text-on-secondary-container/80">모집자의 연락을 기다려주세요.</p>
       </div>
     )
   }
@@ -67,7 +67,7 @@ export default function TesterApplicationForm({ recruitmentId }: Props) {
               value={nickname}
               onChange={e => setNickname(e.target.value)}
               required
-              className="w-full bg-surface h-11 px-4 rounded-xl text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full bg-surface h-11 px-4 rounded-xl text-label-lg text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
           <div>
@@ -78,7 +78,7 @@ export default function TesterApplicationForm({ recruitmentId }: Props) {
               onChange={e => setContact(e.target.value)}
               required
               placeholder="인스타 ID, 이메일 등"
-              className="w-full bg-surface h-11 px-4 rounded-xl text-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full bg-surface h-11 px-4 rounded-xl text-label-lg text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
           <div>
@@ -89,7 +89,7 @@ export default function TesterApplicationForm({ recruitmentId }: Props) {
               required
               rows={2}
               placeholder="뜨개 경력, 주로 만드는 작품 등"
-              className="w-full bg-surface px-4 py-3 rounded-xl text-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+              className="w-full bg-surface px-4 py-3 rounded-xl text-label-lg text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
             />
           </div>
           <div>
@@ -99,7 +99,7 @@ export default function TesterApplicationForm({ recruitmentId }: Props) {
               onChange={e => setReason(e.target.value)}
               required
               rows={2}
-              className="w-full bg-surface px-4 py-3 rounded-xl text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+              className="w-full bg-surface px-4 py-3 rounded-xl text-label-lg text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
             />
           </div>
           <div>
@@ -109,7 +109,7 @@ export default function TesterApplicationForm({ recruitmentId }: Props) {
               value={portfolio}
               onChange={e => setPortfolio(e.target.value)}
               placeholder="인스타그램, 블로그 URL 등"
-              className="w-full bg-surface h-11 px-4 rounded-xl text-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full bg-surface h-11 px-4 rounded-xl text-label-lg text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
           <button

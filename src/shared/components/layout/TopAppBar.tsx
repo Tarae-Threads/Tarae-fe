@@ -11,7 +11,7 @@ export default function TopAppBar() {
       >
         <Bell className="w-5 h-5 text-primary" />
       </button>
-      <h1 className="font-display font-extrabold tracking-tighter text-2xl text-primary">
+      <h1 className="font-display font-extrabold tracking-tighter text-headline-sm text-primary">
         타래
       </h1>
       <button

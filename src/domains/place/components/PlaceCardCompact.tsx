@@ -35,13 +35,13 @@ export default function PlaceCardCompact({ place, onClick }: Props) {
       {/* Info */}
       <div className="flex-1 py-3 pr-4 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <h3 className="font-display font-bold text-base text-on-surface truncate">
+          <h3 className="font-display font-bold text-body-lg text-on-surface truncate">
             {place.name}
           </h3>
           <CategoryBadge category={place.category} />
           <StatusBadge status={place.status} />
         </div>
-        <p className="text-on-surface-variant text-sm line-clamp-1 mb-1">
+        <p className="text-on-surface-variant text-body-sm line-clamp-1 mb-1">
           {place.address}
         </p>
         {place.tags.length > 0 && (

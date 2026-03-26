@@ -42,10 +42,10 @@ export default async function EventDetailPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-surface">
       <header className="fixed top-0 w-full z-50 glass flex justify-between items-center px-6 py-4">
-        <Link href="/" className="text-primary font-bold text-sm uppercase tracking-wider hover:underline decoration-2 underline-offset-4">
+        <Link href="/" className="text-primary font-bold text-label-lg uppercase tracking-wider hover:underline decoration-2 underline-offset-4">
           ← 홈
         </Link>
-        <h1 className="font-display font-extrabold tracking-tighter text-2xl text-primary">타래</h1>
+        <h1 className="font-display font-extrabold tracking-tighter text-headline-sm text-primary">타래</h1>
         <div className="w-16" />
       </header>
 
@@ -76,20 +76,20 @@ export default async function EventDetailPage({ params }: PageProps) {
 
         {/* Info card */}
         <section className="bg-surface-container rounded-2xl p-6 mb-6 editorial-shadow space-y-4">
-          <div className="flex items-center gap-3 text-sm">
+          <div className="flex items-center gap-3 text-body-sm">
             <Calendar className="w-5 h-5 text-outline" />
             <span className="text-on-surface-variant">
               {event.startDate} — {event.endDate}
             </span>
           </div>
           {event.location && !linkedPlace && (
-            <div className="flex items-center gap-3 text-sm">
+            <div className="flex items-center gap-3 text-body-sm">
               <MapPin className="w-5 h-5 text-outline" />
               <span className="text-on-surface-variant">{event.location}</span>
             </div>
           )}
           {isRecruitment && (
-            <div className="flex items-center gap-3 text-sm">
+            <div className="flex items-center gap-3 text-body-sm">
               <Users className="w-5 h-5 text-outline" />
               <span className="text-on-surface-variant">
                 {event.currentParticipants}/{event.maxParticipants}명 신청
@@ -103,9 +103,9 @@ export default async function EventDetailPage({ params }: PageProps) {
           <section className="bg-secondary-container/40 rounded-2xl p-6 mb-6 editorial-shadow">
             <div className="flex items-center gap-2 mb-3">
               <MapPin className="w-5 h-5 text-primary" />
-              <h3 className="font-display font-bold text-lg text-on-surface">장소 정보</h3>
+              <h3 className="font-display font-bold text-title-sm text-on-surface">장소 정보</h3>
             </div>
-            <div className="space-y-2.5 text-sm mb-4">
+            <div className="space-y-2.5 text-body-sm mb-4">
               <div className="flex gap-3">
                 <span className="font-bold text-on-surface min-w-[56px]">장소명</span>
                 <span className="text-on-surface-variant">{linkedPlace.name}</span>
@@ -125,7 +125,7 @@ export default async function EventDetailPage({ params }: PageProps) {
             </div>
             <Link
               href={`/?placeId=${linkedPlace.id}`}
-              className="inline-flex items-center gap-2 bg-primary text-white font-bold py-2.5 px-5 rounded-xl text-sm shadow-md shadow-primary/20"
+              className="inline-flex items-center gap-2 bg-primary text-white font-bold py-2.5 px-5 rounded-xl text-label-lg shadow-md shadow-primary/20"
             >
               <Navigation className="w-4 h-4" />
               지도에서 보기
@@ -137,8 +137,8 @@ export default async function EventDetailPage({ params }: PageProps) {
         {isRecruitment && (
           <>
             <section className="bg-primary-fixed/30 rounded-2xl p-6 mb-6 space-y-4">
-              <h3 className="font-display font-bold text-lg text-on-surface">모집 정보</h3>
-              <div className="space-y-3 text-sm">
+              <h3 className="font-display font-bold text-title-sm text-on-surface">모집 정보</h3>
+              <div className="space-y-3 text-body-sm">
                 <div className="flex gap-4">
                   <span className="font-bold text-on-surface min-w-[80px]">도안명</span>
                   <span className="text-on-surface-variant">{event.patternName}</span>
@@ -182,7 +182,7 @@ export default async function EventDetailPage({ params }: PageProps) {
             href={event.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-primary font-bold text-sm hover:underline decoration-2 underline-offset-4 mb-6"
+            className="inline-flex items-center gap-2 text-primary font-bold text-label-lg hover:underline decoration-2 underline-offset-4 mb-6"
           >
             <ExternalLink className="w-4 h-4" />
             자세히 보기

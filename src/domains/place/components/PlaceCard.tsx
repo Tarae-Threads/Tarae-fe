@@ -38,16 +38,16 @@ export default function PlaceCard({ place, onClick }: PlaceCardProps) {
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="font-display font-bold text-lg text-on-surface mb-1">
+        <h3 className="font-display font-bold text-title-sm text-on-surface mb-1">
           {place.name}
         </h3>
 
-        <p className="text-on-surface-variant text-sm line-clamp-1 mb-2 leading-relaxed">
+        <p className="text-on-surface-variant text-body-sm line-clamp-1 mb-2 leading-relaxed">
           {place.address}
         </p>
 
         {place.note && (
-          <p className="text-on-surface-variant text-xs line-clamp-1 mb-3">
+          <p className="text-on-surface-variant text-label-md line-clamp-1 mb-3">
             {place.note}
           </p>
         )}

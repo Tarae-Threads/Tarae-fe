@@ -326,10 +326,10 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
     return (
       <div className="w-full h-full min-h-[400px] flex items-center justify-center bg-surface-container-low">
         <div className="text-center px-6">
-          <p className="text-on-surface-variant text-sm mb-4">{mapError}</p>
+          <p className="text-on-surface-variant text-body-sm mb-4">{mapError}</p>
           <button
             onClick={() => { setMapError(null); initializedRef.current = false; initMap(); }}
-            className="signature-gradient text-white font-bold py-2 px-6 rounded-xl text-sm active:scale-95 transition-transform"
+            className="signature-gradient text-white font-bold py-2 px-6 rounded-xl text-label-lg active:scale-95 transition-transform"
           >
             다시 시도
           </button>

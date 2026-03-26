@@ -37,13 +37,13 @@ export default function PlacePanel({ place, open, onClose }: PlacePanelProps) {
             <div className="flex items-start justify-between mb-6">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h2 className="font-display text-2xl font-extrabold tracking-tight text-on-surface">
+                  <h2 className="font-display text-headline-sm font-extrabold tracking-tight text-on-surface">
                     {place.name}
                   </h2>
                   <CategoryBadge category={place.category} size="md" />
                   <StatusBadge status={place.status} />
                 </div>
-                <p className="text-on-surface-variant text-sm flex items-center gap-1.5">
+                <p className="text-on-surface-variant text-body-sm flex items-center gap-1.5">
                   <MapPin className="w-4 h-4" />
                   {place.address}
                 </p>
@@ -61,11 +61,11 @@ export default function PlacePanel({ place, open, onClose }: PlacePanelProps) {
             <div className="space-y-4 mb-6">
               <div className="flex items-center gap-3 text-on-surface-variant">
                 <Clock className="w-5 h-5 text-outline" />
-                <span className="text-sm">{place.hours}</span>
+                <span className="text-body-sm">{place.hours}</span>
               </div>
 
               {place.closedDays.length > 0 && (
-                <p className="text-sm text-on-surface-variant pl-8">
+                <p className="text-body-sm text-on-surface-variant pl-8">
                   휴무: {place.closedDays.join(', ')}
                 </p>
               )}
@@ -77,7 +77,7 @@ export default function PlacePanel({ place, open, onClose }: PlacePanelProps) {
                 {place.tags.map(tag => (
                   <span
                     key={tag}
-                    className="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full text-xs font-medium"
+                    className="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full text-label-md font-medium"
                   >
                     {tag}
                   </span>
@@ -91,7 +91,7 @@ export default function PlacePanel({ place, open, onClose }: PlacePanelProps) {
                 href={place.links.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm text-primary font-medium hover:underline decoration-2 underline-offset-4 mb-6"
+                className="inline-flex items-center gap-1.5 text-label-lg text-primary font-medium hover:underline decoration-2 underline-offset-4 mb-6"
               >
                 <ExternalLink className="w-4 h-4" />
                 Instagram

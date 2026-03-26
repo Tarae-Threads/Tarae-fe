@@ -17,12 +17,12 @@ export default function ErrorPage({
     <div className="min-h-screen bg-surface flex items-center justify-center px-6">
       <div className="text-center max-w-md">
         <div className="w-16 h-16 signature-gradient rounded-full flex items-center justify-center mx-auto mb-6">
-          <span className="text-white text-2xl font-bold">!</span>
+          <span className="text-white text-headline-sm font-bold">!</span>
         </div>
-        <h2 className="font-display font-extrabold text-2xl text-on-surface mb-3">
+        <h2 className="font-display font-extrabold text-headline-sm text-on-surface mb-3">
           문제가 발생했습니다
         </h2>
-        <p className="text-on-surface-variant text-sm mb-8 leading-relaxed">
+        <p className="text-on-surface-variant text-body-sm mb-8 leading-relaxed">
           페이지를 불러오는 중 오류가 발생했습니다.
           <br />
           잠시 후 다시 시도해 주세요.

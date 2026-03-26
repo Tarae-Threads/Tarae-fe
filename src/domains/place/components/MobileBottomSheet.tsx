@@ -191,7 +191,7 @@ export default function MobileBottomSheet({
         <div className="flex gap-2 mb-3">
           <button
             onClick={() => handleTabChange("places")}
-            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-full transition-all ${
+            className={`flex items-center gap-1.5 px-4 py-2 text-label-lg font-bold rounded-full transition-all ${
               mainTab === "places"
                 ? "signature-gradient text-white shadow-md shadow-primary/20"
                 : "bg-surface-container text-on-surface-variant"
@@ -202,7 +202,7 @@ export default function MobileBottomSheet({
           </button>
           <button
             onClick={() => handleTabChange("events")}
-            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-full transition-all ${
+            className={`flex items-center gap-1.5 px-4 py-2 text-label-lg font-bold rounded-full transition-all ${
               mainTab === "events"
                 ? "signature-gradient text-white shadow-md shadow-primary/20"
                 : "bg-surface-container text-on-surface-variant"
@@ -216,10 +216,10 @@ export default function MobileBottomSheet({
         {mainTab === "places" && (
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="font-display text-lg font-extrabold tracking-tight text-on-surface">
+              <h2 className="font-display text-title-sm font-extrabold tracking-tight text-on-surface">
                 뜨개 장소
               </h2>
-              <p className="text-xs text-outline font-medium">
+              <p className="text-label-md text-outline font-medium">
                 {places.length}개 장소
               </p>
             </div>
