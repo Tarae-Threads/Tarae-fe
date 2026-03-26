@@ -28,10 +28,18 @@ describe('getPlaces', () => {
   })
 
   it('each place has valid category', () => {
-    const validCategories = ['yarn_store', 'studio', 'cafe', 'popup']
+    const validCategories = ['yarn_store', 'studio', 'cafe', 'dye_shop', 'craft_supply']
     const places = getPlaces()
     for (const place of places) {
       expect(validCategories).toContain(place.category)
+    }
+  })
+
+  it('each place has valid status', () => {
+    const validStatuses = ['open', 'relocated', 'closed', 'unverified']
+    const places = getPlaces()
+    for (const place of places) {
+      expect(validStatuses).toContain(place.status)
     }
   })
 
@@ -106,12 +114,12 @@ describe('filterPlaces', () => {
   const allPlaces = getPlaces()
 
   it('returns all places when both filters are "all"', () => {
-    const result = filterPlaces(allPlaces, 'all', 'all')
+    const result = filterPlaces(allPlaces, 'all', 'all', '')
     expect(result).toEqual(allPlaces)
   })
 
   it('filters by category only', () => {
-    const result = filterPlaces(allPlaces, 'studio', 'all')
+    const result = filterPlaces(allPlaces, new Set(['studio'] as const), 'all')
     expect(result.length).toBeGreaterThan(0)
     expect(result.length).toBeLessThanOrEqual(allPlaces.length)
     for (const place of result) {
@@ -121,7 +129,7 @@ describe('filterPlaces', () => {
 
   it('filters by region only', () => {
     const region = allPlaces[0].region
-    const result = filterPlaces(allPlaces, 'all', region)
+    const result = filterPlaces(allPlaces, 'all', region, '')
     expect(result.length).toBeGreaterThan(0)
     for (const place of result) {
       expect(place.region).toBe(region)
@@ -131,7 +139,7 @@ describe('filterPlaces', () => {
   it('filters by both category and region', () => {
     const region = allPlaces[0].region
     const category = allPlaces[0].category
-    const result = filterPlaces(allPlaces, category, region)
+    const result = filterPlaces(allPlaces, new Set([category]), region)
     for (const place of result) {
       expect(place.category).toBe(category)
       expect(place.region).toBe(region)
@@ -139,7 +147,7 @@ describe('filterPlaces', () => {
   })
 
   it('returns empty array when no match', () => {
-    const result = filterPlaces(allPlaces, 'popup', '존재하지않는지역')
+    const result = filterPlaces(allPlaces, new Set(['dye_shop'] as const), '존재하지않는지역')
     expect(result).toEqual([])
   })
 
@@ -169,7 +177,7 @@ describe('filterPlaces', () => {
 
   it('combines search query with category and region filters', () => {
     const place = allPlaces[0]
-    const result = filterPlaces(allPlaces, place.category, place.region, place.name)
+    const result = filterPlaces(allPlaces, new Set([place.category]), place.region, place.name)
     expect(result.length).toBeGreaterThanOrEqual(1)
     expect(result.find(p => p.id === place.id)).toBeDefined()
   })

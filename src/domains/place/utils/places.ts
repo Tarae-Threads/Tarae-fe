@@ -30,15 +30,16 @@ export function getRegions(): string[] {
 
 export function filterPlaces(
   allPlaces: Place[],
-  category: PlaceCategory | 'all',
+  categories: Set<PlaceCategory> | 'all',
   region: string,
   query: string = '',
 ): Place[] {
   const q = query.trim().toLowerCase()
   const qNoSpace = q.replace(/\s+/g, '')
+  const hasCategories = categories !== 'all' && categories.size > 0
 
   return allPlaces.filter(place => {
-    if (category !== 'all' && place.category !== category) return false
+    if (hasCategories && !(categories as Set<PlaceCategory>).has(place.category)) return false
     if (region !== 'all' && place.region !== region) return false
     if (q) {
       const haystack = [

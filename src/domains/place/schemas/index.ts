@@ -1,11 +1,13 @@
 import { z } from 'zod'
 
-const placeCategorySchema = z.enum(['yarn_store', 'studio', 'cafe', 'popup'])
+const placeCategorySchema = z.enum(['yarn_store', 'studio', 'cafe', 'dye_shop', 'craft_supply'])
+const placeStatusSchema = z.enum(['open', 'relocated', 'closed', 'unverified'])
 
 export const placeSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   category: placeCategorySchema,
+  status: placeStatusSchema.default('open'),
   region: z.string().min(1),
   district: z.string(),
   address: z.string().min(1),

@@ -3,42 +3,52 @@
 import type { PlaceCategory } from '../types'
 import { CATEGORY_LABEL, REGION_ORDER } from '../constants'
 import FilterChip from '@/shared/components/ui/FilterChip'
+import { RotateCcw } from 'lucide-react'
 
 interface PlaceFilterProps {
-  selectedCategory: PlaceCategory | 'all'
+  selectedCategories: Set<PlaceCategory>
   selectedRegion: string
-  onCategoryChange: (category: PlaceCategory | 'all') => void
+  onToggleCategory: (category: PlaceCategory) => void
+  onClearCategories: () => void
   onRegionChange: (region: string) => void
 }
 
-const categories: { value: PlaceCategory | 'all'; label: string }[] = [
-  { value: 'all', label: '전체' },
-  { value: 'yarn_store', label: CATEGORY_LABEL.yarn_store },
-  { value: 'studio', label: CATEGORY_LABEL.studio },
-  { value: 'cafe', label: CATEGORY_LABEL.cafe },
-  { value: 'popup', label: CATEGORY_LABEL.popup },
-]
+const categoryList: PlaceCategory[] = ['yarn_store', 'studio', 'cafe', 'dye_shop', 'craft_supply']
 
 export default function PlaceFilter({
-  selectedCategory,
+  selectedCategories,
   selectedRegion,
-  onCategoryChange,
+  onToggleCategory,
+  onClearCategories,
   onRegionChange,
 }: PlaceFilterProps) {
+  const isAllCategories = selectedCategories.size === 0
+
   return (
     <div className="space-y-4">
       {/* Category chips */}
       <div>
-        <p className="text-label-md font-bold text-on-surface-variant mb-2 uppercase tracking-widest">
-          카테고리
-        </p>
+        <div className="flex items-center gap-2 mb-2">
+          <p className="text-label-md font-bold text-on-surface-variant uppercase tracking-widest">
+            카테고리
+          </p>
+          {!isAllCategories && (
+            <button
+              onClick={onClearCategories}
+              aria-label="카테고리 초기화"
+              className="p-1 text-outline hover:text-primary transition-colors"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
         <div className="flex flex-wrap gap-2">
-          {categories.map(({ value, label }) => (
+          {categoryList.map(cat => (
             <FilterChip
-              key={value}
-              label={label}
-              selected={selectedCategory === value}
-              onClick={() => onCategoryChange(value)}
+              key={cat}
+              label={CATEGORY_LABEL[cat]}
+              selected={selectedCategories.has(cat)}
+              onClick={() => onToggleCategory(cat)}
             />
           ))}
         </div>

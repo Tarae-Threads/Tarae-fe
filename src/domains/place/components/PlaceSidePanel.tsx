@@ -14,13 +14,14 @@ interface PlaceSidePanelProps {
   places: Place[]
   selectedPlace: Place | null
   panelOpen: boolean
-  selectedCategory: PlaceCategory | 'all'
+  selectedCategories: Set<PlaceCategory>
   selectedRegion: string
   searchQuery: string
   onSearchChange: (query: string) => void
   onPlaceSelect: (place: Place) => void
   onPanelClose: () => void
-  onCategoryChange: (category: PlaceCategory | 'all') => void
+  onToggleCategory: (category: PlaceCategory) => void
+  onClearCategories: () => void
   onRegionChange: (region: string) => void
   onClose: () => void
 }
@@ -29,13 +30,14 @@ export default function PlaceSidePanel({
   places,
   selectedPlace,
   panelOpen,
-  selectedCategory,
+  selectedCategories,
   selectedRegion,
   searchQuery,
   onSearchChange,
   onPlaceSelect,
   onPanelClose,
-  onCategoryChange,
+  onToggleCategory,
+  onClearCategories,
   onRegionChange,
   onClose,
 }: PlaceSidePanelProps) {
@@ -101,9 +103,10 @@ export default function PlaceSidePanel({
         {tab === 'filter' ? (
           <div className="px-5 py-3">
             <PlaceFilter
-              selectedCategory={selectedCategory}
+              selectedCategories={selectedCategories}
               selectedRegion={selectedRegion}
-              onCategoryChange={(c) => { onCategoryChange(c); setTab('list') }}
+              onToggleCategory={(c) => { onToggleCategory(c); setTab('list') }}
+              onClearCategories={() => { onClearCategories(); setTab('list') }}
               onRegionChange={(r) => { onRegionChange(r); setTab('list') }}
             />
           </div>

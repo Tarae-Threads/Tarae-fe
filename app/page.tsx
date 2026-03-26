@@ -1,18 +1,21 @@
 'use client'
 
-import { useRef, Suspense } from 'react'
+import { useRef, useState, useMemo, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import type { NaverMapHandle } from '@/domains/place/components/NaverMap'
 import { usePlaceExplorer } from '@/domains/place/hooks/usePlaceExplorer'
-import PlaceCard from '@/domains/place/components/PlaceCard'
+import { getPlaceById } from '@/domains/place/utils/places'
+import { getEvents } from '@/domains/event/utils/events'
+import MobileBottomSheet from '@/domains/place/components/MobileBottomSheet'
 import PlacePanel from '@/domains/place/components/PlacePanel'
 import MapControls from '@/domains/place/components/MapControls'
 import PlaceSearchBar from '@/domains/place/components/PlaceSearchBar'
 import TopAppBar from '@/shared/components/layout/TopAppBar'
-import BottomNav from '@/shared/components/layout/BottomNav'
-import PlaceSidePanel from '@/domains/place/components/PlaceSidePanel'
-import { MapPinPlus } from 'lucide-react'
+import MainSidePanel from '@/shared/components/layout/MainSidePanel'
+import SubmitForm from '@/shared/components/layout/SubmitForm'
+import { REGION_CENTER } from '@/domains/place/constants'
+import { Plus, PanelRightOpen } from 'lucide-react'
 
 const NaverMap = dynamic(() => import('@/domains/place/components/NaverMap'), { ssr: false })
 
@@ -20,12 +23,14 @@ function HomeContent() {
   const searchParams = useSearchParams()
   const initialPlaceId = searchParams.get('placeId')
   const mapRef = useRef<NaverMapHandle>(null)
+  const [submitOpen, setSubmitOpen] = useState(false)
 
   const {
     filteredPlaces,
     selectedPlace,
-    selectedCategory,
-    setSelectedCategory,
+    selectedCategories,
+    toggleCategory,
+    clearCategories,
     selectedRegion,
     setSelectedRegion,
     searchQuery,
@@ -38,6 +43,64 @@ function HomeContent() {
     handlePanelClose,
     toggleFilter,
   } = usePlaceExplorer(initialPlaceId)
+
+  // Trigger map resize during and after side panel transition
+  useEffect(() => {
+    // Resize during transition for smooth map adjustment
+    const t1 = setTimeout(() => window.dispatchEvent(new Event('resize')), 50)
+    const t2 = setTimeout(() => window.dispatchEvent(new Event('resize')), 150)
+    // Resize after transition completes (300ms duration)
+    const t3 = setTimeout(() => window.dispatchEvent(new Event('resize')), 320)
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
+  }, [sidePanelOpen])
+
+  // Compute event-linked placeIds
+  const eventPlaceIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const event of getEvents()) {
+      if (event.placeId) ids.add(event.placeId)
+    }
+    return ids
+  }, [])
+
+  // Region filter → pan map
+  useEffect(() => {
+    if (selectedRegion === 'all') return
+    const center = REGION_CENTER[selectedRegion]
+    if (center) {
+      mapRef.current?.panTo(center.lat, center.lng, center.zoom)
+    }
+  }, [selectedRegion])
+
+  // Smart zoom: only zoom in if currently too far out
+  const smartPanTo = useCallback((lat: number, lng: number, minZoom: number) => {
+    const currentZoom = mapRef.current?.getZoom() ?? 10
+    if (currentZoom <= 12) {
+      mapRef.current?.panTo(lat, lng, minZoom)
+    } else {
+      mapRef.current?.panTo(lat, lng)
+    }
+  }, [])
+
+  // Marker click → smart zoom (don't zoom out if already close)
+  const handleMarkerSelect = useCallback((place: Parameters<typeof handlePlaceSelect>[0]) => {
+    handlePlaceSelect(place)
+    smartPanTo(place.lat, place.lng, 13)
+  }, [handlePlaceSelect, smartPanTo])
+
+  // List click → always zoom 14 (user picked from list, show it up close)
+  const handleListSelect = useCallback((place: Parameters<typeof handlePlaceSelect>[0]) => {
+    handlePlaceSelect(place)
+    mapRef.current?.panTo(place.lat, place.lng, 14)
+  }, [handlePlaceSelect])
+
+  // Event card click → smart zoom, no panel change
+  const handleEventPlaceClick = useCallback((placeId: string) => {
+    const place = getPlaceById(placeId)
+    if (place) {
+      smartPanTo(place.lat, place.lng, 13)
+    }
+  }, [smartPanTo])
 
   return (
     <main className="h-screen w-full overflow-hidden bg-surface-container-lowest flex">
@@ -52,8 +115,9 @@ function HomeContent() {
         <NaverMap
           ref={mapRef}
           places={filteredPlaces}
-          onPlaceSelect={handlePlaceSelect}
+          onPlaceSelect={handleMarkerSelect}
           selectedPlaceId={initialPlaceId}
+          eventPlaceIds={eventPlaceIds}
         />
 
         {/* Map Controls */}
@@ -70,16 +134,17 @@ function HomeContent() {
             onSearchChange={setSearchQuery}
             filterOpen={filterOpen}
             onToggleFilter={toggleFilter}
-            selectedCategory={selectedCategory}
+            selectedCategories={selectedCategories}
             selectedRegion={selectedRegion}
-            onCategoryChange={setSelectedCategory}
+            onToggleCategory={toggleCategory}
+            onClearCategories={clearCategories}
             onRegionChange={setSelectedRegion}
           />
         </div>
 
         {/* FAB — desktop */}
-        <button aria-label="장소 추가" className="hidden md:flex absolute bottom-8 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl items-center justify-center z-20 active:scale-95 transition-transform">
-          <MapPinPlus className="w-7 h-7" />
+        <button onClick={() => setSubmitOpen(true)} aria-label="제보하기" className="hidden md:flex absolute bottom-8 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl items-center justify-center z-20 active:scale-95 transition-transform">
+          <Plus className="w-7 h-7" />
         </button>
 
         {/* ===== Mobile-only UI ===== */}
@@ -91,69 +156,67 @@ function HomeContent() {
               onSearchChange={setSearchQuery}
               filterOpen={filterOpen}
               onToggleFilter={toggleFilter}
-              selectedCategory={selectedCategory}
+              selectedCategories={selectedCategories}
               selectedRegion={selectedRegion}
-              onCategoryChange={setSelectedCategory}
+              onToggleCategory={toggleCategory}
+              onClearCategories={clearCategories}
               onRegionChange={setSelectedRegion}
             />
           </div>
 
           {/* Bottom Sheet */}
           {!panelOpen && (
-            <div className="fixed bottom-0 left-0 w-full z-30">
-              <div className="absolute -top-12 left-0 w-full flex justify-center pb-4">
-                <div className="w-12 h-1.5 bg-outline-variant rounded-full" />
-              </div>
-              <div className="bg-surface-container-low rounded-t-[2.5rem] shadow-[0_-12px_48px_rgba(29,27,22,0.12)] pt-8 pb-32 px-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h2 className="font-display text-xl font-extrabold tracking-tight text-on-surface">
-                      뜨개 장소
-                    </h2>
-                    <p className="text-sm text-outline font-medium">
-                      {filteredPlaces.length}개 장소
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4 overflow-x-auto hide-scrollbar -mx-6 px-6 pb-4">
-                  {filteredPlaces.slice(0, 10).map(place => (
-                    <PlaceCard key={place.id} place={place} onClick={handlePlaceSelect} />
-                  ))}
-                </div>
-              </div>
-            </div>
+            <MobileBottomSheet
+              places={filteredPlaces}
+              onPlaceSelect={handleListSelect}
+              onEventPlaceClick={handleEventPlaceClick}
+            />
           )}
 
           <PlacePanel place={selectedPlace} open={panelOpen} onClose={handlePanelClose} />
 
           {/* FAB */}
-          <button aria-label="장소 추가" className="fixed bottom-32 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
-            <MapPinPlus className="w-7 h-7" />
+          <button onClick={() => setSubmitOpen(true)} aria-label="제보하기" className="fixed bottom-32 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
+            <Plus className="w-7 h-7" />
           </button>
-
-          <BottomNav />
         </div>
       </div>
 
+      {/* ===== Panel toggle — desktop only ===== */}
+      <button
+        onClick={() => setSidePanelOpen(true)}
+        aria-label="패널 열기"
+        className={`hidden md:flex fixed right-0 top-6 z-20 w-8 h-16 bg-surface/90 backdrop-blur-xl rounded-l-xl shadow-ambient-md items-center justify-center text-primary hover:bg-surface-container transition-all duration-300 ${
+          sidePanelOpen ? 'opacity-0 pointer-events-none translate-x-2' : 'opacity-100 translate-x-0'
+        }`}
+      >
+        <PanelRightOpen className="w-4 h-4" />
+      </button>
+
       {/* ===== Right: Side Panel — desktop only ===== */}
-      {sidePanelOpen && (
-        <div className="hidden md:block w-[380px] shrink-0 h-full border-l border-border">
-          <PlaceSidePanel
+      <div className={`hidden md:block shrink-0 h-full border-l border-border transition-all duration-300 ease-in-out overflow-hidden ${
+        sidePanelOpen ? 'w-[400px]' : 'w-0 border-l-0'
+      }`}>
+        <div className="w-[400px] h-full">
+          <MainSidePanel
             places={filteredPlaces}
             selectedPlace={selectedPlace}
             panelOpen={panelOpen}
-            selectedCategory={selectedCategory}
+            selectedCategories={selectedCategories}
             selectedRegion={selectedRegion}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
-            onPlaceSelect={handlePlaceSelect}
+            onPlaceSelect={handleListSelect}
             onPanelClose={handlePanelClose}
-            onCategoryChange={setSelectedCategory}
+            onToggleCategory={toggleCategory}
+            onClearCategories={clearCategories}
             onRegionChange={setSelectedRegion}
             onClose={() => setSidePanelOpen(false)}
+            onEventPlaceClick={handleEventPlaceClick}
           />
         </div>
-      )}
+      </div>
+      <SubmitForm open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </main>
   )
 }

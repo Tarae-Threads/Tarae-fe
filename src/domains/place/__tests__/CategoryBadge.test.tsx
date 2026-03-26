@@ -5,7 +5,7 @@ import CategoryBadge from '../components/CategoryBadge'
 describe('CategoryBadge', () => {
   it('renders the correct label for yarn_store', () => {
     render(<CategoryBadge category="yarn_store" />)
-    expect(screen.getByText('실 가게')).toBeInTheDocument()
+    expect(screen.getByText('뜨개샵')).toBeInTheDocument()
   })
 
   it('renders the correct label for studio', () => {
@@ -18,15 +18,20 @@ describe('CategoryBadge', () => {
     expect(screen.getByText('뜨개카페')).toBeInTheDocument()
   })
 
-  it('renders the correct label for popup', () => {
-    render(<CategoryBadge category="popup" />)
-    expect(screen.getByText('팝업')).toBeInTheDocument()
+  it('renders the correct label for dye_shop', () => {
+    render(<CategoryBadge category="dye_shop" />)
+    expect(screen.getByText('손염색실')).toBeInTheDocument()
+  })
+
+  it('renders the correct label for craft_supply', () => {
+    render(<CategoryBadge category="craft_supply" />)
+    expect(screen.getByText('공예용품점')).toBeInTheDocument()
   })
 
   it('applies category color as background', () => {
     const { container } = render(<CategoryBadge category="yarn_store" />)
     const span = container.querySelector('span')
-    expect(span?.style.backgroundColor).toBe('rgb(145, 71, 43)')
+    expect(span?.style.backgroundColor).toBe('rgb(255, 219, 207)')
   })
 
   it('applies md size classes', () => {
