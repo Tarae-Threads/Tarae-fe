@@ -5,15 +5,33 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================
+   Font: GangwonEducationModuche
+   ============================================ */
+
+@font-face {
+  font-family: 'GangwonEducationModuche';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFLightA.woff') format('woff');
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GangwonEducationModuche';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* ============================================
    Design System: The Tactile Cartographer
    ============================================ */
 
 @theme inline {
   /* --- Fonts --- */
-  --font-sans: var(--font-body);
-  --font-display: var(--font-display);
+  --font-sans: 'GangwonEducationModuche', sans-serif;
+  --font-display: 'GangwonEducationModuche', sans-serif;
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-display);
+  --font-heading: 'GangwonEducationModuche', sans-serif;
 
   /* --- Typography Scale --- */
   --text-display-lg: 3.5rem;

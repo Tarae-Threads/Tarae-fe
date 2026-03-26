@@ -1,55 +1,43 @@
 'use client'
 
-import { useState, useMemo, useCallback, useRef, Suspense } from 'react'
+import { useRef, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { getPlaces, filterPlaces } from '@/lib/places'
-import type { Place, PlaceCategory } from '@/lib/types'
-import type { NaverMapHandle } from '@/components/map/NaverMap'
-import PlaceCard from '@/components/place/PlaceCard'
-import PlacePanel from '@/components/map/PlacePanel'
-import MapControls from '@/components/map/MapControls'
-import SearchBar from '@/components/ui/SearchBar'
-import TopAppBar from '@/components/layout/TopAppBar'
-import BottomNav from '@/components/layout/BottomNav'
-import SidePanel from '@/components/layout/SidePanel'
+import type { NaverMapHandle } from '@/domains/place/components/NaverMap'
+import { usePlaceExplorer } from '@/domains/place/hooks/usePlaceExplorer'
+import PlaceCard from '@/domains/place/components/PlaceCard'
+import PlacePanel from '@/domains/place/components/PlacePanel'
+import MapControls from '@/domains/place/components/MapControls'
+import PlaceSearchBar from '@/domains/place/components/PlaceSearchBar'
+import TopAppBar from '@/shared/components/layout/TopAppBar'
+import BottomNav from '@/shared/components/layout/BottomNav'
+import PlaceSidePanel from '@/domains/place/components/PlaceSidePanel'
 import { MapPinPlus } from 'lucide-react'
 
-const NaverMap = dynamic(() => import('@/components/map/NaverMap'), { ssr: false })
+const NaverMap = dynamic(() => import('@/domains/place/components/NaverMap'), { ssr: false })
 
 function HomeContent() {
   const searchParams = useSearchParams()
   const initialPlaceId = searchParams.get('placeId')
-
-  const allPlaces = getPlaces()
   const mapRef = useRef<NaverMapHandle>(null)
 
-  const [selectedCategory, setSelectedCategory] = useState<PlaceCategory | 'all'>('all')
-  const [selectedRegion, setSelectedRegion] = useState<string>('all')
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(
-    initialPlaceId ? allPlaces.find(p => p.id === initialPlaceId) ?? null : null
-  )
-  const [panelOpen, setPanelOpen] = useState(!!initialPlaceId)
-  const [filterOpen, setFilterOpen] = useState(false)
-  const [sidePanelOpen, setSidePanelOpen] = useState(true)
-
-  const filteredPlaces = useMemo(
-    () => filterPlaces(allPlaces, selectedCategory, selectedRegion),
-    [allPlaces, selectedCategory, selectedRegion],
-  )
-
-  const handlePlaceSelect = useCallback((place: Place) => {
-    setSelectedPlace(place)
-    setPanelOpen(true)
-  }, [])
-
-  const handlePanelClose = useCallback(() => {
-    setPanelOpen(false)
-  }, [])
-
-  const toggleFilter = useCallback(() => {
-    setFilterOpen(prev => !prev)
-  }, [])
+  const {
+    filteredPlaces,
+    selectedPlace,
+    selectedCategory,
+    setSelectedCategory,
+    selectedRegion,
+    setSelectedRegion,
+    searchQuery,
+    setSearchQuery,
+    panelOpen,
+    filterOpen,
+    sidePanelOpen,
+    setSidePanelOpen,
+    handlePlaceSelect,
+    handlePanelClose,
+    toggleFilter,
+  } = usePlaceExplorer(initialPlaceId)
 
   return (
     <main className="h-screen w-full overflow-hidden bg-surface-container-lowest flex">
@@ -77,7 +65,9 @@ function HomeContent() {
 
         {/* Floating Search — desktop */}
         <div className="hidden md:block absolute top-6 left-6 z-20 w-[420px]">
-          <SearchBar
+          <PlaceSearchBar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
             filterOpen={filterOpen}
             onToggleFilter={toggleFilter}
             selectedCategory={selectedCategory}
@@ -96,7 +86,9 @@ function HomeContent() {
         <div className="md:hidden">
           {/* Floating Search */}
           <div className="absolute top-24 left-6 right-20 z-20">
-            <SearchBar
+            <PlaceSearchBar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
               filterOpen={filterOpen}
               onToggleFilter={toggleFilter}
               selectedCategory={selectedCategory}
@@ -146,12 +138,14 @@ function HomeContent() {
       {/* ===== Right: Side Panel — desktop only ===== */}
       {sidePanelOpen && (
         <div className="hidden md:block w-[380px] shrink-0 h-full border-l border-border">
-          <SidePanel
+          <PlaceSidePanel
             places={filteredPlaces}
             selectedPlace={selectedPlace}
             panelOpen={panelOpen}
             selectedCategory={selectedCategory}
             selectedRegion={selectedRegion}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
             onPlaceSelect={handlePlaceSelect}
             onPanelClose={handlePanelClose}
             onCategoryChange={setSelectedCategory}

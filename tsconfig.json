@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@/domains/*": ["./src/domains/*"],
+      "@/shared/*": ["./src/shared/*"]
     }
   },
   "include": [

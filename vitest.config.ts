@@ -11,6 +11,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@/domains': path.resolve(__dirname, 'src/domains'),
+      '@/shared': path.resolve(__dirname, 'src/shared'),
       '@': path.resolve(__dirname, '.'),
     },
   },
