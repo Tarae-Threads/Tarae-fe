@@ -97,7 +97,7 @@ export default async function PlaceDetailPage({ params }: PageProps) {
           ← 지도로
         </Link>
         <h1 className="font-display font-extrabold tracking-tighter text-2xl text-primary">
-          Tarae
+          타래
         </h1>
         <div className="w-16" />
       </header>

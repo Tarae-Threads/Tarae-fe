@@ -45,7 +45,7 @@ export default function SidePanel({
       {/* Header */}
       <header className="flex items-center justify-between px-5 py-4 shrink-0">
         <h2 className="font-display font-extrabold tracking-tighter text-xl text-primary">
-          Tarae
+          타래
         </h2>
         <button
           onClick={onClose}
