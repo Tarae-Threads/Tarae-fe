@@ -1,34 +1,43 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import type { Place, PlaceCategory } from '@/domains/place/types'
-import CategoryBadge from '@/domains/place/components/CategoryBadge'
-import StatusBadge from '@/domains/place/components/StatusBadge'
-import PlaceFilter from '@/domains/place/components/PlaceFilter'
-import EventSidePanelContent from '@/domains/event/components/EventSidePanelContent'
-import { X, Search, SlidersHorizontal, Clock, MapPin, ExternalLink, Map, Calendar } from 'lucide-react'
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import type { Place, PlaceCategory } from "@/domains/place/types";
+import CategoryBadge from "@/domains/place/components/CategoryBadge";
+import StatusBadge from "@/domains/place/components/StatusBadge";
+import PlaceFilter from "@/domains/place/components/PlaceFilter";
+import EventSidePanelContent from "@/domains/event/components/EventSidePanelContent";
+import {
+  X,
+  Search,
+  SlidersHorizontal,
+  Clock,
+  MapPin,
+  ExternalLink,
+  Map,
+  Calendar,
+} from "lucide-react";
 
-type MainTab = 'places' | 'events'
+type MainTab = "places" | "events";
 
 interface MainSidePanelProps {
   // Place props
-  places: Place[]
-  selectedPlace: Place | null
-  panelOpen: boolean
-  selectedCategories: Set<PlaceCategory>
-  selectedRegion: string
-  searchQuery: string
-  onSearchChange: (query: string) => void
-  onPlaceSelect: (place: Place) => void
-  onPanelClose: () => void
-  onToggleCategory: (category: PlaceCategory) => void
-  onClearCategories: () => void
-  onRegionChange: (region: string) => void
-  onClose: () => void
+  places: Place[];
+  selectedPlace: Place | null;
+  panelOpen: boolean;
+  selectedCategories: Set<PlaceCategory>;
+  selectedRegion: string;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  onPlaceSelect: (place: Place) => void;
+  onPanelClose: () => void;
+  onToggleCategory: (category: PlaceCategory) => void;
+  onClearCategories: () => void;
+  onRegionChange: (region: string) => void;
+  onClose: () => void;
   // Event → map callback
-  onEventPlaceClick?: (placeId: string) => void
+  onEventPlaceClick?: (placeId: string) => void;
 }
 
 export default function MainSidePanel({
@@ -47,8 +56,8 @@ export default function MainSidePanel({
   onClose,
   onEventPlaceClick,
 }: MainSidePanelProps) {
-  const [mainTab, setMainTab] = useState<MainTab>('places')
-  const [filterOpen, setFilterOpen] = useState(false)
+  const [mainTab, setMainTab] = useState<MainTab>("places");
+  const [filterOpen, setFilterOpen] = useState(false);
 
   return (
     <div className="h-full flex flex-col bg-surface overflow-hidden">
@@ -66,39 +75,45 @@ export default function MainSidePanel({
         </button>
       </header>
 
-      {/* Main Tabs: 장소 / 정보 */}
+      {/* Main Tabs: 장소 / 일정 */}
       <div className="flex px-5 gap-1 shrink-0 mb-2">
         <button
-          onClick={() => { setMainTab('places'); if (panelOpen) onPanelClose() }}
+          onClick={() => {
+            setMainTab("places");
+            if (panelOpen) onPanelClose();
+          }}
           className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-full transition-all ${
-            mainTab === 'places'
-              ? 'signature-gradient text-white shadow-lg shadow-primary/20'
-              : 'text-on-surface-variant hover:bg-surface-container'
+            mainTab === "places"
+              ? "signature-gradient text-white shadow-lg shadow-primary/20"
+              : "text-on-surface-variant hover:bg-surface-container"
           }`}
         >
           <Map className="w-4 h-4" />
           장소
         </button>
         <button
-          onClick={() => setMainTab('events')}
+          onClick={() => setMainTab("events")}
           className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-full transition-all ${
-            mainTab === 'events'
-              ? 'signature-gradient text-white shadow-lg shadow-primary/20'
-              : 'text-on-surface-variant hover:bg-surface-container'
+            mainTab === "events"
+              ? "signature-gradient text-white shadow-lg shadow-primary/20"
+              : "text-on-surface-variant hover:bg-surface-container"
           }`}
         >
           <Calendar className="w-4 h-4" />
-          정보
+          일정
         </button>
       </div>
 
       {/* Content */}
-      {mainTab === 'places' ? (
+      {mainTab === "places" ? (
         <>
           {/* Search + Filter toggle */}
           <div className="px-5 py-3 shrink-0">
             <div className="relative flex items-center bg-surface-container-low rounded-xl">
-              <Search className="absolute left-3 w-4 h-4 text-primary" aria-hidden="true" />
+              <Search
+                className="absolute left-3 w-4 h-4 text-primary"
+                aria-hidden="true"
+              />
               <input
                 type="text"
                 value={searchQuery}
@@ -108,14 +123,20 @@ export default function MainSidePanel({
                 className="flex-1 bg-transparent h-10 pl-10 pr-2 text-sm text-on-surface placeholder:text-outline font-medium focus:outline-none"
               />
               <button
-                onClick={() => setFilterOpen(prev => !prev)}
+                onClick={() => setFilterOpen((prev) => !prev)}
                 aria-expanded={filterOpen}
                 aria-label="필터"
                 className={`mr-1.5 p-2 rounded-lg transition-colors ${
-                  filterOpen ? 'bg-primary text-white' : 'text-outline hover:bg-surface-container'
+                  filterOpen
+                    ? "bg-primary text-white"
+                    : "text-outline hover:bg-surface-container"
                 }`}
               >
-                <SlidersHorizontal className="w-4 h-4" />
+                {filterOpen ? (
+                  <X className="w-4 h-4" />
+                ) : (
+                  <SlidersHorizontal className="w-4 h-4" />
+                )}
               </button>
             </div>
             {filterOpen && (
@@ -123,9 +144,9 @@ export default function MainSidePanel({
                 <PlaceFilter
                   selectedCategories={selectedCategories}
                   selectedRegion={selectedRegion}
-                  onToggleCategory={(c) => { onToggleCategory(c); setFilterOpen(false) }}
-                  onClearCategories={() => { onClearCategories(); setFilterOpen(false) }}
-                  onRegionChange={(r) => { onRegionChange(r); setFilterOpen(false) }}
+                  onToggleCategory={onToggleCategory}
+                  onClearCategories={onClearCategories}
+                  onRegionChange={onRegionChange}
                 />
               </div>
             )}
@@ -154,14 +175,20 @@ export default function MainSidePanel({
         </div>
       )}
     </div>
-  )
+  );
 }
 
 /* ---- Place List ---- */
-function PlaceList({ places, onSelect }: { places: Place[]; onSelect: (p: Place) => void }) {
+function PlaceList({
+  places,
+  onSelect,
+}: {
+  places: Place[];
+  onSelect: (p: Place) => void;
+}) {
   return (
     <div className="px-5 space-y-4 pb-4">
-      {places.map(place => (
+      {places.map((place) => (
         <button
           key={place.id}
           onClick={() => onSelect(place)}
@@ -181,12 +208,16 @@ function PlaceList({ places, onSelect }: { places: Place[]; onSelect: (p: Place)
           <div className="p-4">
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-1.5">
-                <h3 className="font-display font-bold text-sm text-on-surface">{place.name}</h3>
+                <h3 className="font-display font-bold text-sm text-on-surface">
+                  {place.name}
+                </h3>
                 <StatusBadge status={place.status} />
               </div>
               <CategoryBadge category={place.category} />
             </div>
-            <p className="text-on-surface-variant text-xs line-clamp-1 mb-2">{place.address}</p>
+            <p className="text-on-surface-variant text-xs line-clamp-1 mb-2">
+              {place.address}
+            </p>
             <div className="flex items-center gap-1.5">
               <Clock className="w-3 h-3 text-outline" />
               <span className="text-[10px] font-bold text-outline uppercase tracking-wider">
@@ -197,11 +228,17 @@ function PlaceList({ places, onSelect }: { places: Place[]; onSelect: (p: Place)
         </button>
       ))}
     </div>
-  )
+  );
 }
 
 /* ---- Place Detail ---- */
-function PlaceDetail({ place, onClose }: { place: Place; onClose: () => void }) {
+function PlaceDetail({
+  place,
+  onClose,
+}: {
+  place: Place;
+  onClose: () => void;
+}) {
   return (
     <div className="px-5 pb-4">
       <button
@@ -232,14 +269,14 @@ function PlaceDetail({ place, onClose }: { place: Place; onClose: () => void }) 
         </div>
         {place.closedDays.length > 0 && (
           <p className="text-sm text-on-surface-variant pl-[26px]">
-            휴무: {place.closedDays.join(', ')}
+            휴무: {place.closedDays.join(", ")}
           </p>
         )}
       </div>
 
       {place.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-5">
-          {place.tags.map(tag => (
+          {place.tags.map((tag) => (
             <span
               key={tag}
               className="bg-secondary-container text-on-secondary-container px-2.5 py-1 rounded-full text-xs font-medium"
@@ -269,5 +306,5 @@ function PlaceDetail({ place, onClose }: { place: Place; onClose: () => void }) 
         상세보기
       </Link>
     </div>
-  )
+  );
 }

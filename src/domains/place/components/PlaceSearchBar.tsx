@@ -2,7 +2,7 @@
 
 import type { PlaceCategory } from '../types'
 import PlaceFilter from './PlaceFilter'
-import { Search, SlidersHorizontal } from 'lucide-react'
+import { Search, SlidersHorizontal, X } from 'lucide-react'
 
 interface PlaceSearchBarProps {
   searchQuery: string
@@ -47,7 +47,7 @@ export default function PlaceSearchBar({
             filterOpen ? 'bg-primary text-white' : 'text-outline hover:bg-surface-container'
           }`}
         >
-          <SlidersHorizontal className="w-4 h-4" />
+          {filterOpen ? <X className="w-4 h-4" /> : <SlidersHorizontal className="w-4 h-4" />}
         </button>
       </div>
       {filterOpen && (

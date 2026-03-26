@@ -3,6 +3,7 @@
 import type { PlaceCategory } from '../types'
 import { CATEGORY_LABEL, REGION_ORDER } from '../constants'
 import FilterChip from '@/shared/components/ui/FilterChip'
+import { RotateCcw } from 'lucide-react'
 
 interface PlaceFilterProps {
   selectedCategories: Set<PlaceCategory>
@@ -27,15 +28,21 @@ export default function PlaceFilter({
     <div className="space-y-4">
       {/* Category chips */}
       <div>
-        <p className="text-label-md font-bold text-on-surface-variant mb-2 uppercase tracking-widest">
-          카테고리
-        </p>
+        <div className="flex items-center gap-2 mb-2">
+          <p className="text-label-md font-bold text-on-surface-variant uppercase tracking-widest">
+            카테고리
+          </p>
+          {!isAllCategories && (
+            <button
+              onClick={onClearCategories}
+              aria-label="카테고리 초기화"
+              className="p-1 text-outline hover:text-primary transition-colors"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
         <div className="flex flex-wrap gap-2">
-          <FilterChip
-            label="전체"
-            selected={isAllCategories}
-            onClick={onClearCategories}
-          />
           {categoryList.map(cat => (
             <FilterChip
               key={cat}
