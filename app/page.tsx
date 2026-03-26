@@ -44,6 +44,16 @@ function HomeContent() {
     toggleFilter,
   } = usePlaceExplorer(initialPlaceId)
 
+  // Trigger map resize during and after side panel transition
+  useEffect(() => {
+    // Resize during transition for smooth map adjustment
+    const t1 = setTimeout(() => window.dispatchEvent(new Event('resize')), 50)
+    const t2 = setTimeout(() => window.dispatchEvent(new Event('resize')), 150)
+    // Resize after transition completes (300ms duration)
+    const t3 = setTimeout(() => window.dispatchEvent(new Event('resize')), 320)
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
+  }, [sidePanelOpen])
+
   // Compute event-linked placeIds
   const eventPlaceIds = useMemo(() => {
     const ids = new Set<string>()
@@ -173,19 +183,21 @@ function HomeContent() {
       </div>
 
       {/* ===== Panel toggle — desktop only ===== */}
-      {!sidePanelOpen && (
-        <button
-          onClick={() => setSidePanelOpen(true)}
-          aria-label="패널 열기"
-          className="hidden md:flex fixed right-0 top-1/2 -translate-y-1/2 z-20 w-8 h-16 bg-surface/90 backdrop-blur-xl rounded-l-xl shadow-ambient-md items-center justify-center text-primary hover:bg-surface-container transition-colors"
-        >
-          <PanelRightOpen className="w-4 h-4" />
-        </button>
-      )}
+      <button
+        onClick={() => setSidePanelOpen(true)}
+        aria-label="패널 열기"
+        className={`hidden md:flex fixed right-0 top-6 z-20 w-8 h-16 bg-surface/90 backdrop-blur-xl rounded-l-xl shadow-ambient-md items-center justify-center text-primary hover:bg-surface-container transition-all duration-300 ${
+          sidePanelOpen ? 'opacity-0 pointer-events-none translate-x-2' : 'opacity-100 translate-x-0'
+        }`}
+      >
+        <PanelRightOpen className="w-4 h-4" />
+      </button>
 
       {/* ===== Right: Side Panel — desktop only ===== */}
-      {sidePanelOpen && (
-        <div className="hidden md:block w-[400px] shrink-0 h-full border-l border-border">
+      <div className={`hidden md:block shrink-0 h-full border-l border-border transition-all duration-300 ease-in-out overflow-hidden ${
+        sidePanelOpen ? 'w-[400px]' : 'w-0 border-l-0'
+      }`}>
+        <div className="w-[400px] h-full">
           <MainSidePanel
             places={filteredPlaces}
             selectedPlace={selectedPlace}
@@ -203,7 +215,7 @@ function HomeContent() {
             onEventPlaceClick={handleEventPlaceClick}
           />
         </div>
-      )}
+      </div>
       <SubmitForm open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </main>
   )
