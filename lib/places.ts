@@ -27,10 +27,25 @@ export function filterPlaces(
   allPlaces: Place[],
   category: PlaceCategory | 'all',
   region: string,
+  query: string = '',
 ): Place[] {
+  const q = query.trim().toLowerCase()
+  const qNoSpace = q.replace(/\s+/g, '')
+
   return allPlaces.filter(place => {
     if (category !== 'all' && place.category !== category) return false
     if (region !== 'all' && place.region !== region) return false
+    if (q) {
+      const haystack = [
+        place.name,
+        place.address,
+        place.district,
+        place.note,
+        ...place.tags,
+        ...place.brands,
+      ].join(' ').toLowerCase()
+      if (!haystack.includes(q) && !haystack.replace(/\s+/g, '').includes(qNoSpace)) return false
+    }
     return true
   })
 }

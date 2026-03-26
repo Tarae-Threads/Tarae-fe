@@ -15,6 +15,8 @@ interface SidePanelProps {
   panelOpen: boolean
   selectedCategory: PlaceCategory | 'all'
   selectedRegion: string
+  searchQuery: string
+  onSearchChange: (query: string) => void
   onPlaceSelect: (place: Place) => void
   onPanelClose: () => void
   onCategoryChange: (category: PlaceCategory | 'all') => void
@@ -28,6 +30,8 @@ export default function SidePanel({
   panelOpen,
   selectedCategory,
   selectedRegion,
+  searchQuery,
+  onSearchChange,
   onPlaceSelect,
   onPanelClose,
   onCategoryChange,
@@ -82,8 +86,10 @@ export default function SidePanel({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" aria-hidden="true" />
           <input
             type="text"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
             aria-label="뜨개 장소 검색"
-            placeholder="뜨개 장소 검색..."
+            placeholder="장소, 브랜드, 태그 검색..."
             className="w-full bg-surface-container-low h-10 pl-10 pr-4 rounded-xl text-sm text-on-surface placeholder:text-outline font-medium focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </div>

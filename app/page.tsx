@@ -32,10 +32,11 @@ function HomeContent() {
   const [panelOpen, setPanelOpen] = useState(!!initialPlaceId)
   const [filterOpen, setFilterOpen] = useState(false)
   const [sidePanelOpen, setSidePanelOpen] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const filteredPlaces = useMemo(
-    () => filterPlaces(allPlaces, selectedCategory, selectedRegion),
-    [allPlaces, selectedCategory, selectedRegion],
+    () => filterPlaces(allPlaces, selectedCategory, selectedRegion, searchQuery),
+    [allPlaces, selectedCategory, selectedRegion, searchQuery],
   )
 
   const handlePlaceSelect = useCallback((place: Place) => {
@@ -78,6 +79,8 @@ function HomeContent() {
         {/* Floating Search — desktop */}
         <div className="hidden md:block absolute top-6 left-6 z-20 w-[420px]">
           <SearchBar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
             filterOpen={filterOpen}
             onToggleFilter={toggleFilter}
             selectedCategory={selectedCategory}
@@ -97,6 +100,8 @@ function HomeContent() {
           {/* Floating Search */}
           <div className="absolute top-24 left-6 right-20 z-20">
             <SearchBar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
               filterOpen={filterOpen}
               onToggleFilter={toggleFilter}
               selectedCategory={selectedCategory}
@@ -152,6 +157,8 @@ function HomeContent() {
             panelOpen={panelOpen}
             selectedCategory={selectedCategory}
             selectedRegion={selectedRegion}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
             onPlaceSelect={handlePlaceSelect}
             onPanelClose={handlePanelClose}
             onCategoryChange={setSelectedCategory}

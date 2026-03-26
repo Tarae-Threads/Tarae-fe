@@ -142,4 +142,49 @@ describe('filterPlaces', () => {
     const result = filterPlaces(allPlaces, 'popup', '존재하지않는지역')
     expect(result).toEqual([])
   })
+
+  it('filters by search query on name', () => {
+    const name = allPlaces[0].name
+    const result = filterPlaces(allPlaces, 'all', 'all', name)
+    expect(result.length).toBeGreaterThan(0)
+    for (const place of result) {
+      const haystack = [place.name, place.address, place.district, place.note, ...place.tags, ...place.brands].join(' ').toLowerCase()
+      expect(haystack).toContain(name.toLowerCase())
+    }
+  })
+
+  it('filters by search query on tag', () => {
+    const placeWithTags = allPlaces.find(p => p.tags.length > 0)
+    if (!placeWithTags) return
+    const tag = placeWithTags.tags[0]
+    const result = filterPlaces(allPlaces, 'all', 'all', tag)
+    expect(result.length).toBeGreaterThan(0)
+  })
+
+  it('search query is case-insensitive and trims whitespace', () => {
+    const name = allPlaces[0].name
+    const result = filterPlaces(allPlaces, 'all', 'all', `  ${name}  `)
+    expect(result.length).toBeGreaterThan(0)
+  })
+
+  it('combines search query with category and region filters', () => {
+    const place = allPlaces[0]
+    const result = filterPlaces(allPlaces, place.category, place.region, place.name)
+    expect(result.length).toBeGreaterThanOrEqual(1)
+    expect(result.find(p => p.id === place.id)).toBeDefined()
+  })
+
+  it('matches ignoring spaces in query and target', () => {
+    // Find a place whose name contains a space
+    const placeWithSpace = allPlaces.find(p => p.name.includes(' '))
+    if (!placeWithSpace) return
+    const queryNoSpace = placeWithSpace.name.replace(/\s+/g, '')
+    const result = filterPlaces(allPlaces, 'all', 'all', queryNoSpace)
+    expect(result.find(p => p.id === placeWithSpace.id)).toBeDefined()
+  })
+
+  it('returns no results for nonsense query', () => {
+    const result = filterPlaces(allPlaces, 'all', 'all', 'zzzzxxxxxyyyyy')
+    expect(result).toEqual([])
+  })
 })
