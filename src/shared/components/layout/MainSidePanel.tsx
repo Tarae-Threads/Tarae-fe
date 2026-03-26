@@ -8,7 +8,7 @@ import CategoryBadge from '@/domains/place/components/CategoryBadge'
 import StatusBadge from '@/domains/place/components/StatusBadge'
 import PlaceFilter from '@/domains/place/components/PlaceFilter'
 import EventSidePanelContent from '@/domains/event/components/EventSidePanelContent'
-import { X, Search, Clock, MapPin, ExternalLink, Map, Calendar } from 'lucide-react'
+import { X, Search, SlidersHorizontal, Clock, MapPin, ExternalLink, Map, Calendar } from 'lucide-react'
 
 type MainTab = 'places' | 'events'
 
@@ -48,7 +48,7 @@ export default function MainSidePanel({
   onEventPlaceClick,
 }: MainSidePanelProps) {
   const [mainTab, setMainTab] = useState<MainTab>('places')
-  const [placeSubTab, setPlaceSubTab] = useState<'list' | 'filter'>('list')
+  const [filterOpen, setFilterOpen] = useState(false)
 
   return (
     <div className="h-full flex flex-col bg-surface overflow-hidden">
@@ -95,58 +95,45 @@ export default function MainSidePanel({
       {/* Content */}
       {mainTab === 'places' ? (
         <>
-          {/* Place sub-tabs */}
-          <div className="flex px-5 gap-1 shrink-0 mb-1">
-            <button
-              onClick={() => { setPlaceSubTab('list'); if (panelOpen) onPanelClose() }}
-              className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all ${
-                placeSubTab === 'list' && !panelOpen
-                  ? 'bg-primary-fixed text-primary'
-                  : 'text-on-surface-variant hover:bg-surface-container'
-              }`}
-            >
-              목록
-            </button>
-            <button
-              onClick={() => setPlaceSubTab('filter')}
-              className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all ${
-                placeSubTab === 'filter'
-                  ? 'bg-primary-fixed text-primary'
-                  : 'text-on-surface-variant hover:bg-surface-container'
-              }`}
-            >
-              필터
-            </button>
-          </div>
-
-          {/* Search */}
+          {/* Search + Filter toggle */}
           <div className="px-5 py-3 shrink-0">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" aria-hidden="true" />
+            <div className="relative flex items-center bg-surface-container-low rounded-xl">
+              <Search className="absolute left-3 w-4 h-4 text-primary" aria-hidden="true" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 aria-label="뜨개 장소 검색"
                 placeholder="장소, 브랜드, 태그 검색..."
-                className="w-full bg-surface-container-low h-10 pl-10 pr-4 rounded-xl text-sm text-on-surface placeholder:text-outline font-medium focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="flex-1 bg-transparent h-10 pl-10 pr-2 text-sm text-on-surface placeholder:text-outline font-medium focus:outline-none"
               />
+              <button
+                onClick={() => setFilterOpen(prev => !prev)}
+                aria-expanded={filterOpen}
+                aria-label="필터"
+                className={`mr-1.5 p-2 rounded-lg transition-colors ${
+                  filterOpen ? 'bg-primary text-white' : 'text-outline hover:bg-surface-container'
+                }`}
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+              </button>
             </div>
+            {filterOpen && (
+              <div className="mt-2 bg-surface-container rounded-xl p-4">
+                <PlaceFilter
+                  selectedCategories={selectedCategories}
+                  selectedRegion={selectedRegion}
+                  onToggleCategory={(c) => { onToggleCategory(c); setFilterOpen(false) }}
+                  onClearCategories={() => { onClearCategories(); setFilterOpen(false) }}
+                  onRegionChange={(r) => { onRegionChange(r); setFilterOpen(false) }}
+                />
+              </div>
+            )}
           </div>
 
           {/* Place content */}
           <div className="flex-1 overflow-y-auto hide-scrollbar">
-            {placeSubTab === 'filter' ? (
-              <div className="px-5 py-3">
-                <PlaceFilter
-                  selectedCategories={selectedCategories}
-                  selectedRegion={selectedRegion}
-                  onToggleCategory={(c) => { onToggleCategory(c); setPlaceSubTab('list') }}
-                  onClearCategories={() => { onClearCategories(); setPlaceSubTab('list') }}
-                  onRegionChange={(r) => { onRegionChange(r); setPlaceSubTab('list') }}
-                />
-              </div>
-            ) : panelOpen && selectedPlace ? (
+            {panelOpen && selectedPlace ? (
               <PlaceDetail place={selectedPlace} onClose={onPanelClose} />
             ) : (
               <PlaceList places={places} onSelect={onPlaceSelect} />

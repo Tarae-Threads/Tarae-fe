@@ -15,7 +15,7 @@ import TopAppBar from '@/shared/components/layout/TopAppBar'
 import MainSidePanel from '@/shared/components/layout/MainSidePanel'
 import PlaceSubmitForm from '@/domains/place/components/PlaceSubmitForm'
 import { REGION_CENTER } from '@/domains/place/constants'
-import { MapPinPlus } from 'lucide-react'
+import { MapPinPlus, PanelRightOpen } from 'lucide-react'
 
 const NaverMap = dynamic(() => import('@/domains/place/components/NaverMap'), { ssr: false })
 
@@ -171,6 +171,17 @@ function HomeContent() {
           </button>
         </div>
       </div>
+
+      {/* ===== Panel toggle — desktop only ===== */}
+      {!sidePanelOpen && (
+        <button
+          onClick={() => setSidePanelOpen(true)}
+          aria-label="패널 열기"
+          className="hidden md:flex fixed right-0 top-1/2 -translate-y-1/2 z-20 w-8 h-16 bg-surface/90 backdrop-blur-xl rounded-l-xl shadow-ambient-md items-center justify-center text-primary hover:bg-surface-container transition-colors"
+        >
+          <PanelRightOpen className="w-4 h-4" />
+        </button>
+      )}
 
       {/* ===== Right: Side Panel — desktop only ===== */}
       {sidePanelOpen && (

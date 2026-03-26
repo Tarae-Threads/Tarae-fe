@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useCallback, useEffect } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import type { Place } from '../types'
 import PlaceCard from './PlaceCard'
 import PlaceCardCompact from './PlaceCardCompact'
@@ -58,7 +58,7 @@ export default function MobileBottomSheet({ places, onPlaceSelect, onEventPlaceC
   const sheetRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const [snap, setSnap] = useState<SnapPoint>('peek')
-  const [sheetHeight, setSheetHeight] = useState(0)
+  const [sheetHeight, setSheetHeight] = useState(() => getSnapHeight('peek'))
   const [isDragging, setIsDragging] = useState(false)
   const [mainTab, setMainTab] = useState<MainTab>('places')
 
@@ -70,10 +70,6 @@ export default function MobileBottomSheet({ places, onPlaceSelect, onEventPlaceC
     velocity: 0,
     isScrolling: false,
   })
-
-  useEffect(() => {
-    setSheetHeight(getSnapHeight('peek'))
-  }, [])
 
   const animateTo = useCallback((target: SnapPoint) => {
     setSnap(target)
