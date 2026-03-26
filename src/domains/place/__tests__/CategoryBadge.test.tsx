@@ -31,7 +31,7 @@ describe('CategoryBadge', () => {
   it('applies category color as background', () => {
     const { container } = render(<CategoryBadge category="yarn_store" />)
     const span = container.querySelector('span')
-    expect(span?.style.backgroundColor).toBe('rgb(145, 71, 43)')
+    expect(span?.style.backgroundColor).toBe('rgb(255, 219, 207)')
   })
 
   it('applies md size classes', () => {
