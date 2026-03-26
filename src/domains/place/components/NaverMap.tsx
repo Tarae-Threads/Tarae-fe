@@ -102,6 +102,7 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
   const clusterRef = useRef<{ setMap(map: NaverMap | null): void } | null>(
     null,
   );
+  const myLocationMarkerRef = useRef<NaverMarker | null>(null);
   const initializedRef = useRef(false);
   const [mapError, setMapError] = useState<string | null>(null);
 
@@ -121,10 +122,30 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
       navigator.geolocation.getCurrentPosition((pos) => {
         const map = mapInstanceRef.current;
         if (!map) return;
+        const N = window.naver.maps;
         const { latitude, longitude } = pos.coords;
-        const position = new window.naver.maps.LatLng(latitude, longitude);
+        const position = new N.LatLng(latitude, longitude);
         map.panTo(position);
         map.setZoom(14, true);
+
+        // Create or update my location marker
+        if (myLocationMarkerRef.current) {
+          myLocationMarkerRef.current.setMap(null);
+        }
+        const markerHtml = `
+          <div style="position:relative;display:flex;align-items:center;justify-content:center;width:36px;height:36px;">
+            <img src="/favicon.ico" width="36" height="36" alt="내 위치" style="border-radius:9999px;border:3px solid #91472b;box-shadow:0 4px 12px rgba(29,27,22,0.2);object-fit:cover;" />
+            <div style="position:absolute;width:36px;height:36px;border-radius:9999px;background:rgba(145,71,43,0.12);animation:pulse 2s ease-in-out infinite;pointer-events:none;"></div>
+          </div>
+        `;
+        myLocationMarkerRef.current = new N.Marker({
+          position,
+          icon: {
+            content: markerHtml,
+            anchor: new N.Point(20, 20),
+          },
+          map,
+        });
       });
     },
     panTo(lat: number, lng: number, zoom?: number) {
