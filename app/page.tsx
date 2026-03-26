@@ -13,9 +13,9 @@ import MapControls from '@/domains/place/components/MapControls'
 import PlaceSearchBar from '@/domains/place/components/PlaceSearchBar'
 import TopAppBar from '@/shared/components/layout/TopAppBar'
 import MainSidePanel from '@/shared/components/layout/MainSidePanel'
-import PlaceSubmitForm from '@/domains/place/components/PlaceSubmitForm'
+import SubmitForm from '@/shared/components/layout/SubmitForm'
 import { REGION_CENTER } from '@/domains/place/constants'
-import { MapPinPlus, PanelRightOpen } from 'lucide-react'
+import { Plus, PanelRightOpen } from 'lucide-react'
 
 const NaverMap = dynamic(() => import('@/domains/place/components/NaverMap'), { ssr: false })
 
@@ -133,8 +133,8 @@ function HomeContent() {
         </div>
 
         {/* FAB — desktop */}
-        <button onClick={() => setSubmitOpen(true)} aria-label="장소 추가" className="hidden md:flex absolute bottom-8 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl items-center justify-center z-20 active:scale-95 transition-transform">
-          <MapPinPlus className="w-7 h-7" />
+        <button onClick={() => setSubmitOpen(true)} aria-label="제보하기" className="hidden md:flex absolute bottom-8 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl items-center justify-center z-20 active:scale-95 transition-transform">
+          <Plus className="w-7 h-7" />
         </button>
 
         {/* ===== Mobile-only UI ===== */}
@@ -166,8 +166,8 @@ function HomeContent() {
           <PlacePanel place={selectedPlace} open={panelOpen} onClose={handlePanelClose} />
 
           {/* FAB */}
-          <button onClick={() => setSubmitOpen(true)} aria-label="장소 추가" className="fixed bottom-32 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
-            <MapPinPlus className="w-7 h-7" />
+          <button onClick={() => setSubmitOpen(true)} aria-label="제보하기" className="fixed bottom-32 right-6 w-16 h-16 signature-gradient text-white rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
+            <Plus className="w-7 h-7" />
           </button>
         </div>
       </div>
@@ -204,7 +204,7 @@ function HomeContent() {
           />
         </div>
       )}
-      <PlaceSubmitForm open={submitOpen} onClose={() => setSubmitOpen(false)} />
+      <SubmitForm open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </main>
   )
 }
