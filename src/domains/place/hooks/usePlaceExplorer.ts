@@ -16,7 +16,7 @@ export function usePlaceExplorer(initialPlaceId: string | null) {
       ? (allPlaces.find((p) => p.id === initialPlaceId) ?? null)
       : null,
   );
-  const [panelOpen, setPanelOpen] = useState(!!initialPlaceId);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sidePanelOpen, setSidePanelOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
