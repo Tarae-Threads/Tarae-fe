@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getEventById, getEvents, getLinkedPlace } from '@/domains/event/utils/events'
-import { EVENT_TYPE_LABEL, EVENT_TYPE_COLOR, RECRUITMENT_STATUS_LABEL } from '@/domains/event/constants'
+import { isTesterRecruitment } from '@/domains/event/utils/typeGuards'
 import { CATEGORY_LABEL } from '@/domains/place/constants'
-import type { TesterRecruitment } from '@/domains/event/types'
 import type { Metadata } from 'next'
 import { Calendar, MapPin, Users, ExternalLink, Clock, Navigation } from 'lucide-react'
+import InfoRow from '@/shared/components/ui/InfoRow'
+import EventTypeBadge from '@/domains/event/components/EventTypeBadge'
+import RecruitmentStatusBadge from '@/domains/event/components/RecruitmentStatusBadge'
 import TesterApplicationForm from '@/domains/event/components/TesterApplicationForm'
 
 interface PageProps {
@@ -25,10 +27,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: `${event.title} — 타래`,
     description: event.description,
   }
-}
-
-function isTesterRecruitment(event: ReturnType<typeof getEventById>): event is TesterRecruitment {
-  return event?.type === 'tester_recruitment'
 }
 
 export default async function EventDetailPage({ params }: PageProps) {
@@ -52,17 +50,8 @@ export default async function EventDetailPage({ params }: PageProps) {
       <main className="pt-24 pb-32 px-6 md:px-8 max-w-2xl mx-auto">
         {/* Type badge */}
         <div className="flex items-center gap-2 mb-4">
-          <span
-            className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white"
-            style={{ backgroundColor: EVENT_TYPE_COLOR[event.type] }}
-          >
-            {EVENT_TYPE_LABEL[event.type]}
-          </span>
-          {isRecruitment && (
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary-fixed text-primary">
-              {RECRUITMENT_STATUS_LABEL[event.recruitmentStatus]}
-            </span>
-          )}
+          <EventTypeBadge type={event.type} size="md" />
+          {isRecruitment && <RecruitmentStatusBadge status={event.recruitmentStatus} />}
         </div>
 
         {/* Title */}
@@ -76,25 +65,12 @@ export default async function EventDetailPage({ params }: PageProps) {
 
         {/* Info card */}
         <section className="bg-surface-container rounded-2xl p-6 mb-6 editorial-shadow space-y-4">
-          <div className="flex items-center gap-3 text-body-sm">
-            <Calendar className="w-5 h-5 text-outline" />
-            <span className="text-on-surface-variant">
-              {event.startDate} — {event.endDate}
-            </span>
-          </div>
+          <InfoRow icon={Calendar}>{event.startDate} — {event.endDate}</InfoRow>
           {event.location && !linkedPlace && (
-            <div className="flex items-center gap-3 text-body-sm">
-              <MapPin className="w-5 h-5 text-outline" />
-              <span className="text-on-surface-variant">{event.location}</span>
-            </div>
+            <InfoRow icon={MapPin}>{event.location}</InfoRow>
           )}
           {isRecruitment && (
-            <div className="flex items-center gap-3 text-body-sm">
-              <Users className="w-5 h-5 text-outline" />
-              <span className="text-on-surface-variant">
-                {event.currentParticipants}/{event.maxParticipants}명 신청
-              </span>
-            </div>
+            <InfoRow icon={Users}>{event.currentParticipants}/{event.maxParticipants}명 신청</InfoRow>
           )}
         </section>
 

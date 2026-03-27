@@ -1,7 +1,10 @@
 import Link from 'next/link'
-import type { AnyEvent, TesterRecruitment } from '../types'
-import { EVENT_TYPE_LABEL, EVENT_TYPE_COLOR, EVENT_TYPE_BG, RECRUITMENT_STATUS_LABEL } from '../constants'
+import type { AnyEvent } from '../types'
+import { isTesterRecruitment } from '../utils/typeGuards'
+import { formatDateRange } from '../utils/date'
 import { getLinkedPlace } from '../utils/events'
+import EventTypeBadge from './EventTypeBadge'
+import RecruitmentStatusBadge from './RecruitmentStatusBadge'
 import { Calendar, MapPin, Users, ExternalLink } from 'lucide-react'
 
 interface Props {
@@ -9,18 +12,9 @@ interface Props {
   onPlaceClick?: (placeId: string) => void
 }
 
-function isTesterRecruitment(event: AnyEvent): event is TesterRecruitment {
-  return event.type === 'tester_recruitment'
-}
-
-function formatDateRange(start: string, end: string): string {
-  const s = start.slice(5).replace('-', '.')
-  const e = end.slice(5).replace('-', '.')
-  return start === end ? s : `${s} — ${e}`
-}
-
 export default function EventCard({ event, onPlaceClick }: Props) {
   const linkedPlace = getLinkedPlace(event)
+  const isRecruitment = isTesterRecruitment(event)
 
   const handleClick = () => {
     if (linkedPlace && onPlaceClick) {
@@ -34,20 +28,8 @@ export default function EventCard({ event, onPlaceClick }: Props) {
       className={`bg-surface-container-high rounded-2xl p-5 editorial-shadow hover:shadow-xl transition-all group ${linkedPlace && onPlaceClick ? 'cursor-pointer' : ''}`}
     >
       <div className="flex items-center gap-2 mb-3">
-        <span
-          className="px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-white"
-          style={{ backgroundColor: EVENT_TYPE_COLOR[event.type] }}
-        >
-          {EVENT_TYPE_LABEL[event.type]}
-        </span>
-        {isTesterRecruitment(event) && (
-          <span
-            className="px-2 py-0.5 rounded-full text-[9px] font-bold"
-            style={{ backgroundColor: EVENT_TYPE_BG[event.type], color: EVENT_TYPE_COLOR[event.type] }}
-          >
-            {RECRUITMENT_STATUS_LABEL[event.recruitmentStatus]}
-          </span>
-        )}
+        <EventTypeBadge type={event.type} />
+        {isRecruitment && <RecruitmentStatusBadge status={event.recruitmentStatus} />}
       </div>
 
       <h3 className="font-display font-bold text-body-lg text-on-surface mb-2 group-hover:text-primary transition-colors">
@@ -73,7 +55,7 @@ export default function EventCard({ event, onPlaceClick }: Props) {
             )}
           </span>
         )}
-        {isTesterRecruitment(event) && (
+        {isRecruitment && (
           <span className="flex items-center gap-1">
             <Users className="w-3.5 h-3.5" />
             {event.currentParticipants}/{event.maxParticipants}명
@@ -81,7 +63,6 @@ export default function EventCard({ event, onPlaceClick }: Props) {
         )}
       </div>
 
-      {/* Detail link */}
       <div className="mt-3 pt-3 border-t border-outline-variant/30">
         <Link
           href={`/events/${event.id}`}

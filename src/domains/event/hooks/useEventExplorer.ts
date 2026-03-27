@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { getEvents, filterEvents, getDatesWithEvents } from "../utils/events";
+import { getTodayString } from "../utils/date";
 import type { EventType } from "../types";
 
 interface YearMonth {
@@ -73,8 +74,7 @@ export function useEventExplorer() {
   const goToday = useCallback(() => {
     const now = new Date();
     setYearMonth({ year: now.getFullYear(), month: now.getMonth() + 1 });
-    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-    setSelectedDate(todayStr);
+    setSelectedDate(getTodayString());
   }, []);
 
   return {

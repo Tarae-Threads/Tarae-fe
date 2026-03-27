@@ -2,7 +2,8 @@
 
 import type { EventType } from '../types'
 import { WEEKDAY_NAMES, EVENT_TYPE_COLOR } from '../constants'
-import { Undo2 } from 'lucide-react'
+import { getTodayString } from '../utils/date'
+import { ChevronLeft, ChevronRight, Undo2 } from 'lucide-react'
 
 interface Props {
   year: number
@@ -27,8 +28,8 @@ export default function CalendarGrid({
 }: Props) {
   const firstDayOfMonth = new Date(year, month - 1, 1).getDay()
   const daysInMonth = new Date(year, month, 0).getDate()
+  const todayStr = getTodayString()
   const today = new Date()
-  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
   const isCurrentMonth = year === today.getFullYear() && month === today.getMonth() + 1
 
   const cells: (number | null)[] = []
@@ -40,9 +41,7 @@ export default function CalendarGrid({
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <button onClick={onPrevMonth} className="p-2 hover:bg-surface-container rounded-full text-on-surface-variant">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+          <ChevronLeft className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2">
           <h3 className="font-display font-extrabold text-title-lg text-on-surface">
@@ -59,16 +58,14 @@ export default function CalendarGrid({
           )}
         </div>
         <button onClick={onNextMonth} className="p-2 hover:bg-surface-container rounded-full text-on-surface-variant">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+          <ChevronRight className="w-5 h-5" />
         </button>
       </div>
 
       {/* Weekday headers */}
       <div className="grid grid-cols-7 mb-2">
         {WEEKDAY_NAMES.map(day => (
-          <div key={day} className="text-center text-[11px] font-bold text-outline uppercase tracking-widest py-1">
+          <div key={day} className="text-center text-label-sm font-bold text-outline uppercase tracking-widest py-1">
             {day}
           </div>
         ))}
