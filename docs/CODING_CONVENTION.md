@@ -19,7 +19,7 @@ src/
 ├── shared/               # 도메인 무관 공통 코드
 │   ├── components/
 │   │   ├── ui/           # 범용 UI (ColorBadge, TagChip, FilterChip 등)
-│   │   └── layout/       # 레이아웃 (TopAppBar, MainSidePanel 등)
+│   │   └── layout/       # 레이아웃 (NavBar, BasePanel, DetailPanel, TopAppBar 등)
 │   ├── hooks/            # 공통 훅 (useLocalStorage, useDebounce)
 │   ├── types/            # 공통 타입
 │   └── lib/              # 유틸 (cn 함수)
@@ -254,8 +254,9 @@ import dynamic from 'next/dynamic'
 import type { NaverMapHandle } from '...'        // 4. 타입 (import type)
 import { usePlaceExplorer } from '@/domains/...' // 5. 도메인 import
 import { getPlaceById } from '@/domains/...'
-import MainSidePanel from '@/shared/...'         // 6. shared import
-import { Plus, PanelRightOpen } from 'lucide-react' // 7. 외부 라이브러리
+import NavBar from '@/shared/...'                 // 6. shared import
+import BasePanel from '@/shared/...'
+import { Plus } from 'lucide-react'              // 7. 외부 라이브러리
 ```
 
 ---
@@ -268,14 +269,15 @@ import { Plus, PanelRightOpen } from 'lucide-react' // 7. 외부 라이브러리
 - **데스크탑 전용**: `hidden md:block` 또는 `hidden md:flex`
 
 ```tsx
-{/* 모바일: 바텀시트 */}
+{/* 데스크탑: 좌측 NavBar + BasePanel + DetailPanel */}
+<NavBar />                           {/* hidden md:flex, w-16 */}
+<BasePanel />                        {/* hidden md:flex, w-[380px] */}
+<DetailPanel />                      {/* hidden md:flex, w-[380px], 선택 시만 */}
+
+{/* 모바일: 바텀시트 + PlacePanel 오버레이 */}
 <div className="md:hidden">
   <MobileBottomSheet />
-</div>
-
-{/* 데스크탑: 사이드패널 */}
-<div className="hidden md:block w-[400px]">
-  <MainSidePanel />
+  <PlacePanel />
 </div>
 ```
 
@@ -309,6 +311,11 @@ export interface NaverMapHandle {
 - 이벤트 연결 장소: Secondary 그라디언트 (`#53624f → #7a8c73`)
 - 내 위치: favicon + 테라코타 보더 + pulse 애니메이션
 
+### 마커 z-index
+
+- 클릭 시 전체 마커 zIndex 0으로 리셋 → 선택된 마커만 1000으로 설정
+- 중첩 마커에서 선택된 마커가 항상 최상위에 표시
+
 ---
 
 ## 10. 테스트
@@ -321,10 +328,15 @@ export interface NaverMapHandle {
 
 ```
 src/domains/[domain]/__tests__/
-  ├── places.test.ts       # 유틸리티 함수
-  ├── types.test.ts        # 상수 검증
-  ├── CategoryBadge.test.tsx # 컴포넌트
-  └── useEventExplorer.test.ts # 훅 (renderHook)
+  ├── places.test.ts            # 유틸리티 함수
+  ├── types.test.ts             # 상수 검증
+  ├── CategoryBadge.test.tsx    # 컴포넌트
+  ├── events.test.ts            # 이벤트 유틸리티
+  ├── useEventExplorer.test.ts  # 훅 (renderHook)
+  ├── useApplicationSubmit.test.ts # 폼 제출 훅
+  ├── date.test.ts              # 날짜 유틸리티
+  ├── typeGuards.test.ts        # 타입 가드
+  └── constants.test.ts         # 상수 검증
 ```
 
 ### 패턴
