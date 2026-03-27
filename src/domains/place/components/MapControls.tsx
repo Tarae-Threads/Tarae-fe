@@ -10,7 +10,7 @@ interface MapControlsProps {
 
 export default function MapControls({ onZoomIn, onZoomOut, onLocate }: MapControlsProps) {
   return (
-    <div className="absolute right-6 bottom-36 md:bottom-8 flex flex-col gap-2 z-20" role="group" aria-label="지도 컨트롤">
+    <div className="absolute right-4 bottom-[340px] md:right-6 md:bottom-8 flex flex-col gap-2 z-20" role="group" aria-label="지도 컨트롤">
       <button
         onClick={onZoomIn}
         aria-label="확대"
