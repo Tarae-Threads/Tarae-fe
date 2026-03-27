@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect, useSyncExternalStore } from "react";
+import { useRef, useState, useCallback, useSyncExternalStore } from "react";
 import type { Place } from "../types";
 import type { NavTab } from "@/shared/components/layout/NavBar";
 import PlaceCardCompact from "./PlaceCardCompact";
@@ -16,9 +16,12 @@ function getSnapHeight(snap: SnapPoint) {
   if (typeof window === "undefined") return 0;
   const vh = window.innerHeight;
   switch (snap) {
-    case "peek": return vh * SNAP_PEEK;
-    case "half": return vh * SNAP_HALF;
-    case "full": return vh * SNAP_FULL;
+    case "peek":
+      return vh * SNAP_PEEK;
+    case "half":
+      return vh * SNAP_HALF;
+    case "full":
+      return vh * SNAP_FULL;
   }
 }
 
@@ -68,6 +71,7 @@ export default function MobileBottomSheet({
     () => false,
   );
   const [sheetHeight, setSheetHeight] = useState(0);
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- hydration: server=0, client=actual height
   if (isClient && sheetHeight === 0) {
     setSheetHeight(getSnapHeight("peek"));
   }
@@ -82,17 +86,20 @@ export default function MobileBottomSheet({
     isScrolling: false,
   });
 
-  useEffect(() => {
-    if (activeTab === "events" && snap === "peek") {
-      setSnap("half");
-      setSheetHeight(getSnapHeight("half"));
-    }
-  }, [activeTab, snap]);
-
   const animateTo = useCallback((target: SnapPoint) => {
     setSnap(target);
     setSheetHeight(getSnapHeight(target));
   }, []);
+
+  // Auto-expand when switching to events tab
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: tab switch triggers layout change via microtask
+  const prevTabRef = useRef(activeTab);
+  if (prevTabRef.current !== activeTab) {
+    prevTabRef.current = activeTab;
+    if (activeTab === "events" && snap === "peek") {
+      queueMicrotask(() => animateTo("half"));
+    }
+  }
 
   const handleTouchStart = useCallback(
     (e: React.TouchEvent) => {
@@ -147,7 +154,9 @@ export default function MobileBottomSheet({
       style={{
         height: sheetHeight,
         marginBottom: 48,
-        transition: isDragging ? "none" : "height 0.4s cubic-bezier(0.32, 0.72, 0, 1)",
+        transition: isDragging
+          ? "none"
+          : "height 0.4s cubic-bezier(0.32, 0.72, 0, 1)",
         willChange: "height",
         touchAction: "none",
       }}
@@ -183,12 +192,19 @@ export default function MobileBottomSheet({
       <div
         ref={contentRef}
         className="flex-1 min-h-0 overflow-y-auto hide-scrollbar"
-        style={{ overscrollBehavior: "contain", WebkitOverflowScrolling: "touch" }}
+        style={{
+          overscrollBehavior: "contain",
+          WebkitOverflowScrolling: "touch",
+        }}
       >
         {activeTab === "places" ? (
           <div className="px-6 pb-20 space-y-3">
             {places.map((place) => (
-              <PlaceCardCompact key={place.id} place={place} onClick={onPlaceSelect} />
+              <PlaceCardCompact
+                key={place.id}
+                place={place}
+                onClick={onPlaceSelect}
+              />
             ))}
           </div>
         ) : (
