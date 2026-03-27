@@ -6,11 +6,10 @@ import { Calendar } from 'lucide-react'
 interface Props {
   events: AnyEvent[]
   selectedDate: string | null
-  onPlaceClick?: (placeId: string) => void
   onEventSelect?: (eventId: string) => void
 }
 
-export default function EventList({ events, selectedDate, onPlaceClick, onEventSelect }: Props) {
+export default function EventList({ events, selectedDate, onEventSelect }: Props) {
   if (events.length === 0) {
     return (
       <EmptyState
@@ -24,7 +23,7 @@ export default function EventList({ events, selectedDate, onPlaceClick, onEventS
   return (
     <div className="space-y-3">
       {events.map(event => (
-        <EventCard key={event.id} event={event} onPlaceClick={onPlaceClick} onSelect={onEventSelect} />
+        <EventCard key={event.id} event={event} onSelect={onEventSelect} />
       ))}
     </div>
   )

@@ -8,25 +8,16 @@ import { Calendar, MapPin, Users } from 'lucide-react'
 
 interface Props {
   event: AnyEvent
-  onPlaceClick?: (placeId: string) => void
   onSelect?: (eventId: string) => void
 }
 
-export default function EventCard({ event, onPlaceClick, onSelect }: Props) {
+export default function EventCard({ event, onSelect }: Props) {
   const linkedPlace = getLinkedPlace(event)
   const isRecruitment = isTesterRecruitment(event)
 
-  const handleClick = () => {
-    if (onSelect) {
-      onSelect(event.id)
-    } else if (linkedPlace && onPlaceClick) {
-      onPlaceClick(linkedPlace.id)
-    }
-  }
-
   return (
     <div
-      onClick={handleClick}
+      onClick={() => onSelect?.(event.id)}
       className="bg-surface-container-high rounded-2xl p-5 editorial-shadow hover:shadow-xl transition-all group cursor-pointer"
     >
       <div className="flex items-center gap-2 mb-3">

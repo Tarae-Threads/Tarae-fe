@@ -8,11 +8,11 @@ import CategoryBadge from '@/domains/place/components/CategoryBadge'
 import StatusBadge from '@/domains/place/components/StatusBadge'
 import PlaceFilter from '@/domains/place/components/PlaceFilter'
 import EventSidePanelContent from '@/domains/event/components/EventSidePanelContent'
-import { Search, SlidersHorizontal, X, Clock } from 'lucide-react'
+import EmptyState from '@/shared/components/ui/EmptyState'
+import { Search, SlidersHorizontal, X, Clock, MapPin } from 'lucide-react'
 
 interface Props {
   activeTab: NavTab
-  // Place
   places: Place[]
   selectedCategories: Set<PlaceCategory>
   selectedRegion: string
@@ -22,8 +22,6 @@ interface Props {
   onToggleCategory: (category: PlaceCategory) => void
   onClearCategories: () => void
   onRegionChange: (region: string) => void
-  // Event
-  onEventPlaceClick?: (placeId: string) => void
   onEventSelect?: (eventId: string) => void
 }
 
@@ -38,7 +36,6 @@ export default function BasePanel({
   onToggleCategory,
   onClearCategories,
   onRegionChange,
-  onEventPlaceClick,
   onEventSelect,
 }: Props) {
   const [filterOpen, setFilterOpen] = useState(false)
@@ -59,6 +56,11 @@ export default function BasePanel({
                 placeholder="장소, 브랜드, 태그 검색..."
                 className="flex-1 bg-transparent h-10 pl-10 pr-2 text-label-lg text-on-surface placeholder:text-outline font-medium focus:outline-none"
               />
+              {searchQuery && (
+                <button onClick={() => onSearchChange('')} aria-label="검색 초기화" className="p-1.5 text-outline hover:text-on-surface">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
               <button
                 onClick={() => setFilterOpen(prev => !prev)}
                 aria-expanded={filterOpen}
@@ -85,41 +87,43 @@ export default function BasePanel({
 
           {/* Place list */}
           <div className="flex-1 overflow-y-auto hide-scrollbar">
-            <div className="px-4 space-y-3 pb-4">
-              {places.map(place => (
-                <button
-                  key={place.id}
-                  onClick={() => onPlaceSelect(place)}
-                  className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow text-left group transition-all hover:shadow-xl"
-                >
-                  {place.images[0] && (
-                    <div className="h-32 overflow-hidden relative">
-                      <Image
-                        src={place.images[0]}
-                        alt={place.name}
-                        fill
-                        sizes="340px"
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                    </div>
-                  )}
-                  <div className="p-4">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <div className="flex items-center gap-1.5">
-                        <h3 className="font-display font-bold text-label-lg text-on-surface">{place.name}</h3>
-                        <StatusBadge status={place.status} />
+            {places.length === 0 ? (
+              <EmptyState
+                title="검색 결과가 없어요"
+                description="필터를 변경하거나 검색어를 수정해보세요."
+                icon={<MapPin className="w-8 h-8 text-outline" />}
+              />
+            ) : (
+              <div className="px-4 space-y-3 pb-4">
+                {places.map(place => (
+                  <button
+                    key={place.id}
+                    onClick={() => onPlaceSelect(place)}
+                    className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow text-left group transition-all hover:shadow-xl"
+                  >
+                    {place.images[0] && (
+                      <div className="h-32 overflow-hidden relative">
+                        <Image src={place.images[0]} alt={place.name} fill sizes="340px" className="object-cover group-hover:scale-105 transition-transform duration-700" />
                       </div>
-                      <CategoryBadge category={place.category} />
+                    )}
+                    <div className="p-4">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="font-display font-bold text-label-lg text-on-surface">{place.name}</h3>
+                          <StatusBadge status={place.status} />
+                        </div>
+                        <CategoryBadge category={place.category} />
+                      </div>
+                      <p className="text-on-surface-variant text-label-md line-clamp-1 mb-2">{place.address}</p>
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="w-3 h-3 text-outline" />
+                        <span className="text-label-xs font-bold text-outline uppercase tracking-wider">{place.hours}</span>
+                      </div>
                     </div>
-                    <p className="text-on-surface-variant text-label-md line-clamp-1 mb-2">{place.address}</p>
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="w-3 h-3 text-outline" />
-                      <span className="text-label-xs font-bold text-outline uppercase tracking-wider">{place.hours}</span>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Footer */}
@@ -131,7 +135,7 @@ export default function BasePanel({
         </>
       ) : (
         <div className="flex-1 overflow-y-auto hide-scrollbar">
-          <EventSidePanelContent onPlaceClick={onEventPlaceClick} onEventSelect={onEventSelect} />
+          <EventSidePanelContent onEventSelect={onEventSelect} />
         </div>
       )}
     </div>
