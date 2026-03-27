@@ -16,47 +16,32 @@ export default function PlaceCardCompact({ place, onClick }: Props) {
   return (
     <button
       onClick={() => onClick(place)}
-      className="w-full flex gap-4 bg-surface-container-high rounded-2xl overflow-hidden shadow-sm active:scale-[0.98] transition-transform duration-200 text-left"
+      className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow active:scale-[0.98] transition-transform duration-200 text-left"
     >
-      {/* Thumbnail */}
-      <div className="w-24 h-24 relative flex-shrink-0 overflow-hidden rounded-2xl">
-        {place.images[0] ? (
-          <Image
-            src={place.images[0]}
-            alt={place.name}
-            fill
-            sizes="96px"
-            className="object-cover"
-          />
-        ) : (
-          <div className="w-full h-full signature-gradient opacity-30" />
-        )}
-      </div>
-
-      {/* Info */}
-      <div className="flex-1 py-3 pr-4 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <h3 className="font-display font-bold text-body-lg text-on-surface truncate">
-            {place.name}
-          </h3>
-          <CategoryBadge category={place.category} />
-          <StatusBadge status={place.status} />
+      {place.images[0] && (
+        <div className="h-32 overflow-hidden relative">
+          <Image src={place.images[0]} alt={place.name} fill sizes="340px" className="object-cover" />
         </div>
-        <p className="text-on-surface-variant text-body-sm line-clamp-1 mb-1">
-          {place.address}
-        </p>
+      )}
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-1.5">
+          <div className="flex items-center gap-1.5">
+            <h3 className="font-display font-bold text-label-lg text-on-surface">{place.name}</h3>
+            <StatusBadge status={place.status} />
+          </div>
+          <CategoryBadge category={place.category} />
+        </div>
+        <p className="text-on-surface-variant text-label-md line-clamp-1 mb-2">{place.address}</p>
         {place.tags.length > 0 && (
-          <div className="flex gap-1 mb-1">
+          <div className="flex gap-1 mb-2">
             {place.tags.slice(0, 2).map(tag => (
               <TagChip key={tag} label={tag} size="sm" />
             ))}
           </div>
         )}
         <div className="flex items-center gap-1.5">
-          <Clock className="w-3.5 h-3.5 text-outline" />
-          <span className="text-label-sm font-bold text-outline uppercase tracking-wider">
-            {place.hours}
-          </span>
+          <Clock className="w-3 h-3 text-outline" />
+          <span className="text-label-xs font-bold text-outline uppercase tracking-wider">{place.hours}</span>
         </div>
       </div>
     </button>

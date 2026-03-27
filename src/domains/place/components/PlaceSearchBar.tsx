@@ -39,11 +39,16 @@ export default function PlaceSearchBar({
           placeholder="장소, 브랜드, 태그 검색..."
           className="flex-1 bg-transparent h-full pl-14 pr-2 text-on-surface placeholder:text-outline font-medium focus:outline-none"
         />
+        {searchQuery && (
+          <button onClick={() => onSearchChange('')} aria-label="검색 초기화" className="p-1.5 text-outline hover:text-on-surface">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
         <button
           onClick={onToggleFilter}
           aria-expanded={filterOpen}
           aria-label="필터"
-          className={`mr-2 p-2.5 rounded-xl transition-colors ${
+          className={`mr-2 p-2.5 rounded-lg transition-colors ${
             filterOpen ? 'bg-primary text-white' : 'text-outline hover:bg-surface-container'
           }`}
         >
@@ -51,7 +56,7 @@ export default function PlaceSearchBar({
         </button>
       </div>
       {filterOpen && (
-        <div className="mt-3 bg-surface-container-low backdrop-blur-2xl rounded-2xl editorial-shadow p-5">
+        <div className="mt-3 bg-surface-container-low backdrop-blur-2xl rounded-2xl editorial-shadow p-4">
           <PlaceFilter
             selectedCategories={selectedCategories}
             selectedRegion={selectedRegion}

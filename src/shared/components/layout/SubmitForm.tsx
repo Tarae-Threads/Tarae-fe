@@ -119,14 +119,15 @@ export default function SubmitForm({ open, onClose }: Props) {
 
   const handleSuccess = () => {
     setSubmitted(true)
-    setTimeout(() => {
-      setSubmitted(false)
-      placeForm.reset()
-      eventForm.reset()
-      setSelectedCategories(new Set())
-      setSelectedEventType(null)
-      onClose()
-    }, 1500)
+  }
+
+  const handleConfirm = () => {
+    setSubmitted(false)
+    placeForm.reset()
+    eventForm.reset()
+    setSelectedCategories(new Set())
+    setSelectedEventType(null)
+    onClose()
   }
 
   return (
@@ -161,7 +162,10 @@ export default function SubmitForm({ open, onClose }: Props) {
           {submitted ? (
             <div className="text-center py-8">
               <p className="font-display font-bold text-title-sm text-primary mb-2">제보 완료!</p>
-              <p className="text-body-sm text-on-surface-variant">제보 내용은 이 기기에 저장됩니다.</p>
+              <p className="text-body-sm text-on-surface-variant mb-5">제보 내용은 이 기기에 저장됩니다.</p>
+              <button type="button" onClick={handleConfirm} className="px-8 py-2.5 bg-secondary text-secondary-foreground font-bold rounded-xl">
+                확인
+              </button>
             </div>
           ) : tab === 'place' ? (
             <form onSubmit={placeForm.handleSubmit(onPlaceSubmit)} className="space-y-4">

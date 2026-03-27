@@ -175,7 +175,12 @@ function EventDetailContent({ event }: { event: AnyEvent }) {
         {isRecruitment && (
           <div className="flex items-center gap-2.5 text-body-sm">
             <Users className="w-4 h-4 text-outline" />
-            <span className="text-on-surface-variant">{event.currentParticipants}/{event.maxParticipants}명 신청</span>
+            <div className="flex-1">
+              <span className="text-on-surface-variant">{event.currentParticipants}/{event.maxParticipants}명 신청</span>
+              <div className="mt-1.5 h-1.5 bg-secondary-container rounded-full overflow-hidden">
+                <div className="h-full bg-secondary rounded-full transition-all" style={{ width: `${Math.min(100, (event.currentParticipants / event.maxParticipants) * 100)}%` }} />
+              </div>
+            </div>
           </div>
         )}
       </div>
