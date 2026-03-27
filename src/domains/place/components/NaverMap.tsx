@@ -215,8 +215,9 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
           position,
           icon: {
             content: markerHtml,
-            anchor: new N.Point(16, 44),
+            anchor: new N.Point(16, 20),
           },
+          clickable: true,
         });
 
         N.Event.addListener(marker, "click", () => {
