@@ -364,7 +364,53 @@ expect(screen.getByText('뜨개샵')).toBeInTheDocument()
 
 ---
 
-## 11. 금지 사항
+## 11. 폼
+
+### 프레임워크
+
+- `react-hook-form` + `@hookform/resolvers` + `zod`
+
+### 공통 컴포넌트
+
+| 컴포넌트 | 용도 |
+|----------|------|
+| `FormInput` | 텍스트/날짜 입력 (label, required, error, readOnly, onClick) |
+| `FormTextarea` | 다중 행 입력 (label, required, error, rows) |
+| `FormChipGroup` | 칩 선택 (multi/single, options, error) |
+
+### 패턴
+
+```tsx
+// 1. Zod 스키마 정의 (shared/schemas/ 또는 domain/schemas/)
+const schema = z.object({
+  name: z.string().min(1, '에러 메시지'),
+})
+
+// 2. useForm + zodResolver
+const form = useForm({ resolver: zodResolver(schema) })
+
+// 3. 공통 컴포넌트에 registration 전달
+<FormInput
+  label="장소명"
+  required
+  registration={form.register('name')}
+  error={form.formState.errors.name?.message}
+/>
+
+// 4. form.handleSubmit으로 제출
+<form onSubmit={form.handleSubmit(onSubmit)}>
+```
+
+### 규칙
+
+- 필드당 `useState` 금지 → `useForm` 사용
+- 인라인 유효성 검증 금지 → Zod 스키마로 선언적 검증
+- 에러 메시지는 한국어로 스키마에 정의
+- 칩/멀티선택은 react-hook-form 외부 state + 수동 검증 (Set 기반)
+
+---
+
+## 12. 금지 사항
 
 - `text-[NNpx]` 직접 픽셀 사용 → 타이포그래피 토큰 사용
 - `#000000` 텍스트 색상 → `on-surface` 사용
@@ -376,3 +422,6 @@ expect(screen.getByText('뜨개샵')).toBeInTheDocument()
 - `Date.now()` 기반 ID → `crypto.randomUUID()` 사용
 - 인라인 SVG → Lucide React 아이콘 사용
 - 9px 이하 폰트 사이즈 → 최소 `text-label-2xs` (10px)
+- 폼 필드당 `useState` → `react-hook-form` + `useForm` 사용
+- 인라인 폼 유효성 검증 → Zod 스키마 사용
+- 주소 자유 입력 → 카카오 우편번호 서비스로만 입력
