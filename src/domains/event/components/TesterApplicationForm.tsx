@@ -1,36 +1,32 @@
 'use client'
 
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { applicationSchema } from '../schemas/applicationForm'
+import type { ApplicationFormData } from '../schemas/applicationForm'
 import { useApplicationSubmit } from '../hooks/useApplicationSubmit'
+import FormInput from '@/shared/components/ui/FormInput'
+import FormTextarea from '@/shared/components/ui/FormTextarea'
 import { Send, ChevronDown, ChevronUp } from 'lucide-react'
 
 interface Props {
   recruitmentId: string
 }
 
-const inputClass = 'w-full bg-surface h-11 px-4 rounded-xl text-label-lg text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30'
-const textareaClass = 'w-full bg-surface px-4 py-3 rounded-xl text-label-lg text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none'
-
 export default function TesterApplicationForm({ recruitmentId }: Props) {
   const [open, setOpen] = useState(false)
-  const [nickname, setNickname] = useState('')
-  const [contact, setContact] = useState('')
-  const [experience, setExperience] = useState('')
-  const [reason, setReason] = useState('')
-  const [portfolio, setPortfolio] = useState('')
-
   const { submitted, submit } = useApplicationSubmit(recruitmentId)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!nickname.trim() || !contact.trim() || !experience.trim() || !reason.trim()) return
+  const form = useForm<ApplicationFormData>({
+    resolver: zodResolver(applicationSchema),
+    defaultValues: { nickname: '', contact: '', experience: '', reason: '', portfolio: '' },
+  })
 
+  const onSubmit = (data: ApplicationFormData) => {
     submit({
-      nickname: nickname.trim(),
-      contact: contact.trim(),
-      experience: experience.trim(),
-      reason: reason.trim(),
-      portfolio: portfolio.trim() || undefined,
+      ...data,
+      portfolio: data.portfolio || undefined,
     })
   }
 
@@ -54,40 +50,17 @@ export default function TesterApplicationForm({ recruitmentId }: Props) {
       </button>
 
       {open && (
-        <form onSubmit={handleSubmit} className="mt-4 bg-surface-container rounded-2xl p-6 space-y-4">
-          <FormField label="닉네임 *">
-            <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} required className={inputClass} />
-          </FormField>
-          <FormField label="연락처 *">
-            <input type="text" value={contact} onChange={e => setContact(e.target.value)} required placeholder="인스타 ID, 이메일 등" className={`${inputClass} placeholder:text-outline`} />
-          </FormField>
-          <FormField label="뜨개 경험 *">
-            <textarea value={experience} onChange={e => setExperience(e.target.value)} required rows={2} placeholder="뜨개 경력, 주로 만드는 작품 등" className={textareaClass} />
-          </FormField>
-          <FormField label="지원 이유 *">
-            <textarea value={reason} onChange={e => setReason(e.target.value)} required rows={2} className={textareaClass} />
-          </FormField>
-          <FormField label="포트폴리오 (선택)">
-            <input type="text" value={portfolio} onChange={e => setPortfolio(e.target.value)} placeholder="인스타그램, 블로그 URL 등" className={`${inputClass} placeholder:text-outline`} />
-          </FormField>
-          <button
-            type="submit"
-            className="w-full bg-primary text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2"
-          >
-            <Send className="w-4 h-4" />
-            신청 제출
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 bg-surface-container rounded-2xl p-6 space-y-4">
+          <FormInput label="닉네임" required registration={form.register('nickname')} error={form.formState.errors.nickname?.message} />
+          <FormInput label="연락처" required placeholder="인스타 ID, 이메일 등" registration={form.register('contact')} error={form.formState.errors.contact?.message} />
+          <FormTextarea label="뜨개 경험" required rows={2} placeholder="뜨개 경력, 주로 만드는 작품 등" registration={form.register('experience')} error={form.formState.errors.experience?.message} />
+          <FormTextarea label="지원 이유" required rows={2} registration={form.register('reason')} error={form.formState.errors.reason?.message} />
+          <FormInput label="포트폴리오" placeholder="인스타그램, 블로그 URL 등" registration={form.register('portfolio')} />
+          <button type="submit" className="w-full bg-primary text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2">
+            <Send className="w-4 h-4" /> 신청 제출
           </button>
         </form>
       )}
-    </div>
-  )
-}
-
-function FormField({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <label className="text-label-md font-bold text-on-surface-variant mb-1 block">{label}</label>
-      {children}
     </div>
   )
 }
