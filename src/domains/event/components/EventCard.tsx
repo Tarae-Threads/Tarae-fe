@@ -1,23 +1,25 @@
-import Link from 'next/link'
 import type { AnyEvent } from '../types'
 import { isTesterRecruitment } from '../utils/typeGuards'
 import { formatDateRange } from '../utils/date'
 import { getLinkedPlace } from '../utils/events'
 import EventTypeBadge from './EventTypeBadge'
 import RecruitmentStatusBadge from './RecruitmentStatusBadge'
-import { Calendar, MapPin, Users, ExternalLink } from 'lucide-react'
+import { Calendar, MapPin, Users } from 'lucide-react'
 
 interface Props {
   event: AnyEvent
   onPlaceClick?: (placeId: string) => void
+  onSelect?: (eventId: string) => void
 }
 
-export default function EventCard({ event, onPlaceClick }: Props) {
+export default function EventCard({ event, onPlaceClick, onSelect }: Props) {
   const linkedPlace = getLinkedPlace(event)
   const isRecruitment = isTesterRecruitment(event)
 
   const handleClick = () => {
-    if (linkedPlace && onPlaceClick) {
+    if (onSelect) {
+      onSelect(event.id)
+    } else if (linkedPlace && onPlaceClick) {
       onPlaceClick(linkedPlace.id)
     }
   }
@@ -25,7 +27,7 @@ export default function EventCard({ event, onPlaceClick }: Props) {
   return (
     <div
       onClick={handleClick}
-      className={`bg-surface-container-high rounded-2xl p-5 editorial-shadow hover:shadow-xl transition-all group ${linkedPlace && onPlaceClick ? 'cursor-pointer' : ''}`}
+      className="bg-surface-container-high rounded-2xl p-5 editorial-shadow hover:shadow-xl transition-all group cursor-pointer"
     >
       <div className="flex items-center gap-2 mb-3">
         <EventTypeBadge type={event.type} />
@@ -61,17 +63,6 @@ export default function EventCard({ event, onPlaceClick }: Props) {
             {event.currentParticipants}/{event.maxParticipants}명
           </span>
         )}
-      </div>
-
-      <div className="mt-3 pt-3 border-t border-outline-variant/30">
-        <Link
-          href={`/events/${event.id}`}
-          onClick={e => e.stopPropagation()}
-          className="inline-flex items-center gap-1 text-label-md text-primary font-bold hover:underline decoration-2 underline-offset-4"
-        >
-          <ExternalLink className="w-3 h-3" />
-          상세보기
-        </Link>
       </div>
     </div>
   )

@@ -89,44 +89,7 @@
     "location": "니트카페 송파점",
     "placeId": "nitkafe-songpa"
   },
-  {
-    "id": "event-001",
-    "title": "서울 핸드메이드 페어 2026",
-    "type": "event_popup",
-    "description": "국내 최대 핸드메이드 전시·판매 행사. 뜨개 부스 다수 참여.",
-    "startDate": "2026-04-18",
-    "endDate": "2026-04-20",
-    "location": "코엑스 D홀",
-    "link": "https://example.com/handmade-fair"
-  },
-  {
-    "id": "event-002",
-    "title": "강원 뜨개 팝업 마켓",
-    "type": "event_popup",
-    "description": "강원도 속초 해변 뜨개 팝업 마켓. 핸드메이드 작품 판매 및 체험.",
-    "startDate": "2026-04-25",
-    "endDate": "2026-04-27",
-    "location": "속초 해변 공원"
-  },
-  {
-    "id": "event-003",
-    "title": "뜨개 원데이 클래스 — 코바늘 기초",
-    "type": "event_popup",
-    "description": "초보자를 위한 코바늘 기초 원데이 클래스. 재료비 포함.",
-    "startDate": "2026-04-05",
-    "endDate": "2026-04-05",
-    "location": "홍대 공방 아뜰리에",
-    "link": "https://example.com/oneday"
-  },
-  {
-    "id": "event-004",
-    "title": "제주 뜨개 리트릿",
-    "type": "event_popup",
-    "description": "제주도에서 2박3일 뜨개 힐링 리트릿. 숙박·재료 포함.",
-    "startDate": "2026-05-02",
-    "endDate": "2026-05-04",
-    "location": "제주시 한림읍"
-  },
+
   {
     "id": "sale-004",
     "title": "어린이날 특별 키트 할인",

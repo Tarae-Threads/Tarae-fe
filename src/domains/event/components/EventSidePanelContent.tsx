@@ -7,9 +7,10 @@ import EventList from './EventList'
 
 interface Props {
   onPlaceClick?: (placeId: string) => void
+  onEventSelect?: (eventId: string) => void
 }
 
-export default function EventSidePanelContent({ onPlaceClick }: Props) {
+export default function EventSidePanelContent({ onPlaceClick, onEventSelect }: Props) {
   const {
     currentYear,
     currentMonth,
@@ -53,7 +54,7 @@ export default function EventSidePanelContent({ onPlaceClick }: Props) {
           </h3>
           <span className="text-label-xs text-outline font-medium">{filteredEvents.length}개</span>
         </div>
-        <EventList events={filteredEvents} selectedDate={selectedDate} onPlaceClick={onPlaceClick} />
+        <EventList events={filteredEvents} selectedDate={selectedDate} onPlaceClick={onPlaceClick} onEventSelect={onEventSelect} />
       </div>
     </div>
   )
