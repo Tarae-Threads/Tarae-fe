@@ -5,6 +5,7 @@ import type { Place } from '../types'
 import CategoryBadge from './CategoryBadge'
 import StatusBadge from './StatusBadge'
 import { Clock } from 'lucide-react'
+import TagChip from '@/shared/components/ui/TagChip'
 
 interface PlaceCardProps {
   place: Place
@@ -55,16 +56,14 @@ export default function PlaceCard({ place, onClick }: PlaceCardProps) {
         {place.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
             {place.tags.slice(0, 3).map(tag => (
-              <span key={tag} className="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full text-[10px] font-medium">
-                {tag}
-              </span>
+              <TagChip key={tag} label={tag} size="md" />
             ))}
           </div>
         )}
 
         <div className="flex items-center gap-2">
           <Clock className="w-[18px] h-[18px] text-outline" />
-          <span className="text-[11px] font-bold text-outline uppercase tracking-wider">
+          <span className="text-label-sm font-bold text-outline uppercase tracking-wider">
             {place.hours}
           </span>
         </div>

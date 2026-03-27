@@ -1,20 +1,20 @@
-import type { PlaceStatus } from "../types";
-import { STATUS_LABEL, STATUS_COLOR } from "../constants";
+import type { PlaceStatus } from '../types'
+import { STATUS_LABEL, STATUS_COLOR } from '../constants'
+import ColorBadge from '@/shared/components/ui/ColorBadge'
 
-interface StatusBadgeProps {
-  status: PlaceStatus;
+interface Props {
+  status: PlaceStatus
 }
 
-export default function StatusBadge({ status }: StatusBadgeProps) {
-  if (status === "open") return null;
+export default function StatusBadge({ status }: Props) {
+  if (status === 'open') return null
 
   return (
-    <span
-      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-white"
-      style={{ backgroundColor: STATUS_COLOR[status] }}
-    >
-      <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
-      {STATUS_LABEL[status]}
-    </span>
-  );
+    <ColorBadge
+      label={STATUS_LABEL[status]}
+      bg={STATUS_COLOR[status]}
+      color="#ffffff"
+      dot
+    />
+  )
 }

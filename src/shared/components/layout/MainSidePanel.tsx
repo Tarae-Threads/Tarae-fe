@@ -8,6 +8,7 @@ import CategoryBadge from "@/domains/place/components/CategoryBadge";
 import StatusBadge from "@/domains/place/components/StatusBadge";
 import PlaceFilter from "@/domains/place/components/PlaceFilter";
 import EventSidePanelContent from "@/domains/event/components/EventSidePanelContent";
+import TagChip from "@/shared/components/ui/TagChip";
 import {
   X,
   Search,
@@ -163,7 +164,7 @@ export default function MainSidePanel({
 
           {/* Footer */}
           <div className="px-5 py-3 text-center shrink-0 bg-surface-container-low">
-            <p className="text-[10px] text-outline font-medium uppercase tracking-widest">
+            <p className="text-label-xs text-outline font-medium uppercase tracking-widest">
               {places.length}개 장소 발견
             </p>
           </div>
@@ -220,7 +221,7 @@ function PlaceList({
             </p>
             <div className="flex items-center gap-1.5">
               <Clock className="w-3 h-3 text-outline" />
-              <span className="text-[10px] font-bold text-outline uppercase tracking-wider">
+              <span className="text-label-xs font-bold text-outline uppercase tracking-wider">
                 {place.hours}
               </span>
             </div>
@@ -277,12 +278,7 @@ function PlaceDetail({
       {place.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-5">
           {place.tags.map((tag) => (
-            <span
-              key={tag}
-              className="bg-secondary-container text-on-secondary-container px-2.5 py-1 rounded-full text-label-md font-medium"
-            >
-              {tag}
-            </span>
+            <TagChip key={tag} label={tag} size="md" />
           ))}
         </div>
       )}

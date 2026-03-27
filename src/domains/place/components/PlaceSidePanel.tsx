@@ -9,6 +9,7 @@ import PlaceFilter from './PlaceFilter'
 import {
   X, Search, Clock, MapPin, ExternalLink,
 } from 'lucide-react'
+import TagChip from '@/shared/components/ui/TagChip'
 
 interface PlaceSidePanelProps {
   places: Place[]
@@ -119,7 +120,7 @@ export default function PlaceSidePanel({
 
       {/* Footer info */}
       <div className="px-5 py-3 text-center shrink-0 bg-surface-container-low">
-        <p className="text-[10px] text-outline font-medium uppercase tracking-widest">
+        <p className="text-label-xs text-outline font-medium uppercase tracking-widest">
           {places.length}개 장소 발견
         </p>
       </div>
@@ -156,7 +157,7 @@ function PlaceList({ places, onSelect }: { places: Place[]; onSelect: (p: Place)
             <p className="text-on-surface-variant text-label-md line-clamp-1 mb-2">{place.address}</p>
             <div className="flex items-center gap-1.5">
               <Clock className="w-3 h-3 text-outline" />
-              <span className="text-[10px] font-bold text-outline uppercase tracking-wider">
+              <span className="text-label-xs font-bold text-outline uppercase tracking-wider">
                 {place.hours}
               </span>
             </div>
@@ -206,12 +207,7 @@ function PlaceDetail({ place, onClose }: { place: Place; onClose: () => void }) 
       {place.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-5">
           {place.tags.map(tag => (
-            <span
-              key={tag}
-              className="bg-secondary-container text-on-secondary-container px-2.5 py-1 rounded-full text-label-md font-medium"
-            >
-              {tag}
-            </span>
+            <TagChip key={tag} label={tag} size="md" />
           ))}
         </div>
       )}

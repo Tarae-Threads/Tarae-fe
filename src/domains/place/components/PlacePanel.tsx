@@ -5,6 +5,7 @@ import type { Place } from '../types'
 import CategoryBadge from './CategoryBadge'
 import StatusBadge from './StatusBadge'
 import { X, Clock, MapPin, ExternalLink } from 'lucide-react'
+import TagChip from '@/shared/components/ui/TagChip'
 
 interface PlacePanelProps {
   place: Place | null
@@ -75,12 +76,7 @@ export default function PlacePanel({ place, open, onClose }: PlacePanelProps) {
             {place.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
                 {place.tags.map(tag => (
-                  <span
-                    key={tag}
-                    className="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full text-label-md font-medium"
-                  >
-                    {tag}
-                  </span>
+                  <TagChip key={tag} label={tag} size="md" />
                 ))}
               </div>
             )}

@@ -5,6 +5,7 @@ import { CATEGORY_LABEL } from '@/domains/place/constants'
 import CategoryBadge from '@/domains/place/components/CategoryBadge'
 import StatusBadge from '@/domains/place/components/StatusBadge'
 import { getEventsByPlaceId } from '@/domains/event/utils/events'
+import TagChip from '@/shared/components/ui/TagChip'
 import { EVENT_TYPE_LABEL, EVENT_TYPE_COLOR } from '@/domains/event/constants'
 import type { Metadata } from 'next'
 
@@ -153,12 +154,7 @@ export default async function PlaceDetailPage({ params }: PageProps) {
         {place.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-8">
             {place.tags.map(tag => (
-              <span
-                key={tag}
-                className="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-label-lg font-medium"
-              >
-                {tag}
-              </span>
+              <TagChip key={tag} label={tag} size="lg" />
             ))}
           </div>
         )}
@@ -205,12 +201,12 @@ export default async function PlaceDetailPage({ params }: PageProps) {
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <span
-                        className="px-2 py-0.5 rounded-full text-[9px] font-bold text-white"
+                        className="px-2 py-0.5 rounded-full text-label-2xs font-bold text-white"
                         style={{ backgroundColor: EVENT_TYPE_COLOR[event.type] }}
                       >
                         {EVENT_TYPE_LABEL[event.type]}
                       </span>
-                      <span className="text-[11px] text-outline">
+                      <span className="text-label-sm text-outline">
                         {event.startDate.slice(5).replace('-', '.')}
                         {event.startDate !== event.endDate && ` — ${event.endDate.slice(5).replace('-', '.')}`}
                       </span>
