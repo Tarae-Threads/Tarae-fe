@@ -16,9 +16,9 @@ import NavBar from '@/shared/components/layout/NavBar'
 import type { NavTab } from '@/shared/components/layout/NavBar'
 import BasePanel from '@/shared/components/layout/BasePanel'
 import DetailPanel from '@/shared/components/layout/DetailPanel'
+import BottomNav from '@/shared/components/layout/BottomNav'
 import SubmitForm from '@/shared/components/layout/SubmitForm'
 import { REGION_CENTER } from '@/domains/place/constants'
-import { Plus } from 'lucide-react'
 
 const NaverMap = dynamic(() => import('@/domains/place/components/NaverMap'), { ssr: false })
 
@@ -47,7 +47,7 @@ function HomeContent() {
     toggleFilter,
   } = usePlaceExplorer(initialPlaceId)
 
-  // Trigger map resize when detail panel toggles
+  // Map resize on detail panel toggle
   useEffect(() => {
     const t1 = setTimeout(() => window.dispatchEvent(new Event('resize')), 50)
     const t2 = setTimeout(() => window.dispatchEvent(new Event('resize')), 150)
@@ -55,7 +55,6 @@ function HomeContent() {
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
   }, [panelOpen])
 
-  // Compute event-linked placeIds
   const eventPlaceIds = useMemo(() => {
     const ids = new Set<string>()
     for (const event of getEvents()) {
@@ -64,38 +63,28 @@ function HomeContent() {
     return ids
   }, [])
 
-  // Region filter → pan map
   useEffect(() => {
     if (selectedRegion === 'all') return
     const center = REGION_CENTER[selectedRegion]
-    if (center) {
-      mapRef.current?.panTo(center.lat, center.lng, center.zoom)
-    }
+    if (center) mapRef.current?.panTo(center.lat, center.lng, center.zoom)
   }, [selectedRegion])
 
-  // Smart zoom: only zoom in if currently too far out
   const smartPanTo = useCallback((lat: number, lng: number, minZoom: number) => {
     const currentZoom = mapRef.current?.getZoom() ?? 10
-    if (currentZoom <= 12) {
-      mapRef.current?.panTo(lat, lng, minZoom)
-    } else {
-      mapRef.current?.panTo(lat, lng)
-    }
+    if (currentZoom <= 12) mapRef.current?.panTo(lat, lng, minZoom)
+    else mapRef.current?.panTo(lat, lng)
   }, [])
 
-  // Marker click → smart zoom
   const handleMarkerSelect = useCallback((place: Parameters<typeof handlePlaceSelect>[0]) => {
     handlePlaceSelect(place)
     smartPanTo(place.lat, place.lng, 13)
   }, [handlePlaceSelect, smartPanTo])
 
-  // List click → always zoom 14
   const handleListSelect = useCallback((place: Parameters<typeof handlePlaceSelect>[0]) => {
     handlePlaceSelect(place)
     mapRef.current?.panTo(place.lat, place.lng, 14)
   }, [handlePlaceSelect])
 
-  // Event card click → open detail panel + smart zoom
   const handleEventSelect = useCallback((eventId: string) => {
     const event = getEventById(eventId)
     if (event) {
@@ -112,17 +101,17 @@ function HomeContent() {
     setSelectedEvent(null)
   }, [handlePanelClose])
 
-  // Event place link click → just pan map
-  const handleEventPlaceClick = useCallback((placeId: string) => {
-    const place = getPlaceById(placeId)
-    if (place) {
-      smartPanTo(place.lat, place.lng, 13)
-    }
-  }, [smartPanTo])
+  // Mobile detail data
+  const mobileDetailOpen = panelOpen || !!selectedEvent
+  const mobileDetailData = selectedPlace && panelOpen
+    ? { type: 'place' as const, place: selectedPlace }
+    : selectedEvent
+      ? { type: 'event' as const, event: selectedEvent }
+      : null
 
   return (
     <main className="h-screen w-full overflow-hidden bg-surface-container-lowest flex">
-      {/* ===== Desktop: NavBar + BasePanel + DetailPanel ===== */}
+      {/* Desktop: NavBar + BasePanel + DetailPanel */}
       <NavBar
         activeTab={activeTab}
         onTabChange={(tab) => { setActiveTab(tab); handleDetailClose() }}
@@ -140,11 +129,10 @@ function HomeContent() {
         onToggleCategory={toggleCategory}
         onClearCategories={clearCategories}
         onRegionChange={setSelectedRegion}
-        onEventPlaceClick={handleEventPlaceClick}
         onEventSelect={handleEventSelect}
       />
 
-      {/* Detail Panel — slides in when place or event selected */}
+      {/* Desktop Detail Panel */}
       {(() => {
         const detailData = selectedPlace && panelOpen
           ? { type: 'place' as const, place: selectedPlace }
@@ -155,16 +143,13 @@ function HomeContent() {
           <div className={`hidden md:block shrink-0 transition-all duration-300 ease-in-out overflow-hidden ${
             detailData ? 'w-[380px]' : 'w-0'
           }`}>
-            {detailData && (
-              <DetailPanel data={detailData} onClose={handleDetailClose} />
-            )}
+            {detailData && <DetailPanel data={detailData} onClose={handleDetailClose} />}
           </div>
         )
       })()}
 
-      {/* ===== Map Area ===== */}
+      {/* Map Area */}
       <div className="flex-1 relative h-full">
-        {/* Map */}
         <NaverMap
           ref={mapRef}
           places={filteredPlaces}
@@ -172,18 +157,15 @@ function HomeContent() {
           selectedPlaceId={initialPlaceId}
           eventPlaceIds={eventPlaceIds}
         />
-
-        {/* Map Controls */}
         <MapControls
           onZoomIn={() => mapRef.current?.zoomIn()}
           onZoomOut={() => mapRef.current?.zoomOut()}
           onLocate={() => mapRef.current?.locate()}
         />
 
-        {/* ===== Mobile-only UI ===== */}
+        {/* Mobile UI */}
         <div className="md:hidden">
-          {/* Floating Search */}
-          <div className="absolute top-6 left-4 right-4 z-20">
+          <div className="absolute top-4 left-4 right-4 z-20">
             <PlaceSearchBar
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
@@ -197,22 +179,26 @@ function HomeContent() {
             />
           </div>
 
-          {/* Bottom Sheet */}
-          {!panelOpen && (
+          {!mobileDetailOpen && (
             <MobileBottomSheet
+              activeTab={activeTab}
               places={filteredPlaces}
               onPlaceSelect={handleListSelect}
-              onEventPlaceClick={handleEventPlaceClick}
+              onEventSelect={handleEventSelect}
             />
           )}
 
-          <PlacePanel place={selectedPlace} open={panelOpen} onClose={handlePanelClose} />
-
-          {/* FAB */}
-          <button onClick={() => setSubmitOpen(true)} aria-label="제보하기" className="fixed bottom-32 right-6 w-14 h-14 signature-gradient text-white rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
-            <Plus className="w-6 h-6" />
-          </button>
+          <PlacePanel data={mobileDetailData} open={mobileDetailOpen} onClose={handleDetailClose} />
         </div>
+      </div>
+
+      {/* Mobile BottomNav */}
+      <div className="md:hidden">
+        <BottomNav
+          activeTab={activeTab}
+          onTabChange={(tab) => { setActiveTab(tab); handleDetailClose() }}
+          onSubmit={() => setSubmitOpen(true)}
+        />
       </div>
 
       <SubmitForm open={submitOpen} onClose={() => setSubmitOpen(false)} />
