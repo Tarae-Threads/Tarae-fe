@@ -31,6 +31,7 @@ interface NaverMap {
 interface NaverMarker {
   setMap(map: NaverMap | null): void;
   getElement(): HTMLElement | null;
+  setZIndex(z: number): void;
 }
 
 interface NaverMapsNamespace {
@@ -219,6 +220,9 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
         });
 
         N.Event.addListener(marker, "click", () => {
+          // Bring clicked marker to front
+          markersRef.current.forEach((m) => m.setZIndex(0));
+          marker.setZIndex(1000);
           onPlaceSelect(place);
         });
 
