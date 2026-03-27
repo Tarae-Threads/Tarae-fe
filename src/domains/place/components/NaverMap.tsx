@@ -203,7 +203,7 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
               box-shadow:0 2px 8px rgba(29,27,22,0.08);
               white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis;
             ">
-              <span style="font-size:10px;font-weight:700;letter-spacing:-0.02em;color:${labelColor};white-space:nowrap;">
+              <span style="font-size:11px;font-weight:700;letter-spacing:-0.02em;color:${labelColor};white-space:nowrap;">
                 ${place.name}
               </span>
             </div>

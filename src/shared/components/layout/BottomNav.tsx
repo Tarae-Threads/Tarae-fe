@@ -30,7 +30,7 @@ export default function BottomNav() {
             }`}
           >
             <Icon className="w-5 h-5" aria-hidden="true" />
-            <span className="text-[11px] font-semibold uppercase tracking-wider mt-1">
+            <span className="text-label-sm font-semibold uppercase tracking-wider mt-1">
               {label}
             </span>
           </Link>
