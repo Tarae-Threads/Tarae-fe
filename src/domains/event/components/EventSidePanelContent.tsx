@@ -36,6 +36,7 @@ export default function EventSidePanelContent({ onEventSelect }: Props) {
         onPrevMonth={prevMonth}
         onNextMonth={nextMonth}
         onToday={goToday}
+        onEventSelect={onEventSelect}
       />
 
       <EventTypeFilter
