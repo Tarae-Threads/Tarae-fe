@@ -17,6 +17,11 @@ interface NaverLatLng {
   lng(): number;
 }
 
+interface NaverLatLngBounds {
+  getMin(): NaverLatLng;
+  getMax(): NaverLatLng;
+}
+
 interface NaverMap {
   getZoom(): number;
   setZoom(zoom: number, animate?: boolean): void;
@@ -26,6 +31,7 @@ interface NaverMap {
     zoom: number,
     options?: { duration?: number },
   ): void;
+  getBounds(): NaverLatLngBounds;
 }
 
 interface NaverMarker {
@@ -81,6 +87,7 @@ export interface NaverMapHandle {
   locate: () => void;
   panTo: (lat: number, lng: number, zoom?: number) => void;
   getZoom: () => number;
+  getBounds: () => { sw: { lat: number; lng: number }; ne: { lat: number; lng: number } } | null;
 }
 
 function loadScript(src: string): Promise<void> {
@@ -170,6 +177,17 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
     },
     getZoom() {
       return mapInstanceRef.current?.getZoom() ?? 10;
+    },
+    getBounds() {
+      const map = mapInstanceRef.current;
+      if (!map) return null;
+      const bounds = map.getBounds();
+      const sw = bounds.getMin();
+      const ne = bounds.getMax();
+      return {
+        sw: { lat: sw.lat(), lng: sw.lng() },
+        ne: { lat: ne.lat(), lng: ne.lng() },
+      };
     },
   }));
 

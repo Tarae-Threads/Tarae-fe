@@ -32,6 +32,7 @@ function HomeContent() {
 
   const {
     filteredPlaces,
+    displayPlaces,
     selectedPlace,
     selectedCategories,
     toggleCategory,
@@ -40,6 +41,9 @@ function HomeContent() {
     setSelectedRegion,
     searchQuery,
     setSearchQuery,
+    viewportFilterActive,
+    activateViewportFilter,
+    clearViewportFilter,
     panelOpen,
     filterOpen,
     handlePlaceSelect,
@@ -78,11 +82,15 @@ function HomeContent() {
   }, [])
 
   const handleMarkerSelect = useCallback((place: Parameters<typeof handlePlaceSelect>[0]) => {
+    setActiveTab('places')
+    setSelectedEvent(null)
     handlePlaceSelect(place)
     smartPanTo(place.lat, place.lng, 13)
   }, [handlePlaceSelect, smartPanTo])
 
   const handleListSelect = useCallback((place: Parameters<typeof handlePlaceSelect>[0]) => {
+    setActiveTab('places')
+    setSelectedEvent(null)
     handlePlaceSelect(place)
     mapRef.current?.panTo(place.lat, place.lng, 14)
   }, [handlePlaceSelect])
@@ -90,6 +98,8 @@ function HomeContent() {
   const handleEventSelect = useCallback((eventId: string) => {
     const event = getEventById(eventId)
     if (event) {
+      setActiveTab('events')
+      handlePanelClose()
       setSelectedEvent(event)
       if (event.placeId) {
         const place = getPlaceById(event.placeId)
@@ -98,7 +108,7 @@ function HomeContent() {
         smartPanTo(event.lat, event.lng, 13)
       }
     }
-  }, [smartPanTo])
+  }, [smartPanTo, handlePanelClose])
 
   const handleDetailClose = useCallback(() => {
     handlePanelClose()
@@ -124,7 +134,7 @@ function HomeContent() {
 
       <BasePanel
         activeTab={activeTab}
-        places={filteredPlaces}
+        places={displayPlaces}
         selectedCategories={selectedCategories}
         selectedRegion={selectedRegion}
         searchQuery={searchQuery}
@@ -134,6 +144,8 @@ function HomeContent() {
         onClearCategories={clearCategories}
         onRegionChange={setSelectedRegion}
         onEventSelect={handleEventSelect}
+        viewportFilterActive={viewportFilterActive}
+        onClearViewportFilter={clearViewportFilter}
       />
 
       {/* Desktop Detail Panel */}
@@ -169,6 +181,18 @@ function HomeContent() {
           onLocate={() => mapRef.current?.locate()}
         />
 
+        {activeTab === 'places' && !viewportFilterActive && (
+          <button
+            onClick={() => {
+              const bounds = mapRef.current?.getBounds()
+              if (bounds) activateViewportFilter(bounds)
+            }}
+            className="absolute bottom-[calc(28vh+60px)] md:bottom-8 left-1/2 -translate-x-1/2 z-20 bg-surface/90 backdrop-blur-md text-on-surface font-bold text-label-lg px-5 py-2.5 rounded-full shadow-lg border border-border hover:bg-surface transition-colors active:scale-95"
+          >
+            현재 지역만 보기
+          </button>
+        )}
+
         {/* Mobile UI */}
         <div className="md:hidden">
           <div className="absolute top-4 left-4 right-4 z-20">
@@ -188,9 +212,11 @@ function HomeContent() {
           {!mobileDetailOpen && (
             <MobileBottomSheet
               activeTab={activeTab}
-              places={filteredPlaces}
+              places={displayPlaces}
               onPlaceSelect={handleListSelect}
               onEventSelect={handleEventSelect}
+              viewportFilterActive={viewportFilterActive}
+              onClearViewportFilter={clearViewportFilter}
             />
           )}
 

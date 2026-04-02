@@ -23,6 +23,8 @@ interface Props {
   onClearCategories: () => void
   onRegionChange: (region: string) => void
   onEventSelect?: (eventId: string) => void
+  viewportFilterActive?: boolean
+  onClearViewportFilter?: () => void
 }
 
 export default function BasePanel({
@@ -37,6 +39,8 @@ export default function BasePanel({
   onClearCategories,
   onRegionChange,
   onEventSelect,
+  viewportFilterActive,
+  onClearViewportFilter,
 }: Props) {
   const [filterOpen, setFilterOpen] = useState(false)
 
@@ -84,6 +88,18 @@ export default function BasePanel({
               </div>
             )}
           </div>
+
+          {viewportFilterActive && (
+            <div className="px-4 pb-2 shrink-0">
+              <button
+                onClick={onClearViewportFilter}
+                className="w-full flex items-center justify-center gap-1.5 bg-primary/10 text-primary font-bold text-label-md py-2 rounded-xl hover:bg-primary/15 transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+                전체보기
+              </button>
+            </div>
+          )}
 
           {/* Place list */}
           <div className="flex-1 overflow-y-auto hide-scrollbar">

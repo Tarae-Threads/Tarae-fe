@@ -12,7 +12,8 @@ import { isTesterRecruitment } from '@/domains/event/utils/typeGuards'
 import { getEventsByPlaceId, getLinkedPlace } from '@/domains/event/utils/events'
 import { formatDateRange } from '@/domains/event/utils/date'
 import { CATEGORY_LABEL } from '../constants'
-import { X, Clock, MapPin, ExternalLink, Globe, Calendar, Users } from 'lucide-react'
+import { X, Clock, MapPin, ExternalLink, Globe, Calendar, Users, ChevronDown, ChevronUp } from 'lucide-react'
+import { useState } from 'react'
 
 type DetailData =
   | { type: 'place'; place: Place }
@@ -95,12 +96,7 @@ function PlaceContent({ place }: { place: Place }) {
         {place.closedDays.length > 0 && (
           <p className="text-body-sm text-on-surface-variant pl-[26px]">휴무: {place.closedDays.join(', ')}</p>
         )}
-        {place.brands.length > 0 && (
-          <div className="flex items-start gap-2.5 text-body-sm">
-            <span className="font-bold text-on-surface shrink-0">취급</span>
-            <span className="text-on-surface-variant">{place.brands.join(', ')}</span>
-          </div>
-        )}
+        <BrandsAccordion brands={place.brands} />
       </div>
 
       {place.note && (
@@ -229,5 +225,40 @@ function EventContent({ event }: { event: AnyEvent }) {
         </a>
       )}
     </>
+  )
+}
+
+/* ---- Brands Accordion ---- */
+const BRAND_LABELS = { yarn: '실', needle: '바늘', notions: '부자재' } as const
+
+function BrandsAccordion({ brands }: { brands: Place['brands'] }) {
+  const [open, setOpen] = useState(false)
+  const hasBrands = brands.yarn.length > 0 || brands.needle.length > 0 || brands.notions.length > 0
+
+  if (!hasBrands) return null
+
+  return (
+    <div className="text-body-sm">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-2 font-bold text-on-surface w-full"
+      >
+        <span>취급 브랜드</span>
+        {open ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+      </button>
+      {open && (
+        <div className="mt-2 space-y-1.5 pl-1">
+          {(Object.keys(BRAND_LABELS) as (keyof typeof BRAND_LABELS)[]).map(key =>
+            brands[key].length > 0 && (
+              <div key={key} className="flex items-start gap-2">
+                <span className="font-medium text-on-surface shrink-0">{BRAND_LABELS[key]}</span>
+                <span className="text-on-surface-variant">{brands[key].join(', ')}</span>
+              </div>
+            )
+          )}
+        </div>
+      )}
+    </div>
   )
 }

@@ -48,7 +48,9 @@ export function filterPlaces(
         place.district,
         place.note,
         ...place.tags,
-        ...place.brands,
+        ...place.brands.yarn,
+        ...place.brands.needle,
+        ...place.brands.notions,
       ].join(' ').toLowerCase()
       if (!haystack.includes(q) && !haystack.replace(/\s+/g, '').includes(qNoSpace)) return false
     }

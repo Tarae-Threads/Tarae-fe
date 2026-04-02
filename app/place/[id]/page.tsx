@@ -20,7 +20,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     place.address,
     CATEGORY_LABEL[place.category],
     place.hours,
-    place.brands.length > 0 ? `취급: ${place.brands.slice(0, 3).join(', ')}` : '',
+    [...place.brands.yarn, ...place.brands.needle, ...place.brands.notions].length > 0
+      ? `취급: ${[...place.brands.yarn, ...place.brands.needle, ...place.brands.notions].slice(0, 3).join(', ')}`
+      : '',
   ].filter(Boolean).join(' | ')
 
   return {

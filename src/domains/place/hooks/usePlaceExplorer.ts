@@ -60,6 +60,36 @@ export function usePlaceExplorer(initialPlaceId: string | null) {
     [allPlaces, selectedCategories, selectedRegion, debouncedQuery],
   );
 
+  // Viewport filter
+  const [viewportBounds, setViewportBounds] = useState<{
+    sw: { lat: number; lng: number };
+    ne: { lat: number; lng: number };
+  } | null>(null);
+
+  const displayPlaces = useMemo(() => {
+    if (!viewportBounds) return filteredPlaces;
+    const { sw, ne } = viewportBounds;
+    return filteredPlaces.filter(
+      (p) => p.lat >= sw.lat && p.lat <= ne.lat && p.lng >= sw.lng && p.lng <= ne.lng,
+    );
+  }, [filteredPlaces, viewportBounds]);
+
+  // Clear viewport filter when other filters change
+  useEffect(() => {
+    setViewportBounds(null);
+  }, [selectedCategories, selectedRegion, debouncedQuery]);
+
+  const activateViewportFilter = useCallback(
+    (bounds: { sw: { lat: number; lng: number }; ne: { lat: number; lng: number } }) => {
+      setViewportBounds(bounds);
+    },
+    [],
+  );
+
+  const clearViewportFilter = useCallback(() => {
+    setViewportBounds(null);
+  }, []);
+
   const handlePlaceSelect = useCallback((place: Place) => {
     setSelectedPlace(place);
     setPanelOpen(true);
@@ -76,6 +106,7 @@ export function usePlaceExplorer(initialPlaceId: string | null) {
   return {
     // data
     filteredPlaces,
+    displayPlaces,
     selectedPlace,
     // filter state
     selectedCategories,
@@ -85,6 +116,10 @@ export function usePlaceExplorer(initialPlaceId: string | null) {
     setSelectedRegion,
     searchQuery,
     setSearchQuery,
+    // viewport filter
+    viewportFilterActive: viewportBounds !== null,
+    activateViewportFilter,
+    clearViewportFilter,
     // panel state
     panelOpen,
     filterOpen,

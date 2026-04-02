@@ -156,7 +156,7 @@ describe('filterPlaces', () => {
     const result = filterPlaces(allPlaces, 'all', 'all', name)
     expect(result.length).toBeGreaterThan(0)
     for (const place of result) {
-      const haystack = [place.name, place.address, place.district, place.note, ...place.tags, ...place.brands].join(' ').toLowerCase()
+      const haystack = [place.name, place.address, place.district, place.note, ...place.tags, ...place.brands.yarn, ...place.brands.needle, ...place.brands.notions].join(' ').toLowerCase()
       expect(haystack).toContain(name.toLowerCase())
     }
   })

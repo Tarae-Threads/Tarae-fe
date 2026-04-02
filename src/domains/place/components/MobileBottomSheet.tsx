@@ -54,6 +54,8 @@ interface Props {
   places: Place[];
   onPlaceSelect: (place: Place) => void;
   onEventSelect?: (eventId: string) => void;
+  viewportFilterActive?: boolean;
+  onClearViewportFilter?: () => void;
 }
 
 export default function MobileBottomSheet({
@@ -61,6 +63,8 @@ export default function MobileBottomSheet({
   places,
   onPlaceSelect,
   onEventSelect,
+  viewportFilterActive,
+  onClearViewportFilter,
 }: Props) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -185,6 +189,14 @@ export default function MobileBottomSheet({
           <p className="text-label-md text-outline font-medium">
             {places.length}개 장소
           </p>
+          {viewportFilterActive && (
+            <button
+              onClick={onClearViewportFilter}
+              className="mt-2 text-primary font-bold text-label-sm"
+            >
+              전체보기
+            </button>
+          )}
         </div>
       )}
 

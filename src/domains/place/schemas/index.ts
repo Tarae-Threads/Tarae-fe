@@ -17,7 +17,11 @@ export const placeSchema = z.object({
   closedDays: z.array(z.string()),
   note: z.string(),
   tags: z.array(z.string()),
-  brands: z.array(z.string()),
+  brands: z.object({
+    yarn: z.array(z.string()),
+    needle: z.array(z.string()),
+    notions: z.array(z.string()),
+  }),
   links: z.object({
     instagram: z.string().optional(),
     website: z.string().optional(),
