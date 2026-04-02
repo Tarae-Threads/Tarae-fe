@@ -178,7 +178,12 @@ function EventContent({ event }: { event: AnyEvent }) {
         {isRecruitment && (
           <div className="flex items-center gap-2.5 text-body-sm">
             <Users className="w-4 h-4 text-outline" />
-            <span className="text-on-surface-variant">{event.currentParticipants}/{event.maxParticipants}명 신청</span>
+            <div className="flex-1">
+              <span className="text-on-surface-variant">{event.currentParticipants}/{event.maxParticipants}명 신청</span>
+              <div className="mt-1.5 h-1.5 bg-secondary-container rounded-full overflow-hidden">
+                <div className="h-full bg-secondary rounded-full transition-all" style={{ width: `${Math.min(100, (event.currentParticipants / event.maxParticipants) * 100)}%` }} />
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -192,26 +197,34 @@ function EventContent({ event }: { event: AnyEvent }) {
           <div className="space-y-1.5 text-body-sm">
             <p className="text-on-surface-variant">{linkedPlace.name} · {CATEGORY_LABEL[linkedPlace.category]}</p>
             <p className="text-on-surface-variant">{linkedPlace.address}</p>
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-outline" />
+              <span className="text-on-surface-variant">{linkedPlace.hours}</span>
+            </div>
           </div>
         </div>
       )}
 
       {isRecruitment && (
         <>
-          <div className="bg-primary-fixed/30 rounded-xl p-5 mb-5 space-y-2">
-            <h3 className="font-display font-bold text-body-sm text-on-surface mb-1">모집 정보</h3>
-            {[
-              ['도안명', event.patternName],
-              ['신청 기간', `${event.applicationStart} — ${event.applicationEnd}`],
-              ['조건', event.conditions],
-              ['제출물', event.requirements],
-              ['연락', event.contactMethod],
-            ].map(([label, value]) => (
-              <div key={label} className="flex gap-3 text-body-sm">
-                <span className="font-bold text-on-surface min-w-[56px] shrink-0">{label}</span>
-                <span className="text-on-surface-variant">{value}</span>
-              </div>
-            ))}
+          <div className="bg-primary-fixed/30 rounded-xl p-5 mb-5 space-y-3">
+            <h3 className="font-display font-bold text-body-sm text-on-surface">모집 정보</h3>
+            <div className="space-y-2 text-body-sm">
+              {[
+                ['도안명', event.patternName],
+                ['카테고리', event.category],
+                ['신청 기간', `${event.applicationStart} — ${event.applicationEnd}`],
+                ['테스트 기간', `${event.testPeriodStart} — ${event.testPeriodEnd}`],
+                ['조건', event.conditions],
+                ['제출물', event.requirements],
+                ['연락 방식', event.contactMethod],
+              ].map(([label, value]) => (
+                <div key={label} className="flex gap-3">
+                  <span className="font-bold text-on-surface min-w-[64px] shrink-0">{label}</span>
+                  <span className="text-on-surface-variant">{value}</span>
+                </div>
+              ))}
+            </div>
           </div>
           {event.recruitmentStatus === 'open' && (
             <TesterApplicationForm recruitmentId={event.id} />

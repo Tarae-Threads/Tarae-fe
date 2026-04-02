@@ -5,6 +5,7 @@ import type { Place } from "../types";
 import type { NavTab } from "@/shared/components/layout/NavBar";
 import PlaceCardCompact from "./PlaceCardCompact";
 import EventSidePanelContent from "@/domains/event/components/EventSidePanelContent";
+import { X } from "lucide-react";
 
 type SnapPoint = "peek" | "half" | "full";
 
@@ -192,8 +193,9 @@ export default function MobileBottomSheet({
           {viewportFilterActive && (
             <button
               onClick={onClearViewportFilter}
-              className="mt-2 text-primary font-bold text-label-sm"
+              className="mt-2 w-full flex items-center justify-center gap-1.5 bg-primary/10 text-primary font-bold text-label-md py-2 rounded-xl hover:bg-primary/15 transition-colors"
             >
+              <X className="w-3.5 h-3.5" />
               전체보기
             </button>
           )}

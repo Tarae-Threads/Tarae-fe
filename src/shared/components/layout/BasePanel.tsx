@@ -9,6 +9,7 @@ import StatusBadge from '@/domains/place/components/StatusBadge'
 import PlaceFilter from '@/domains/place/components/PlaceFilter'
 import EventSidePanelContent from '@/domains/event/components/EventSidePanelContent'
 import EmptyState from '@/shared/components/ui/EmptyState'
+import TagChip from '@/shared/components/ui/TagChip'
 import { Search, SlidersHorizontal, X, Clock, MapPin } from 'lucide-react'
 
 interface Props {
@@ -131,6 +132,13 @@ export default function BasePanel({
                         <CategoryBadge category={place.category} />
                       </div>
                       <p className="text-on-surface-variant text-label-md line-clamp-1 mb-2">{place.address}</p>
+                      {place.tags.length > 0 && (
+                        <div className="flex gap-1 mb-2">
+                          {place.tags.slice(0, 2).map(tag => (
+                            <TagChip key={tag} label={tag} size="sm" />
+                          ))}
+                        </div>
+                      )}
                       <div className="flex items-center gap-1.5">
                         <Clock className="w-3 h-3 text-outline" />
                         <span className="text-label-xs font-bold text-outline uppercase tracking-wider">{place.hours}</span>
