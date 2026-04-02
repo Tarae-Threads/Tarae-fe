@@ -3,10 +3,16 @@ import type { AnyEvent, EventType } from '../types'
 import { getPlaceById } from '@/domains/place/utils/places'
 import type { Place } from '@/domains/place/types'
 
+const EVENT_TYPE_ORDER: Record<EventType, number> = {
+  sale: 0,
+  event_popup: 1,
+  tester_recruitment: 2,
+}
+
 const events: AnyEvent[] = eventsData as AnyEvent[]
 
 export function getEvents(): AnyEvent[] {
-  return events
+  return [...events].sort((a, b) => EVENT_TYPE_ORDER[a.type] - EVENT_TYPE_ORDER[b.type])
 }
 
 export function getEventById(id: string): AnyEvent | undefined {
@@ -57,8 +63,10 @@ export interface CalendarBar {
 
 /** Get event bars for each week row of the month */
 export function getEventBarsForMonth(year: number, month: number): CalendarBar[][] {
-  // Sort: shorter events first so they don't get cut by the bar limit
+  // Sort by category order (sale → event_popup → tester), then shorter events first
   const monthEvents = [...getEventsForMonth(year, month)].sort((a, b) => {
+    const typeOrder = EVENT_TYPE_ORDER[a.type] - EVENT_TYPE_ORDER[b.type]
+    if (typeOrder !== 0) return typeOrder
     const durationA = new Date(a.endDate).getTime() - new Date(a.startDate).getTime()
     const durationB = new Date(b.endDate).getTime() - new Date(b.startDate).getTime()
     return durationA - durationB
@@ -115,6 +123,21 @@ export function getEventBarsForMonth(year: number, month: number): CalendarBar[]
   }
 
   return result
+}
+
+export interface EventMarkerData {
+  id: string
+  title: string
+  lat: number
+  lng: number
+}
+
+export function getEventMarkers(): EventMarkerData[] {
+  return events
+    .filter((e): e is AnyEvent & { lat: number; lng: number } =>
+      typeof e.lat === 'number' && typeof e.lng === 'number' && !e.placeId
+    )
+    .map(e => ({ id: e.id, title: e.title, lat: e.lat, lng: e.lng }))
 }
 
 export function getDatesWithEvents(year: number, month: number): Map<string, EventType[]> {

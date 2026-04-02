@@ -9,17 +9,9 @@
     "lat": 37.5706,
     "lng": 127.0094,
     "hours": "월~토 09:00-18:00",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "실 도매상가 ABCD동 지하·1층, 5층 악세사리부자재상가. 토/공휴일 유동적.",
-    "tags": [
-      "도매",
-      "대량구매",
-      "바늘",
-      "도구",
-      "부자재"
-    ],
+    "tags": ["도매", "대량구매", "바늘", "도구", "부자재"],
     "brands": [],
     "links": {},
     "images": [],
@@ -36,14 +28,9 @@
     "lat": 37.4969,
     "lng": 127.118,
     "hours": "월~금 11:00-19:00, 토 11:00-17:00",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "이전함 (구 성북구). 뜨개샵+공방 병행.",
-    "tags": [
-      "공방",
-      "수업"
-    ],
+    "tags": ["공방", "수업"],
     "brands": [],
     "links": {},
     "images": [],
@@ -62,10 +49,7 @@
     "hours": "매일 11:00-18:30",
     "closedDays": [],
     "note": "대바늘 추천, 수입실.",
-    "tags": [
-      "수입실",
-      "대바늘"
-    ],
+    "tags": ["수입실", "대바늘"],
     "brands": [],
     "links": {},
     "images": [],
@@ -82,15 +66,9 @@
     "lat": 37.5131,
     "lng": 127.0298,
     "hours": "09:00-18:00",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "1층 매장, 2층 학원 운영.",
-    "tags": [
-      "공방",
-      "수업",
-      "학원"
-    ],
+    "tags": ["공방", "수업", "학원"],
     "brands": [],
     "links": {},
     "images": [],
@@ -107,9 +85,7 @@
     "lat": 37.4951,
     "lng": 127.0432,
     "hours": "10:00-18:00, 토요일 10:00-18:00",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "이전 후 새 주소.",
     "tags": [],
     "brands": [],
@@ -130,12 +106,7 @@
     "hours": "10:00-21:00",
     "closedDays": [],
     "note": "면실/울실/수세미실/종이실/대바늘/코바늘.",
-    "tags": [
-      "면실",
-      "울실",
-      "대바늘",
-      "코바늘"
-    ],
+    "tags": ["면실", "울실", "대바늘", "코바늘"],
     "brands": [],
     "links": {},
     "images": [],
@@ -152,17 +123,10 @@
     "lat": 37.571,
     "lng": 127.01,
     "hours": "월~토 09:00-18:00",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "자체제작 실 할인 판매.",
-    "tags": [
-      "자체제작",
-      "할인"
-    ],
-    "brands": [
-      "연일섬유"
-    ],
+    "tags": ["자체제작", "할인"],
+    "brands": ["연일섬유"],
     "links": {},
     "images": [],
     "updatedAt": "2024-05-17",
@@ -178,15 +142,9 @@
     "lat": 37.598,
     "lng": 127.093,
     "hours": "10:30-17:00 (수 18:30-20:30)",
-    "closedDays": [
-      "화요일",
-      "일요일"
-    ],
+    "closedDays": ["화요일", "일요일"],
     "note": "100% 예약제.",
-    "tags": [
-      "공방",
-      "예약제"
-    ],
+    "tags": ["공방", "예약제"],
     "brands": [],
     "links": {},
     "images": [],
@@ -203,9 +161,7 @@
     "lat": 37.568,
     "lng": 126.929,
     "hours": "10:00-20:00",
-    "closedDays": [
-      "설/추석 당일 및 전날"
-    ],
+    "closedDays": ["설/추석 당일 및 전날"],
     "note": "",
     "tags": [],
     "brands": [],
@@ -224,10 +180,7 @@
     "lat": 37.5544,
     "lng": 126.94,
     "hours": "10:00-16:00",
-    "closedDays": [
-      "목요일",
-      "일요일"
-    ],
+    "closedDays": ["목요일", "일요일"],
     "note": "",
     "tags": [],
     "brands": [],
@@ -246,14 +199,9 @@
     "lat": 37.4631,
     "lng": 127.0308,
     "hours": "10:30-19:00",
-    "closedDays": [
-      "수요일"
-    ],
+    "closedDays": ["수요일"],
     "note": "공방 겸 카페.",
-    "tags": [
-      "카페",
-      "공방"
-    ],
+    "tags": ["카페", "공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -270,11 +218,7 @@
     "lat": 37.5243,
     "lng": 127.0228,
     "hours": "수·목·금 11:00-17:30, 토 11:00-16:30",
-    "closedDays": [
-      "일요일",
-      "월요일",
-      "화요일"
-    ],
+    "closedDays": ["일요일", "월요일", "화요일"],
     "note": "주소 변경됨.",
     "tags": [],
     "brands": [],
@@ -293,9 +237,7 @@
     "lat": 37.5518,
     "lng": 126.9139,
     "hours": "11:00-18:00",
-    "closedDays": [
-      "월요일"
-    ],
+    "closedDays": ["월요일"],
     "note": "",
     "tags": [],
     "brands": [],
@@ -314,9 +256,7 @@
     "lat": 37.5735,
     "lng": 126.985,
     "hours": "월~토 10:00-19:00",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "",
     "tags": [],
     "brands": [],
@@ -337,12 +277,8 @@
     "hours": "인스타 확인",
     "closedDays": [],
     "note": "낙양모사 브랜드매장. 12/9 재오픈(이전).",
-    "tags": [
-      "브랜드매장"
-    ],
-    "brands": [
-      "낙양모사"
-    ],
+    "tags": ["브랜드매장"],
+    "brands": ["낙양모사"],
     "links": {},
     "images": [],
     "updatedAt": "2024-12-03",
@@ -360,13 +296,8 @@
     "hours": "주2회 오픈 (인스타 공지)",
     "closedDays": [],
     "note": "핸드다잉얀, 히야히야 바늘.",
-    "tags": [
-      "핸드다잉얀",
-      "히야히야"
-    ],
-    "brands": [
-      "히야히야"
-    ],
+    "tags": ["핸드다잉얀", "히야히야"],
+    "brands": ["히야히야"],
     "links": {},
     "images": [],
     "updatedAt": "2024-01-15",
@@ -382,16 +313,9 @@
     "lat": 37.549,
     "lng": 126.906,
     "hours": "수~토 14:00-19:00",
-    "closedDays": [
-      "일요일",
-      "월요일",
-      "화요일"
-    ],
+    "closedDays": ["일요일", "월요일", "화요일"],
     "note": "특수합사실, 디자인바늘.",
-    "tags": [
-      "합사실",
-      "디자인바늘"
-    ],
+    "tags": ["합사실", "디자인바늘"],
     "brands": [],
     "links": {},
     "images": [],
@@ -408,21 +332,10 @@
     "lat": 37.5585,
     "lng": 127.007,
     "hours": "월~금 09:00-18:00",
-    "closedDays": [
-      "토요일",
-      "일요일"
-    ],
+    "closedDays": ["토요일", "일요일"],
     "note": "오팔/쉽제스 수입실, 아디/크로바 바늘.",
-    "tags": [
-      "수입실",
-      "공예용품"
-    ],
-    "brands": [
-      "오팔",
-      "쉽제스",
-      "아디",
-      "크로바"
-    ],
+    "tags": ["수입실", "공예용품"],
+    "brands": ["오팔", "쉽제스", "아디", "크로바"],
     "links": {},
     "images": [],
     "updatedAt": "2024-01-18",
@@ -438,15 +351,9 @@
     "lat": 37.478,
     "lng": 126.951,
     "hours": "네이버예약",
-    "closedDays": [
-      "일요일",
-      "공휴일"
-    ],
+    "closedDays": ["일요일", "공휴일"],
     "note": "뜨개샵 & 공방.",
-    "tags": [
-      "공방",
-      "예약"
-    ],
+    "tags": ["공방", "예약"],
     "brands": [],
     "links": {},
     "images": [],
@@ -465,45 +372,14 @@
     "hours": "10:00-22:00",
     "closedDays": [],
     "note": "수업 없는 날 미오픈 가능. 보그사범. 수입실(산네스간, 다루마, 이사거 등).",
-    "tags": [
-      "공방",
-      "수업",
-      "보그",
-      "수입실"
-    ],
-    "brands": [
-      "산네스간",
-      "다루마",
-      "이사거"
-    ],
+    "tags": ["공방", "수업", "보그", "수입실"],
+    "brands": ["산네스간", "다루마", "이사거"],
     "links": {},
     "images": [],
     "updatedAt": "2024-05-14",
     "status": "open"
   },
-  {
-    "id": "bern-shop-seoul",
-    "name": "베른샵서울",
-    "category": "yarn_store",
-    "region": "서울",
-    "district": "성동구",
-    "address": "서울 성동구 성덕정11길 16 1층",
-    "lat": 37.548,
-    "lng": 127.043,
-    "hours": "11:30-20:00",
-    "closedDays": [
-      "월요일"
-    ],
-    "note": "뜨개/소품샵.",
-    "tags": [
-      "소품"
-    ],
-    "brands": [],
-    "links": {},
-    "images": [],
-    "updatedAt": "2024-08-05",
-    "status": "open"
-  },
+
   {
     "id": "yeoul-yarn",
     "name": "여울얀",
@@ -514,14 +390,9 @@
     "lat": 37.577,
     "lng": 127.087,
     "hours": "화~금 12:30-18:30, 토 12:00-17:00",
-    "closedDays": [
-      "일요일",
-      "월요일"
-    ],
+    "closedDays": ["일요일", "월요일"],
     "note": "손염색실 전문. 누가바닛츠 근처. 인스타로 휴무일 체크.",
-    "tags": [
-      "손염색실"
-    ],
+    "tags": ["손염색실"],
     "brands": [],
     "links": {},
     "images": [],
@@ -540,9 +411,7 @@
     "hours": "인스타 확인",
     "closedDays": [],
     "note": "실+뜨개서적.",
-    "tags": [
-      "서적"
-    ],
+    "tags": ["서적"],
     "brands": [],
     "links": {},
     "images": [],
@@ -561,10 +430,7 @@
     "hours": "매일 10:00-21:00",
     "closedDays": [],
     "note": "뜨개카페. 실판매+자투리나눔존.",
-    "tags": [
-      "카페",
-      "나눔"
-    ],
+    "tags": ["카페", "나눔"],
     "brands": [],
     "links": {},
     "images": [],
@@ -583,10 +449,7 @@
     "hours": "11:00-20:00",
     "closedDays": [],
     "note": "연중무휴. 1~3층 판매숍, 4~6층 니팅라운지(유료).",
-    "tags": [
-      "니팅라운지",
-      "유료이용"
-    ],
+    "tags": ["니팅라운지", "유료이용"],
     "brands": [],
     "links": {},
     "images": [],
@@ -603,22 +466,10 @@
     "lat": 37.5267,
     "lng": 127.0391,
     "hours": "11:00-18:30",
-    "closedDays": [
-      "일요일",
-      "월요일"
-    ],
+    "closedDays": ["일요일", "월요일"],
     "note": "오프라인 전화예약. 위빙/스피닝/터프팅 겸 쇼룸. 이사거실/튤립바늘.",
-    "tags": [
-      "쇼룸",
-      "위빙",
-      "스피닝",
-      "터프팅",
-      "예약제"
-    ],
-    "brands": [
-      "이사거",
-      "튤립"
-    ],
+    "tags": ["쇼룸", "위빙", "스피닝", "터프팅", "예약제"],
+    "brands": ["이사거", "튤립"],
     "links": {},
     "images": [],
     "updatedAt": "2025-05-31",
@@ -634,13 +485,9 @@
     "lat": 37.5452,
     "lng": 127.0441,
     "hours": "월 11:00-19:00, 화·수·목 11:00-20:00, 토·일 11:00-21:00",
-    "closedDays": [
-      "금요일"
-    ],
+    "closedDays": ["금요일"],
     "note": "과거 실공장 자리.",
-    "tags": [
-      "카페"
-    ],
+    "tags": ["카페"],
     "brands": [],
     "links": {},
     "images": [],
@@ -657,13 +504,9 @@
     "lat": 37.592,
     "lng": 127.012,
     "hours": "11:00-18:30",
-    "closedDays": [
-      "월요일"
-    ],
+    "closedDays": ["월요일"],
     "note": "뜨개샵 겸 카페.",
-    "tags": [
-      "카페"
-    ],
+    "tags": ["카페"],
     "brands": [],
     "links": {},
     "images": [],
@@ -680,9 +523,7 @@
     "lat": 37.259,
     "lng": 127.054,
     "hours": "월~금 9:30-16:00(휴게11-12), 토 10:00-16:00(휴게12-13)",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "",
     "tags": [],
     "brands": [],
@@ -701,15 +542,9 @@
     "lat": 37.658,
     "lng": 126.774,
     "hours": "월~금 10:00-19:00, 토 10:00-17:00",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "보그과정/원데이.",
-    "tags": [
-      "공방",
-      "보그",
-      "원데이"
-    ],
+    "tags": ["공방", "보그", "원데이"],
     "brands": [],
     "links": {},
     "images": [],
@@ -726,9 +561,7 @@
     "lat": 37.282,
     "lng": 127.016,
     "hours": "매일 10:00-19:00",
-    "closedDays": [
-      "일요일(3~9월)"
-    ],
+    "closedDays": ["일요일(3~9월)"],
     "note": "3~9월 일요일 휴무.",
     "tags": [],
     "brands": [],
@@ -747,20 +580,10 @@
     "lat": 37.352,
     "lng": 127.119,
     "hours": "수~금 10:00-18:00(휴게13-14), 격주주말 12:00-16:00",
-    "closedDays": [
-      "월요일",
-      "화요일"
-    ],
+    "closedDays": ["월요일", "화요일"],
     "note": "히야히야바늘/레인느서적/코코닛츠.",
-    "tags": [
-      "수입실",
-      "서적"
-    ],
-    "brands": [
-      "히야히야",
-      "레인느",
-      "코코닛츠"
-    ],
+    "tags": ["수입실", "서적"],
+    "brands": ["히야히야", "레인느", "코코닛츠"],
     "links": {},
     "images": [],
     "updatedAt": "2024-01-05",
@@ -776,15 +599,9 @@
     "lat": 37.334,
     "lng": 127.589,
     "hours": "수~일 11:00-16:00",
-    "closedDays": [
-      "월요일",
-      "화요일"
-    ],
+    "closedDays": ["월요일", "화요일"],
     "note": "100% 사전예약. 콘사.",
-    "tags": [
-      "예약제",
-      "콘사"
-    ],
+    "tags": ["예약제", "콘사"],
     "brands": [],
     "links": {},
     "images": [],
@@ -801,13 +618,9 @@
     "lat": 37.7249,
     "lng": 126.7178,
     "hours": "10:00-19:00",
-    "closedDays": [
-      "월요일"
-    ],
+    "closedDays": ["월요일"],
     "note": "카페 겸용.",
-    "tags": [
-      "카페"
-    ],
+    "tags": ["카페"],
     "brands": [],
     "links": {},
     "images": [],
@@ -824,13 +637,9 @@
     "lat": 37.738,
     "lng": 127.047,
     "hours": "월~토 10:30-18:30",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "제일시장 내. 실판매+수업.",
-    "tags": [
-      "수업"
-    ],
+    "tags": ["수업"],
     "brands": [],
     "links": {},
     "images": [],
@@ -866,13 +675,9 @@
     "lat": 37.6658,
     "lng": 126.6158,
     "hours": "월~토 10:00-17:00 (휴게 13:00-14:00)",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "카페 병행(카페 매일 10-21).",
-    "tags": [
-      "카페"
-    ],
+    "tags": ["카페"],
     "brands": [],
     "links": {},
     "images": [],
@@ -889,14 +694,9 @@
     "lat": 37.398,
     "lng": 126.923,
     "hours": "매일 10:00-20:00",
-    "closedDays": [
-      "일요일(3~9월)"
-    ],
+    "closedDays": ["일요일(3~9월)"],
     "note": "중앙시장 내. 무료수강 월~토 13:00-19:00(11,12,1월 20시). 목/일/공휴일 수강휴무. 3~9월 일요일 휴무.",
-    "tags": [
-      "무료수강",
-      "수업"
-    ],
+    "tags": ["무료수강", "수업"],
     "brands": [],
     "links": {},
     "images": [],
@@ -913,16 +713,9 @@
     "lat": 37.344,
     "lng": 126.925,
     "hours": "월/수/금 10:00-16:00",
-    "closedDays": [
-      "화요일",
-      "목요일",
-      "토요일",
-      "일요일"
-    ],
+    "closedDays": ["화요일", "목요일", "토요일", "일요일"],
     "note": "손염색실.",
-    "tags": [
-      "손염색실"
-    ],
+    "tags": ["손염색실"],
     "brands": [],
     "links": {
       "website": "https://www.virginiayarns.com/offlinestore"
@@ -941,15 +734,9 @@
     "lat": 37.726,
     "lng": 126.72,
     "hours": "월~토 10:00-18:00",
-    "closedDays": [
-      "토요일",
-      "일요일"
-    ],
+    "closedDays": ["토요일", "일요일"],
     "note": "정규수업.",
-    "tags": [
-      "공방",
-      "수업"
-    ],
+    "tags": ["공방", "수업"],
     "brands": [],
     "links": {},
     "images": [],
@@ -966,16 +753,9 @@
     "lat": 37.412,
     "lng": 127.128,
     "hours": "평일/주말 매일 다름 (방문 전 문의)",
-    "closedDays": [
-      "일요일",
-      "공휴일"
-    ],
+    "closedDays": ["일요일", "공휴일"],
     "note": "토 격주 휴무. 취미반/자격증반/원데이.",
-    "tags": [
-      "공방",
-      "수업",
-      "자격증"
-    ],
+    "tags": ["공방", "수업", "자격증"],
     "brands": [],
     "links": {},
     "images": [],
@@ -994,10 +774,7 @@
     "hours": "",
     "closedDays": [],
     "note": "염색실 판매/원데이.",
-    "tags": [
-      "손염색실",
-      "원데이"
-    ],
+    "tags": ["손염색실", "원데이"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/snuggy_n_woolly"
@@ -1018,11 +795,7 @@
     "hours": "매주 화/금 10:00-14:00",
     "closedDays": [],
     "note": "사전예약 필수. 보그 준사범. 보그클래스.",
-    "tags": [
-      "공방",
-      "보그",
-      "예약제"
-    ],
+    "tags": ["공방", "보그", "예약제"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1039,15 +812,9 @@
     "lat": 37.5503,
     "lng": 127.1988,
     "hours": "10:00-19:00",
-    "closedDays": [
-      "일요일",
-      "월요일"
-    ],
+    "closedDays": ["일요일", "월요일"],
     "note": "뜨개공방 겸 카페.",
-    "tags": [
-      "카페",
-      "공방"
-    ],
+    "tags": ["카페", "공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1064,15 +831,9 @@
     "lat": 37.341,
     "lng": 127.343,
     "hours": "9:00-17:00",
-    "closedDays": [
-      "화요일",
-      "목요일",
-      "일요일"
-    ],
+    "closedDays": ["화요일", "목요일", "일요일"],
     "note": "예약 후 방문.",
-    "tags": [
-      "예약제"
-    ],
+    "tags": ["예약제"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1091,13 +852,8 @@
     "hours": "평일 10:00-21:00, 주말 10:00-19:00",
     "closedDays": [],
     "note": "고래얀 손염색실/바늘마개/라벨 판매.",
-    "tags": [
-      "카페",
-      "손염색실"
-    ],
-    "brands": [
-      "고래얀"
-    ],
+    "tags": ["카페", "손염색실"],
+    "brands": ["고래얀"],
     "links": {},
     "images": [],
     "updatedAt": "2025-10-19",
@@ -1113,10 +869,7 @@
     "lat": 37.061,
     "lng": 127.075,
     "hours": "화 14:00-20:00, 수목금토 10:00-20:00",
-    "closedDays": [
-      "일요일",
-      "월요일"
-    ],
+    "closedDays": ["일요일", "월요일"],
     "note": "",
     "tags": [],
     "brands": [],
@@ -1137,9 +890,7 @@
     "hours": "",
     "closedDays": [],
     "note": "",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1156,44 +907,16 @@
     "lat": 37.391,
     "lng": 126.657,
     "hours": "수~일 13:00-18:00 (인스타 확인)",
-    "closedDays": [
-      "월요일",
-      "화요일"
-    ],
+    "closedDays": ["월요일", "화요일"],
     "note": "수입실 전문.",
-    "tags": [
-      "수입실"
-    ],
+    "tags": ["수입실"],
     "brands": [],
     "links": {},
     "images": [],
     "updatedAt": "2024-04-11",
     "status": "open"
   },
-  {
-    "id": "knitwit-incheon",
-    "name": "니트위트",
-    "category": "yarn_store",
-    "region": "인천",
-    "district": "서구",
-    "address": "인천 서구 봉오대로 270 303동 140호",
-    "lat": 37.533,
-    "lng": 126.677,
-    "hours": "화~토 10:00-15:00",
-    "closedDays": [
-      "일요일",
-      "월요일"
-    ],
-    "note": "뜨개책 다수.",
-    "tags": [
-      "서적"
-    ],
-    "brands": [],
-    "links": {},
-    "images": [],
-    "updatedAt": "2024-12-01",
-    "status": "open"
-  },
+
   {
     "id": "bupeong-mosa",
     "name": "부평모사",
@@ -1251,29 +974,7 @@
     "updatedAt": "2024-01-05",
     "status": "open"
   },
-  {
-    "id": "forest-knit-incheon",
-    "name": "포레스트니트",
-    "category": "studio",
-    "region": "인천",
-    "district": "서구",
-    "address": "인천 서구 이음5로 20 연세프라자8차 1동 4층 412호",
-    "lat": 37.547,
-    "lng": 126.671,
-    "hours": "월~금 10:00-19:00, 토 10:00-17:00",
-    "closedDays": [
-      "일요일"
-    ],
-    "note": "",
-    "tags": [
-      "공방"
-    ],
-    "brands": [],
-    "links": {},
-    "images": [],
-    "updatedAt": "2024-01-05",
-    "status": "open"
-  },
+
   {
     "id": "popohobi-incheon",
     "name": "포포하비",
@@ -1286,10 +987,7 @@
     "hours": "10:00-16:00",
     "closedDays": [],
     "note": "손염색실 쇼룸.",
-    "tags": [
-      "손염색실",
-      "쇼룸"
-    ],
+    "tags": ["손염색실", "쇼룸"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1306,13 +1004,9 @@
     "lat": 38.207,
     "lng": 128.591,
     "hours": "11:00-18:00",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "월/화 예약 방문. 손염색실.",
-    "tags": [
-      "손염색실"
-    ],
+    "tags": ["손염색실"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/a.brilliant.moment"
@@ -1333,9 +1027,7 @@
     "hours": "월~토 9:40-17:30, 일 10:00-17:00",
     "closedDays": [],
     "note": "구 동성수예점. 무료수강(매장구매 재료).",
-    "tags": [
-      "무료수강"
-    ],
+    "tags": ["무료수강"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1354,10 +1046,7 @@
     "hours": "월~토 11:00-18:30 (클래스시 21시)",
     "closedDays": [],
     "note": "얀스토어+카페.",
-    "tags": [
-      "카페",
-      "수업"
-    ],
+    "tags": ["카페", "수업"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/madeit_knit"
@@ -1378,9 +1067,7 @@
     "hours": "",
     "closedDays": [],
     "note": "삼락관 안.",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/nasl1231"
@@ -1401,9 +1088,7 @@
     "hours": "",
     "closedDays": [],
     "note": "",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1441,11 +1126,7 @@
     "hours": "방문 전 연락",
     "closedDays": [],
     "note": "보그사범. 보그반/취미반/탑다운반/일러스트레이터도안반.",
-    "tags": [
-      "공방",
-      "보그",
-      "수업"
-    ],
+    "tags": ["공방", "보그", "수업"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/knittinganne_sejong"
@@ -1464,16 +1145,9 @@
     "lat": 36.7898,
     "lng": 127.0042,
     "hours": "월~목 08:30-19:00",
-    "closedDays": [
-      "금요일",
-      "토요일"
-    ],
+    "closedDays": ["금요일", "토요일"],
     "note": "금/토 출강. 취미반/자격증반/창업반.",
-    "tags": [
-      "공방",
-      "수업",
-      "자격증"
-    ],
+    "tags": ["공방", "수업", "자격증"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1490,14 +1164,9 @@
     "lat": 36.37,
     "lng": 127.419,
     "hours": "11:00-21:00",
-    "closedDays": [
-      "화요일",
-      "금요일"
-    ],
+    "closedDays": ["화요일", "금요일"],
     "note": "볼실/뜨개용품.",
-    "tags": [
-      "볼실"
-    ],
+    "tags": ["볼실"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1514,13 +1183,9 @@
     "lat": 36.506,
     "lng": 127.001,
     "hours": "",
-    "closedDays": [
-      "월요일"
-    ],
+    "closedDays": ["월요일"],
     "note": "",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/cottonclasskorea"
@@ -1541,13 +1206,8 @@
     "hours": "",
     "closedDays": [],
     "note": "카페 겸 공방. 볼실/타래실/콘사(거의 없음). 랜턴문바늘.",
-    "tags": [
-      "카페",
-      "공방"
-    ],
-    "brands": [
-      "랜턴문"
-    ],
+    "tags": ["카페", "공방"],
+    "brands": ["랜턴문"],
     "links": {},
     "images": [],
     "updatedAt": "2025-12-16",
@@ -1565,11 +1225,7 @@
     "hours": "인스타 참고",
     "closedDays": [],
     "note": "보그수업/민간자격증/취미반.",
-    "tags": [
-      "공방",
-      "보그",
-      "자격증"
-    ],
+    "tags": ["공방", "보그", "자격증"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/haemc"
@@ -1588,14 +1244,9 @@
     "lat": 36.815,
     "lng": 127.114,
     "hours": "11:30-16:00",
-    "closedDays": [
-      "목요일",
-      "일요일"
-    ],
+    "closedDays": ["목요일", "일요일"],
     "note": "격주토 휴무. 손염색실.",
-    "tags": [
-      "손염색실"
-    ],
+    "tags": ["손염색실"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/lazuli_dyeable"
@@ -1616,9 +1267,7 @@
     "hours": "11:00-19:00",
     "closedDays": [],
     "note": "주말/공휴일 예약시 오픈.",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/_hanttam_"
@@ -1637,14 +1286,9 @@
     "lat": 36.327,
     "lng": 127.427,
     "hours": "월~금 10:00-17:30",
-    "closedDays": [
-      "토요일",
-      "일요일"
-    ],
+    "closedDays": ["토요일", "일요일"],
     "note": "콘사 위주.",
-    "tags": [
-      "콘사"
-    ],
+    "tags": ["콘사"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/knittoday_daejeon"
@@ -1665,10 +1309,7 @@
     "hours": "인스타 공지",
     "closedDays": [],
     "note": "보그니팅 전과정.",
-    "tags": [
-      "공방",
-      "보그"
-    ],
+    "tags": ["공방", "보그"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/seolyu_atelier"
@@ -1689,10 +1330,7 @@
     "hours": "24시간",
     "closedDays": [],
     "note": "무인점포. 키오스크/계좌이체.",
-    "tags": [
-      "무인",
-      "24시간"
-    ],
+    "tags": ["무인", "24시간"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1728,10 +1366,7 @@
     "lat": 36.81,
     "lng": 127.146,
     "hours": "평일/토 10:00-20:00",
-    "closedDays": [
-      "일요일",
-      "공휴일"
-    ],
+    "closedDays": ["일요일", "공휴일"],
     "note": "",
     "tags": [],
     "brands": [],
@@ -1750,18 +1385,9 @@
     "lat": 36.82,
     "lng": 127.15,
     "hours": "월~토 8:30-18:30",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "카페 기반. 코바늘/대바늘/손자수/퀼트/미싱 수강.",
-    "tags": [
-      "카페",
-      "수업",
-      "코바늘",
-      "대바늘",
-      "자수",
-      "퀼트"
-    ],
+    "tags": ["카페", "수업", "코바늘", "대바늘", "자수", "퀼트"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1778,13 +1404,9 @@
     "lat": 35.157,
     "lng": 129.064,
     "hours": "월~토 14:00-19:00",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "이전 후 새 주소(전포초 앞).",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1803,9 +1425,7 @@
     "hours": "인스타 확인",
     "closedDays": [],
     "note": "",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/limpid_water"
@@ -1824,15 +1444,9 @@
     "lat": 35.183,
     "lng": 129.08,
     "hours": "화~토 09:30-16:00",
-    "closedDays": [
-      "일요일",
-      "월요일"
-    ],
+    "closedDays": ["일요일", "월요일"],
     "note": "이전 후 새 주소.",
-    "tags": [
-      "학원",
-      "수업"
-    ],
+    "tags": ["학원", "수업"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1849,15 +1463,9 @@
     "lat": 35.871,
     "lng": 128.595,
     "hours": "10:00-19:00",
-    "closedDays": [
-      "일요일",
-      "월요일"
-    ],
+    "closedDays": ["일요일", "월요일"],
     "note": "",
-    "tags": [
-      "공방",
-      "한옥"
-    ],
+    "tags": ["공방", "한옥"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1876,9 +1484,7 @@
     "hours": "평일 10:00-20:30, 주말 10:00-17:00",
     "closedDays": [],
     "note": "",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1897,10 +1503,7 @@
     "hours": "11:00-19:00",
     "closedDays": [],
     "note": "방문 전 문의. 반려동물 가능.",
-    "tags": [
-      "공방",
-      "반려동물"
-    ],
+    "tags": ["공방", "반려동물"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1917,9 +1520,7 @@
     "lat": 35.104,
     "lng": 129.031,
     "hours": "09:00-19:00",
-    "closedDays": [
-      "명절"
-    ],
+    "closedDays": ["명절"],
     "note": "",
     "tags": [],
     "brands": [],
@@ -1938,14 +1539,9 @@
     "lat": 35.856,
     "lng": 128.583,
     "hours": "월화수금 11:00-17:00",
-    "closedDays": [
-      "목요일",
-      "일요일"
-    ],
+    "closedDays": ["목요일", "일요일"],
     "note": "방문 전 연락.",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1964,10 +1560,7 @@
     "hours": "10:00-20:00",
     "closedDays": [],
     "note": "카페 겸 뜨개공방.",
-    "tags": [
-      "카페",
-      "공방"
-    ],
+    "tags": ["카페", "공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -1984,13 +1577,9 @@
     "lat": 35.505,
     "lng": 129.422,
     "hours": "월수금 14:00-17:30, 화목토 13:00-17:30",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -2007,14 +1596,9 @@
     "lat": 35.507,
     "lng": 129.434,
     "hours": "월~금 10:00-17:00",
-    "closedDays": [
-      "토요일",
-      "일요일"
-    ],
+    "closedDays": ["토요일", "일요일"],
     "note": "",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -2050,9 +1634,7 @@
     "lat": 35.187,
     "lng": 128.064,
     "hours": "영업시간 유동적",
-    "closedDays": [
-      "주말(보통)"
-    ],
+    "closedDays": ["주말(보통)"],
     "note": "",
     "tags": [],
     "brands": [],
@@ -2071,15 +1653,9 @@
     "lat": 35.1629,
     "lng": 129.0591,
     "hours": "11:00-20:00",
-    "closedDays": [
-      "일요일",
-      "월요일"
-    ],
+    "closedDays": ["일요일", "월요일"],
     "note": "실/바늘/마커링 판매. 와인딩 가능.",
-    "tags": [
-      "카페",
-      "와인딩"
-    ],
+    "tags": ["카페", "와인딩"],
     "brands": [],
     "links": {
       "instagram": "https://www.instagram.com/nittin_busan"
@@ -2098,13 +1674,9 @@
     "lat": 35.879,
     "lng": 128.63,
     "hours": "월화수금 10:00-17:00, 목 10:00-20:00, 토 13:00-15:00",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -2144,10 +1716,7 @@
     "hours": "매주 수/토 11:00-18:00",
     "closedDays": [],
     "note": "보그 및 뜨개공방.",
-    "tags": [
-      "공방",
-      "보그"
-    ],
+    "tags": ["공방", "보그"],
     "brands": [],
     "links": {},
     "images": [],
@@ -2164,9 +1733,7 @@
     "lat": 35.1468,
     "lng": 126.916,
     "hours": "월~토 09:00-18:30 (토 17:00 마감)",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "실 많음.",
     "tags": [],
     "brands": [],
@@ -2185,14 +1752,9 @@
     "lat": 35.132,
     "lng": 126.902,
     "hours": "월~금 10:00-18:00",
-    "closedDays": [
-      "토요일",
-      "일요일"
-    ],
+    "closedDays": ["토요일", "일요일"],
     "note": "방림동.",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -2211,9 +1773,7 @@
     "hours": "",
     "closedDays": [],
     "note": "신용동.",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -2230,14 +1790,9 @@
     "lat": 35.151,
     "lng": 126.857,
     "hours": "월~금 10:00-17:30",
-    "closedDays": [
-      "토요일",
-      "일요일"
-    ],
+    "closedDays": ["토요일", "일요일"],
     "note": "",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -2254,9 +1809,7 @@
     "lat": 35.968,
     "lng": 126.737,
     "hours": "월~토 (시간 문의)",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "",
     "tags": [],
     "brands": [],
@@ -2275,13 +1828,9 @@
     "lat": 34.951,
     "lng": 127.487,
     "hours": "월~토 10:00-17:30",
-    "closedDays": [
-      "일요일"
-    ],
+    "closedDays": ["일요일"],
     "note": "",
-    "tags": [
-      "공방"
-    ],
+    "tags": ["공방"],
     "brands": [],
     "links": {},
     "images": [],
@@ -2300,9 +1849,7 @@
     "hours": "",
     "closedDays": [],
     "note": "카페.",
-    "tags": [
-      "카페"
-    ],
+    "tags": ["카페"],
     "brands": [],
     "links": {},
     "images": [],
@@ -2319,10 +1866,7 @@
     "lat": 33.51,
     "lng": 126.5222,
     "hours": "화~금 11:00-17:00, 토 10:00-15:00",
-    "closedDays": [
-      "일요일",
-      "월요일"
-    ],
+    "closedDays": ["일요일", "월요일"],
     "note": "",
     "tags": [],
     "brands": [],
@@ -2362,10 +1906,7 @@
     "hours": "",
     "closedDays": [],
     "note": "카페는 안 하고 대관/뜨개클래스로 운영.",
-    "tags": [
-      "대관",
-      "수업"
-    ],
+    "tags": ["대관", "수업"],
     "brands": [],
     "links": {},
     "images": [],
@@ -2408,6 +1949,469 @@
     "links": {},
     "images": [],
     "updatedAt": "2024-11-16",
+    "status": "open"
+  },
+  {
+    "id": "hanol-sontteugae-daegu",
+    "name": "한올손뜨개",
+    "category": "yarn_store",
+    "region": "대구",
+    "district": "중구",
+    "address": "대구 중구 경상감영길 140-1 1층",
+    "lat": 35.8714,
+    "lng": 128.5911,
+    "hours": "10:00-19:00",
+    "closedDays": ["일요일"],
+    "note": "",
+    "tags": ["실판매", "손뜨개"],
+    "brands": [],
+    "links": {},
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "knitwit-incheon",
+    "name": "니트위트",
+    "category": "cafe",
+    "region": "인천",
+    "district": "서구",
+    "address": "인천 서구 봉오대로 270 상가 303동 140호",
+    "lat": 37.5277,
+    "lng": 126.6722,
+    "hours": "10:00-17:00",
+    "closedDays": ["일요일", "월요일"],
+    "note": "뜨개 카페 / 뜨개 공방",
+    "tags": ["뜨개카페", "공방"],
+    "brands": [],
+    "links": {
+      "instagram": "https://www.instagram.com/knitwit_store/"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "forest-knit-incheon",
+    "name": "포레스트 니트",
+    "category": "yarn_store",
+    "region": "인천",
+    "district": "서구",
+    "address": "인천 서구 이음5로 20 연세프라자 8차 1동 4층 412호",
+    "lat": 37.5344,
+    "lng": 126.6755,
+    "hours": "월~목 10:00-18:00 (12:00-14:00 휴게), 토 10:00-17:00 (12:00-13:00 휴게)",
+    "closedDays": ["일요일"],
+    "note": "염색실 판매",
+    "tags": ["염색실", "실판매"],
+    "brands": [],
+    "links": {},
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "tteutbakkui-jeulgeoum",
+    "name": "뜻밖의 즐거움",
+    "category": "craft_supply",
+    "region": "서울",
+    "district": "성동구",
+    "address": "서울 성동구 연무장길 6 1층",
+    "lat": 37.5446,
+    "lng": 127.0418,
+    "hours": "",
+    "closedDays": [],
+    "note": "뜨개 소품샵",
+    "tags": ["소품샵", "성수"],
+    "brands": [],
+    "links": {},
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "joeun-saram",
+    "name": "좋은 사람",
+    "category": "craft_supply",
+    "region": "서울",
+    "district": "성동구",
+    "address": "서울 성동구 연무장 7길 5 1층",
+    "lat": 37.5449,
+    "lng": 127.0421,
+    "hours": "",
+    "closedDays": [],
+    "note": "뜨개 소품샵",
+    "tags": ["소품샵", "성수"],
+    "brands": [],
+    "links": {},
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "bern-shop-seoul",
+    "name": "베른샵 서울",
+    "category": "craft_supply",
+    "region": "서울",
+    "district": "성동구",
+    "address": "서울 성동구 성수이로3길 10-1 1층",
+    "lat": 37.5447,
+    "lng": 127.0562,
+    "hours": "11:30-20:00",
+    "closedDays": ["월요일"],
+    "note": "뜨개실 판매, 전시, 팝업, 문화공간",
+    "tags": ["실판매", "전시", "팝업", "문화공간", "성수"],
+    "brands": [],
+    "links": {
+      "instagram": "https://www.instagram.com/bern.shop.seoul/"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "guzz-seongsu",
+    "name": "구쯔",
+    "category": "craft_supply",
+    "region": "서울",
+    "district": "성동구",
+    "address": "서울 성동구 서울숲 2길 38-1",
+    "lat": 37.5474,
+    "lng": 127.043,
+    "hours": "",
+    "closedDays": [],
+    "note": "뜨개 소품샵",
+    "tags": ["소품샵", "성수", "서울숲"],
+    "brands": [],
+    "links": {
+      "instagram": "https://www.instagram.com/guzz_seoulsup/"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "holyland-oktapbang",
+    "name": "홀리랜드 옥탑방",
+    "category": "studio",
+    "region": "서울",
+    "district": "서대문구",
+    "address": "서울 서대문구 (서대문 우체국 도보 5분 거리)",
+    "lat": 37.5594,
+    "lng": 126.9368,
+    "hours": "",
+    "closedDays": [],
+    "note": "뜨개 모임 공간. 정확한 주소는 인스타그램 확인.",
+    "tags": ["뜨개모임", "공방"],
+    "brands": [],
+    "links": {
+      "instagram": "https://www.instagram.com/_holyland_official/"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "samsung-mosa-dongdaemun",
+    "name": "삼성모사",
+    "category": "yarn_store",
+    "region": "서울",
+    "district": "종로구",
+    "address": "서울 종로구 종로 266 동대문종합시장 지하 C동 5호",
+    "lat": 37.5706,
+    "lng": 127.0094,
+    "hours": "월~토 09:00-18:00",
+    "closedDays": ["일요일"],
+    "note": "수입사, 특수사 전문점. T.02-2276-1525",
+    "tags": ["수입사", "특수사", "도매", "동대문종합시장"],
+    "brands": [],
+    "links": {},
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "silnsilr-dongdaemun",
+    "name": "실앤실",
+    "category": "yarn_store",
+    "region": "서울",
+    "district": "종로구",
+    "address": "서울 종로구 종로 266 동대문종합시장 지하 A동 37-4호",
+    "lat": 37.5706,
+    "lng": 127.0094,
+    "hours": "월~토 09:00-18:00",
+    "closedDays": ["일요일"],
+    "note": "각종 뜨개실, 소품실. T.02-2269-8832",
+    "tags": ["뜨개실", "소품실", "도매", "동대문종합시장"],
+    "brands": [],
+    "links": {},
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "ara-sangsa-dongdaemun",
+    "name": "아라상사",
+    "category": "yarn_store",
+    "region": "서울",
+    "district": "종로구",
+    "address": "서울 종로구 종로 266 동대문종합시장 지하 B동 240호",
+    "lat": 37.5706,
+    "lng": 127.0094,
+    "hours": "월~토 09:00-18:00",
+    "closedDays": ["일요일"],
+    "note": "각종 특수사 전문, 합사실. T.02-2278-5442",
+    "tags": ["특수사", "합사", "모헤어", "도매", "동대문종합시장"],
+    "brands": [],
+    "links": {},
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "seongnam-seomyu-dongdaemun",
+    "name": "성남섬유",
+    "category": "yarn_store",
+    "region": "서울",
+    "district": "종로구",
+    "address": "서울 종로구 종로 266 동대문종합시장 지하 A동 88호",
+    "lat": 37.5706,
+    "lng": 127.0094,
+    "hours": "월~토 09:00-18:00",
+    "closedDays": ["일요일"],
+    "note": "각종 소품실, 아크릴사, 니트사. 1972년부터 운영. T.02-2265-7430",
+    "tags": ["소품실", "아크릴사", "니트사", "도매", "동대문종합시장"],
+    "brands": [],
+    "links": {},
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "woori-mosa-dongdaemun",
+    "name": "우리모사",
+    "category": "yarn_store",
+    "region": "서울",
+    "district": "종로구",
+    "address": "서울 종로구 종로 266 동대문종합시장 지하 C동 568호",
+    "lat": 37.5706,
+    "lng": 127.0094,
+    "hours": "월~토 09:00-18:00",
+    "closedDays": ["일요일"],
+    "note": "수입사 전문. T.02-2269-0792~3",
+    "tags": ["수입사", "도매", "동대문종합시장"],
+    "brands": [],
+    "links": {},
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "silgongjang1998-paju",
+    "name": "실공장1998",
+    "category": "cafe",
+    "region": "경기",
+    "district": "파주시",
+    "address": "경기 파주시 탄현면 법흥로 100-1",
+    "lat": 37.7305,
+    "lng": 126.7025,
+    "hours": "화~금 10:00-19:00, 토~일/공휴일 09:00-19:00",
+    "closedDays": ["월요일"],
+    "note": "바늘이야기 본사 건물. 니팅카페 + 원데이클래스 + 전문수업. 주차 가능. T.070-4610-2386",
+    "tags": ["카페", "공방", "실판매", "수업", "원데이클래스"],
+    "brands": ["바늘이야기"],
+    "links": {
+      "website": "https://www.banul.co.kr"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "tteumsae-mangwon",
+    "name": "뜸새",
+    "category": "studio",
+    "region": "서울",
+    "district": "마포구",
+    "address": "서울 마포구 망원로2길 87",
+    "lat": 37.5567,
+    "lng": 126.9052,
+    "hours": "화/금 14:00-20:00, 토 12:00-20:00, 일 12:00-17:00",
+    "closedDays": ["월요일"],
+    "note": "뜨개 디자이너 작업실 겸 쇼룸. 도안 없이 창의적 오브제 제작·판매.",
+    "tags": ["공방", "소품샵", "작업실"],
+    "brands": [],
+    "links": {
+      "instagram": "https://www.instagram.com/tteumsae/"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "mulmangcho-suye",
+    "name": "물망초수예",
+    "category": "studio",
+    "region": "서울",
+    "district": "중구",
+    "address": "서울 중구 소공로 58 라18호",
+    "lat": 37.5615,
+    "lng": 126.9787,
+    "hours": "10:00-18:00",
+    "closedDays": ["일요일"],
+    "note": "뜨개공방",
+    "tags": ["공방"],
+    "brands": [],
+    "links": {
+      "instagram": "https://www.instagram.com/mmcsy_na/"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "swimpyo-sontteugae",
+    "name": "쉼표손뜨개공방",
+    "category": "studio",
+    "region": "경기",
+    "district": "고양시",
+    "address": "경기 고양시 덕양구 화중로 98 6층 606호",
+    "lat": 37.6537,
+    "lng": 126.8321,
+    "hours": "평일 10:00-16:00, 주말 15:00-18:00",
+    "closedDays": ["일요일"],
+    "note": "방문 전 전화 필수",
+    "tags": ["공방", "손뜨개"],
+    "brands": [],
+    "links": {
+      "website": "https://m.blog.naver.com/imaclove3"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "tteulan-namyangju",
+    "name": "뜰안 뜨개공방",
+    "category": "studio",
+    "region": "경기",
+    "district": "남양주시",
+    "address": "경기 남양주시 진접읍 해밀예당2로 133 원영빌딩 2층",
+    "lat": 37.7218,
+    "lng": 127.1848,
+    "hours": "10:00-17:00 (13:00-14:00 휴게)",
+    "closedDays": ["토요일", "일요일"],
+    "note": "뜨개공방",
+    "tags": ["공방"],
+    "brands": [],
+    "links": {
+      "instagram": "https://www.instagram.com/knit_n_co/"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "knitnco-byeollae",
+    "name": "니트앤코",
+    "category": "cafe",
+    "region": "경기",
+    "district": "남양주시",
+    "address": "경기 남양주시 별내5로5번길 51 1층",
+    "lat": 37.6432,
+    "lng": 127.1065,
+    "hours": "매일 09:00-19:00 (영업시간 외 예약제)",
+    "closedDays": ["매달 2,4번째 수요일"],
+    "note": "뜨개카페",
+    "tags": ["뜨개카페", "카페", "예약제"],
+    "brands": [],
+    "links": {
+      "instagram": "https://www.instagram.com/knit_n_co/"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "moria-knits-gimpo",
+    "name": "모리아닛츠",
+    "category": "studio",
+    "region": "경기",
+    "district": "김포시",
+    "address": "경기 김포시 김포한강7로 22번길 174-48 102호",
+    "lat": 37.6326,
+    "lng": 126.7157,
+    "hours": "목/월 10:00-14:00 (그 외 예약제)",
+    "closedDays": [],
+    "note": "뜨개 공방. 예약제 운영.",
+    "tags": ["공방", "예약제"],
+    "brands": [],
+    "links": {},
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "garam-tteugae-uijeongbu",
+    "name": "가람뜨개",
+    "category": "studio",
+    "region": "경기",
+    "district": "의정부시",
+    "address": "경기 의정부시 천보로 14 민락 글래드스톤 1층 1046호",
+    "lat": 37.7244,
+    "lng": 127.0833,
+    "hours": "",
+    "closedDays": [],
+    "note": "뜨개 공방. 매달 수업일정 홈페이지 확인.",
+    "tags": ["공방", "수업"],
+    "brands": [],
+    "links": {
+      "naver_map": "https://naver.me/G0pOxBru"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "ccioni-mapo",
+    "name": "씨오니",
+    "category": "studio",
+    "region": "서울",
+    "district": "마포구",
+    "address": "서울 마포구 성미산로 29안길 27-11 1층 101호",
+    "lat": 37.5622,
+    "lng": 126.9218,
+    "hours": "매일 11:00-21:00",
+    "closedDays": [],
+    "note": "100% 예약제 공방",
+    "tags": ["공방", "예약제"],
+    "brands": [],
+    "links": {
+      "instagram": "https://www.instagram.com/ccioni_official/"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
+    "status": "open"
+  },
+  {
+    "id": "hanol-tteugaebang-dobong",
+    "name": "한올뜨개방",
+    "category": "studio",
+    "region": "서울",
+    "district": "도봉구",
+    "address": "서울 도봉구 도당로 7 103호",
+    "lat": 37.6688,
+    "lng": 127.0472,
+    "hours": "11:00-18:30",
+    "closedDays": ["일요일"],
+    "note": "",
+    "tags": ["공방"],
+    "brands": [],
+    "links": {
+      "website": "https://m.blog.naver.com/kgn1231"
+    },
+    "images": [],
+    "updatedAt": "2026-04-02",
     "status": "open"
   }
 ]

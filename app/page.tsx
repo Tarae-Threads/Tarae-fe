@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import type { NaverMapHandle } from '@/domains/place/components/NaverMap'
 import { usePlaceExplorer } from '@/domains/place/hooks/usePlaceExplorer'
 import { getPlaceById } from '@/domains/place/utils/places'
-import { getEvents, getEventById } from '@/domains/event/utils/events'
+import { getEvents, getEventById, getEventMarkers } from '@/domains/event/utils/events'
 import type { AnyEvent } from '@/domains/event/types'
 import MobileBottomSheet from '@/domains/place/components/MobileBottomSheet'
 import PlacePanel from '@/domains/place/components/PlacePanel'
@@ -63,6 +63,8 @@ function HomeContent() {
     return ids
   }, [])
 
+  const eventMarkers = useMemo(() => getEventMarkers(), [])
+
   useEffect(() => {
     if (selectedRegion === 'all') return
     const center = REGION_CENTER[selectedRegion]
@@ -92,6 +94,8 @@ function HomeContent() {
       if (event.placeId) {
         const place = getPlaceById(event.placeId)
         if (place) smartPanTo(place.lat, place.lng, 13)
+      } else if (typeof event.lat === 'number' && typeof event.lng === 'number') {
+        smartPanTo(event.lat, event.lng, 13)
       }
     }
   }, [smartPanTo])
@@ -156,6 +160,8 @@ function HomeContent() {
           onPlaceSelect={handleMarkerSelect}
           selectedPlaceId={initialPlaceId}
           eventPlaceIds={eventPlaceIds}
+          eventMarkers={eventMarkers}
+          onEventMarkerSelect={handleEventSelect}
         />
         <MapControls
           onZoomIn={() => mapRef.current?.zoomIn()}
