@@ -4,7 +4,16 @@ import Image from 'next/image'
 import type { Place } from '../types'
 import CategoryBadge from './CategoryBadge'
 import StatusBadge from './StatusBadge'
-import { Clock } from 'lucide-react'
+import { Clock, Store, Palette, Coffee, Pipette, Scissors } from 'lucide-react'
+import type { PlaceCategory } from '../types'
+
+const CATEGORY_ICON: Record<PlaceCategory, React.ReactNode> = {
+  yarn_store: <Store className="w-10 h-10 text-white/50" />,
+  studio: <Palette className="w-10 h-10 text-white/50" />,
+  cafe: <Coffee className="w-10 h-10 text-white/50" />,
+  dye_shop: <Pipette className="w-10 h-10 text-white/50" />,
+  craft_supply: <Scissors className="w-10 h-10 text-white/50" />,
+}
 import TagChip from '@/shared/components/ui/TagChip'
 
 interface PlaceCardProps {
@@ -29,7 +38,9 @@ export default function PlaceCard({ place, onClick }: PlaceCardProps) {
             className="object-cover group-hover:scale-105 transition-transform duration-700"
           />
         ) : (
-          <div className="w-full h-full signature-gradient opacity-30" />
+          <div className="w-full h-full signature-gradient opacity-30 flex items-center justify-center">
+            {CATEGORY_ICON[place.category]}
+          </div>
         )}
         <div className="absolute top-4 left-4 flex items-center gap-1.5">
           <CategoryBadge category={place.category} size="md" />

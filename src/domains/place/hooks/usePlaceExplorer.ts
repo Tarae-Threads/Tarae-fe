@@ -4,6 +4,16 @@ import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { getPlaces, filterPlaces } from "../utils/places";
 import type { Place, PlaceCategory } from "../types";
 
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 export function usePlaceExplorer(initialPlaceId: string | null) {
   const allPlaces = getPlaces();
 
@@ -18,6 +28,17 @@ export function usePlaceExplorer(initialPlaceId: string | null) {
   );
   const [panelOpen, setPanelOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+
+  // Get user location once
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {}, // silently fail
+      { maximumAge: 300000 },
+    );
+  }, []);
   const [sidePanelOpen, setSidePanelOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -103,6 +124,11 @@ export function usePlaceExplorer(initialPlaceId: string | null) {
     setFilterOpen((prev) => !prev);
   }, []);
 
+  const getDistance = useCallback((place: Place) => {
+    if (!userLocation) return null;
+    return haversineKm(userLocation.lat, userLocation.lng, place.lat, place.lng);
+  }, [userLocation]);
+
   return {
     // data
     filteredPlaces,
@@ -129,5 +155,7 @@ export function usePlaceExplorer(initialPlaceId: string | null) {
     handlePlaceSelect,
     handlePanelClose,
     toggleFilter,
+    // distance
+    getDistance,
   };
 }

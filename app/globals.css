@@ -28,7 +28,8 @@
 
 @theme inline {
   /* --- Fonts --- */
-  --font-sans: 'GangwonEducationModuche', sans-serif;
+  --font-sans: 'GangwonEducationModuche', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --font-body: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   --font-display: 'GangwonEducationModuche', sans-serif;
   --font-mono: var(--font-geist-mono);
   --font-heading: 'GangwonEducationModuche', sans-serif;
@@ -89,6 +90,11 @@
   --radius-xl: 1.5rem;
   --radius-2xl: 2rem;
   --radius-full: 9999px;
+
+  /* --- Duration (animation consistency) --- */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
 
   /* --- Ambient Shadows (tinted, never pure black) --- */
   --shadow-ambient-sm: 0 4px 12px rgba(29, 27, 22, 0.04);

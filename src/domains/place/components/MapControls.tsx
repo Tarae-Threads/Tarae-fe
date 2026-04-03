@@ -14,14 +14,14 @@ export default function MapControls({ onZoomIn, onZoomOut, onLocate }: MapContro
       <button
         onClick={onZoomIn}
         aria-label="확대"
-        className="w-10 h-10 glass rounded-xl flex items-center justify-center text-on-surface shadow-ambient-sm hover:bg-surface transition-colors"
+        className="w-11 h-11 glass rounded-xl flex items-center justify-center text-on-surface shadow-ambient-sm hover:bg-surface transition-colors"
       >
         <ZoomIn className="w-5 h-5" />
       </button>
       <button
         onClick={onZoomOut}
         aria-label="축소"
-        className="w-10 h-10 glass rounded-xl flex items-center justify-center text-on-surface shadow-ambient-sm hover:bg-surface transition-colors"
+        className="w-11 h-11 glass rounded-xl flex items-center justify-center text-on-surface shadow-ambient-sm hover:bg-surface transition-colors"
       >
         <ZoomOut className="w-5 h-5" />
       </button>
@@ -29,7 +29,7 @@ export default function MapControls({ onZoomIn, onZoomOut, onLocate }: MapContro
       <button
         onClick={onLocate}
         aria-label="내 위치로 이동"
-        className="w-10 h-10 signature-gradient text-white rounded-xl flex items-center justify-center shadow-lg"
+        className="w-11 h-11 signature-gradient text-white rounded-xl flex items-center justify-center shadow-lg"
       >
         <LocateFixed className="w-5 h-5" />
       </button>

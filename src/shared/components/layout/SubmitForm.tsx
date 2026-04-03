@@ -262,6 +262,36 @@ export default function SubmitForm({ open, onClose }: Props) {
             </button>
           </div>
 
+          {/* Progress bar */}
+          {!submitted && (() => {
+            let filled = 0, total = 0
+            if (tab === 'place' && placeMode === 'new') {
+              const v = placeForm.watch()
+              total = 3 // name, address, category
+              if (v.name) filled++
+              if (v.address) filled++
+              if (selectedCategories.size > 0) filled++
+            } else if (tab === 'place' && placeMode === 'update') {
+              total = 1
+              if (selectedPlaceId) filled++
+            } else {
+              const v = eventForm.watch()
+              total = 3 // title, type, startDate
+              if (v.title) filled++
+              if (selectedEventType) filled++
+              if (v.startDate) filled++
+            }
+            const pct = total > 0 ? Math.round((filled / total) * 100) : 0
+            return (
+              <div className="mb-4">
+                <div className="h-1 bg-surface-container rounded-full overflow-hidden">
+                  <div className="h-full bg-primary rounded-full transition-all duration-normal" style={{ width: `${pct}%` }} />
+                </div>
+                <p className="text-label-2xs text-outline mt-1 text-right">{filled}/{total} 필수</p>
+              </div>
+            )
+          })()}
+
           {submitted ? (
             <div className="text-center py-8">
               <p className="font-display font-bold text-title-sm text-primary mb-2">제보 완료!</p>

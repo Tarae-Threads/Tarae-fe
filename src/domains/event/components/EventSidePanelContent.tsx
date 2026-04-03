@@ -52,7 +52,7 @@ export default function EventSidePanelContent({ onEventSelect }: Props) {
               ? `${selectedDate.slice(5).replace('-', '월 ')}일`
               : '전체 일정'}
           </h3>
-          <span className="text-label-xs text-outline font-medium">{filteredEvents.length}개</span>
+          <span className="text-label-xs text-outline font-medium" aria-live="polite">{filteredEvents.length}개</span>
         </div>
         <EventList events={filteredEvents} selectedDate={selectedDate} onEventSelect={onEventSelect} />
       </div>

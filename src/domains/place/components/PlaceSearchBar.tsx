@@ -14,6 +14,7 @@ interface PlaceSearchBarProps {
   onToggleCategory: (category: PlaceCategory) => void
   onClearCategories: () => void
   onRegionChange: (region: string) => void
+  resultCount?: number
 }
 
 export default function PlaceSearchBar({
@@ -26,7 +27,9 @@ export default function PlaceSearchBar({
   onToggleCategory,
   onClearCategories,
   onRegionChange,
+  resultCount,
 }: PlaceSearchBarProps) {
+  const activeFilterCount = selectedCategories.size + (selectedRegion !== 'all' ? 1 : 0)
   return (
     <div className="relative">
       <div className="flex items-center bg-surface/80 backdrop-blur-2xl h-14 rounded-2xl editorial-shadow">
@@ -48,13 +51,23 @@ export default function PlaceSearchBar({
           onClick={onToggleFilter}
           aria-expanded={filterOpen}
           aria-label="필터"
-          className={`mr-2 p-2.5 rounded-lg transition-colors ${
+          className={`relative mr-2 p-2.5 rounded-lg transition-colors ${
             filterOpen ? 'bg-primary text-white' : 'text-outline hover:bg-surface-container'
           }`}
         >
           {filterOpen ? <X className="w-4 h-4" /> : <SlidersHorizontal className="w-4 h-4" />}
+          {!filterOpen && activeFilterCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">
+              {activeFilterCount}
+            </span>
+          )}
         </button>
       </div>
+      {searchQuery && typeof resultCount === 'number' && (
+        <div className="mt-2 px-4" aria-live="polite">
+          <span className="text-label-sm text-outline font-medium">{resultCount}개 결과</span>
+        </div>
+      )}
       {filterOpen && (
         <div className="mt-3 bg-surface-container-low backdrop-blur-2xl rounded-2xl editorial-shadow p-4">
           <PlaceFilter

@@ -108,7 +108,7 @@ export default function CalendarGrid({
                   <button
                     key={dateStr}
                     onClick={() => onSelectDate(isSelected ? null : dateStr)}
-                    className={`flex items-center justify-center py-1.5 rounded-lg transition-all ${
+                    className={`flex items-center justify-center min-h-[44px] rounded-lg transition-all ${
                       isSelected
                         ? 'bg-primary text-white'
                         : isToday

@@ -120,6 +120,7 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
     null,
   );
   const myLocationMarkerRef = useRef<NaverMarker | null>(null);
+  const markerMapRef = useRef<Map<string, NaverMarker>>(new Map());
   const initializedRef = useRef(false);
   const [mapError, setMapError] = useState<string | null>(null);
 
@@ -248,12 +249,12 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
         });
 
         N.Event.addListener(marker, "click", () => {
-          // Bring clicked marker to front
           markersRef.current.forEach((m) => m.setZIndex(0));
           marker.setZIndex(1000);
           onPlaceSelect(place);
         });
 
+        markerMapRef.current.set(place.id, marker);
         markers.push(marker);
       });
 
@@ -393,8 +394,35 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
     }
   }, [initMap]);
 
-  // Pan to selected place
+  // Pan to selected place + highlight marker
   useEffect(() => {
+    // Reset all markers
+    markerMapRef.current.forEach((m) => {
+      const el = m.getElement();
+      if (el) {
+        const pin = el.querySelector('div > div:first-child') as HTMLElement;
+        if (pin) {
+          pin.style.transform = '';
+          pin.style.boxShadow = '0 4px 12px rgba(29,27,22,0.15)';
+        }
+      }
+      m.setZIndex(0);
+    });
+    // Highlight selected
+    if (selectedPlaceId) {
+      const marker = markerMapRef.current.get(selectedPlaceId);
+      if (marker) {
+        marker.setZIndex(1000);
+        const el = marker.getElement();
+        if (el) {
+          const pin = el.querySelector('div > div:first-child') as HTMLElement;
+          if (pin) {
+            pin.style.transform = 'scale(1.2)';
+            pin.style.boxShadow = '0 6px 20px rgba(145,71,43,0.35)';
+          }
+        }
+      }
+    }
     if (!selectedPlaceId || !mapInstanceRef.current) return;
     const place = places.find((p) => p.id === selectedPlaceId);
     if (place) {
@@ -408,12 +436,20 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
       <div className="w-full h-full min-h-[400px] flex items-center justify-center bg-surface-container-low">
         <div className="text-center px-6">
           <p className="text-on-surface-variant text-body-sm mb-4">{mapError}</p>
-          <button
-            onClick={() => { setMapError(null); initializedRef.current = false; initMap(); }}
-            className="signature-gradient text-white font-bold py-2 px-6 rounded-xl text-label-lg active:scale-95 transition-transform"
-          >
-            다시 시도
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => { setMapError(null); initializedRef.current = false; initMap(); }}
+              className="signature-gradient text-white font-bold py-2 px-6 rounded-xl text-label-lg active:scale-95 transition-transform"
+            >
+              다시 시도
+            </button>
+            <button
+              onClick={() => setMapError(null)}
+              className="bg-surface-container text-on-surface font-bold py-2 px-6 rounded-xl text-label-lg active:scale-95 transition-transform hover:bg-surface-container-high"
+            >
+              목록으로 보기
+            </button>
+          </div>
         </div>
       </div>
     );

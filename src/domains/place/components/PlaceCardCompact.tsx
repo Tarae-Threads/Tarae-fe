@@ -4,7 +4,16 @@ import Image from 'next/image'
 import type { Place } from '../types'
 import CategoryBadge from './CategoryBadge'
 import StatusBadge from './StatusBadge'
-import { Clock } from 'lucide-react'
+import { Clock, Store, Palette, Coffee, Pipette, Scissors } from 'lucide-react'
+import type { PlaceCategory } from '../types'
+
+const CATEGORY_ICON: Record<PlaceCategory, React.ReactNode> = {
+  yarn_store: <Store className="w-8 h-8 text-white/50" />,
+  studio: <Palette className="w-8 h-8 text-white/50" />,
+  cafe: <Coffee className="w-8 h-8 text-white/50" />,
+  dye_shop: <Pipette className="w-8 h-8 text-white/50" />,
+  craft_supply: <Scissors className="w-8 h-8 text-white/50" />,
+}
 import TagChip from '@/shared/components/ui/TagChip'
 
 interface Props {
@@ -18,11 +27,15 @@ export default function PlaceCardCompact({ place, onClick }: Props) {
       onClick={() => onClick(place)}
       className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow active:scale-[0.98] transition-transform duration-200 text-left"
     >
-      {place.images[0] && (
-        <div className="h-32 overflow-hidden relative">
+      <div className="h-32 overflow-hidden relative">
+        {place.images[0] ? (
           <Image src={place.images[0]} alt={place.name} fill sizes="340px" className="object-cover" />
-        </div>
-      )}
+        ) : (
+          <div className="w-full h-full signature-gradient opacity-30 flex items-center justify-center">
+            {CATEGORY_ICON[place.category]}
+          </div>
+        )}
+      </div>
       <div className="p-4">
         <div className="flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-1.5">

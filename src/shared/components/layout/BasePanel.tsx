@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import type { Place, PlaceCategory } from '@/domains/place/types'
 import type { NavTab } from './NavBar'
@@ -10,7 +10,15 @@ import PlaceFilter from '@/domains/place/components/PlaceFilter'
 import EventSidePanelContent from '@/domains/event/components/EventSidePanelContent'
 import EmptyState from '@/shared/components/ui/EmptyState'
 import TagChip from '@/shared/components/ui/TagChip'
-import { Search, SlidersHorizontal, X, Clock, MapPin } from 'lucide-react'
+import { Search, SlidersHorizontal, X, Clock, MapPin, Store, Palette, Coffee, Pipette, Scissors, Navigation } from 'lucide-react'
+
+const CATEGORY_ICON: Record<PlaceCategory, React.ReactNode> = {
+  yarn_store: <Store className="w-8 h-8 text-white/50" />,
+  studio: <Palette className="w-8 h-8 text-white/50" />,
+  cafe: <Coffee className="w-8 h-8 text-white/50" />,
+  dye_shop: <Pipette className="w-8 h-8 text-white/50" />,
+  craft_supply: <Scissors className="w-8 h-8 text-white/50" />,
+}
 
 interface Props {
   activeTab: NavTab
@@ -26,6 +34,7 @@ interface Props {
   onEventSelect?: (eventId: string) => void
   viewportFilterActive?: boolean
   onClearViewportFilter?: () => void
+  getDistance?: (place: Place) => number | null
 }
 
 export default function BasePanel({
@@ -42,7 +51,24 @@ export default function BasePanel({
   onEventSelect,
   viewportFilterActive,
   onClearViewportFilter,
+  getDistance,
 }: Props) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const scrollPosRef = useRef(0)
+
+  const handlePlaceClick = useCallback((place: Place) => {
+    if (scrollRef.current) scrollPosRef.current = scrollRef.current.scrollTop
+    onPlaceSelect(place)
+  }, [onPlaceSelect])
+
+  // Restore scroll position when returning from detail
+  useEffect(() => {
+    if (scrollRef.current && scrollPosRef.current > 0) {
+      requestAnimationFrame(() => {
+        if (scrollRef.current) scrollRef.current.scrollTop = scrollPosRef.current
+      })
+    }
+  }, [places])
   const [filterOpen, setFilterOpen] = useState(false)
 
   return (
@@ -70,11 +96,16 @@ export default function BasePanel({
                 onClick={() => setFilterOpen(prev => !prev)}
                 aria-expanded={filterOpen}
                 aria-label="필터"
-                className={`mr-1.5 p-2 rounded-lg transition-colors ${
+                className={`relative mr-1.5 p-2 rounded-lg transition-colors ${
                   filterOpen ? 'bg-primary text-white' : 'text-outline hover:bg-surface-container'
                 }`}
               >
                 {filterOpen ? <X className="w-4 h-4" /> : <SlidersHorizontal className="w-4 h-4" />}
+                {!filterOpen && (selectedCategories.size + (selectedRegion !== 'all' ? 1 : 0)) > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">
+                    {selectedCategories.size + (selectedRegion !== 'all' ? 1 : 0)}
+                  </span>
+                )}
               </button>
             </div>
             {filterOpen && (
@@ -103,26 +134,34 @@ export default function BasePanel({
           )}
 
           {/* Place list */}
-          <div className="flex-1 overflow-y-auto hide-scrollbar">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto hide-scrollbar">
             {places.length === 0 ? (
               <EmptyState
                 title="검색 결과가 없어요"
                 description="필터를 변경하거나 검색어를 수정해보세요."
                 icon={<MapPin className="w-8 h-8 text-outline" />}
+                action={(searchQuery || selectedCategories.size > 0 || selectedRegion !== 'all') ? {
+                  label: '필터 초기화',
+                  onClick: () => { onSearchChange(''); onClearCategories(); onRegionChange('all'); }
+                } : undefined}
               />
             ) : (
               <div className="px-4 space-y-3 pb-4">
                 {places.map(place => (
                   <button
                     key={place.id}
-                    onClick={() => onPlaceSelect(place)}
-                    className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow text-left group transition-all hover:shadow-xl"
+                    onClick={() => handlePlaceClick(place)}
+                    className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow text-left group transition-all hover:shadow-xl border border-border/30"
                   >
-                    {place.images[0] && (
-                      <div className="h-32 overflow-hidden relative">
+                    <div className="h-32 overflow-hidden relative">
+                      {place.images[0] ? (
                         <Image src={place.images[0]} alt={place.name} fill sizes="340px" className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                      </div>
-                    )}
+                      ) : (
+                        <div className="w-full h-full signature-gradient opacity-30 flex items-center justify-center">
+                          {CATEGORY_ICON[place.category]}
+                        </div>
+                      )}
+                    </div>
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-1.5">
@@ -139,9 +178,23 @@ export default function BasePanel({
                           ))}
                         </div>
                       )}
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="w-3 h-3 text-outline" />
-                        <span className="text-label-xs font-bold text-outline uppercase tracking-wider">{place.hours}</span>
+                      <div className="flex items-center gap-3">
+                        {place.hours && (
+                          <div className="flex items-center gap-1.5">
+                            <Clock className="w-3 h-3 text-outline" />
+                            <span className="text-label-xs font-bold text-outline uppercase tracking-wider">{place.hours}</span>
+                          </div>
+                        )}
+                        {(() => {
+                          const dist = getDistance?.(place)
+                          if (dist == null) return null
+                          return (
+                            <div className="flex items-center gap-1">
+                              <Navigation className="w-3 h-3 text-outline" />
+                              <span className="text-label-xs font-bold text-primary">{dist < 1 ? `${Math.round(dist * 1000)}m` : `${dist.toFixed(1)}km`}</span>
+                            </div>
+                          )
+                        })()}
                       </div>
                     </div>
                   </button>
@@ -151,7 +204,7 @@ export default function BasePanel({
           </div>
 
           {/* Footer */}
-          <div className="px-4 py-3 text-center shrink-0 bg-surface-container-low">
+          <div className="px-4 py-3 text-center shrink-0 bg-surface-container-low" aria-live="polite">
             <p className="text-label-xs text-outline font-medium uppercase tracking-widest">
               {places.length}개 장소 발견
             </p>
