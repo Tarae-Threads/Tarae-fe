@@ -228,7 +228,9 @@ export default function SubmitForm({ onClose }: Props) {
   const [placeOptions, setPlaceOptions] = useState<
     { value: string; label: string; sub?: string }[]
   >([]);
-  const [categoryIdMap, setCategoryIdMap] = useState<Record<string, number>>({});
+  const [categoryIdMap, setCategoryIdMap] = useState<Record<string, number>>(
+    {},
+  );
   useEffect(() => {
     getPlaces()
       .then((places) => {
@@ -628,7 +630,7 @@ export default function SubmitForm({ onClose }: Props) {
     switch (step) {
       case 0:
         return (
-          <div className="space-y-4 px-2">
+          <div className="space-y-4 px-2 min-h-[400px]">
             <SearchSelect
               label="장소 선택"
               required
@@ -837,7 +839,7 @@ export default function SubmitForm({ onClose }: Props) {
           }}
           className="flex flex-1 flex-col min-h-0"
         >
-          <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pb-2">
+          <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pb-2 ">
             {stepKey === "placeNew" && renderPlaceNewStep()}
             {stepKey === "placeUpdate" && renderPlaceUpdateStep()}
             {stepKey === "event" && renderEventStep()}
