@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import type { Place, PlaceCategory } from "@/domains/place/types";
+import type { Place } from "@/domains/place/types";
 import CategoryBadge from "@/domains/place/components/CategoryBadge";
 import StatusBadge from "@/domains/place/components/StatusBadge";
 import PlaceFilter from "@/domains/place/components/PlaceFilter";
@@ -13,7 +12,6 @@ import {
   X,
   Search,
   SlidersHorizontal,
-  Clock,
   MapPin,
   ExternalLink,
   Map,
@@ -27,18 +25,18 @@ interface MainSidePanelProps {
   places: Place[];
   selectedPlace: Place | null;
   panelOpen: boolean;
-  selectedCategories: Set<PlaceCategory>;
+  selectedCategories: Set<string>;
   selectedRegion: string;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onPlaceSelect: (place: Place) => void;
   onPanelClose: () => void;
-  onToggleCategory: (category: PlaceCategory) => void;
+  onToggleCategory: (category: string) => void;
   onClearCategories: () => void;
   onRegionChange: (region: string) => void;
   onClose: () => void;
   // Event → map callback
-  onEventPlaceClick?: (placeId: string) => void;
+  onEventPlaceClick?: (placeId: number) => void;
 }
 
 export default function MainSidePanel({
@@ -195,17 +193,7 @@ function PlaceList({
           onClick={() => onSelect(place)}
           className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow text-left group transition-all hover:shadow-xl"
         >
-          {place.images[0] && (
-            <div className="h-36 overflow-hidden relative">
-              <Image
-                src={place.images[0]}
-                alt={place.name}
-                fill
-                sizes="340px"
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </div>
-          )}
+          {/* TODO: images not available on PlaceListResponse — add when BE supports it */}
           <div className="p-4">
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-1.5">
@@ -214,16 +202,15 @@ function PlaceList({
                 </h3>
                 <StatusBadge status={place.status} />
               </div>
-              <CategoryBadge category={place.category} />
+              <CategoryBadge category={place.categories[0]?.name ?? ""} />
             </div>
             <p className="text-on-surface-variant text-label-md line-clamp-1 mb-2">
               {place.address}
             </p>
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-3 h-3 text-outline" />
-              <span className="text-label-xs font-bold text-outline uppercase tracking-wider">
-                {place.hours}
-              </span>
+            <div className="flex flex-wrap gap-1">
+              {place.tags.slice(0, 3).map((tag) => (
+                <TagChip key={tag.id} label={tag.name} size="sm" />
+              ))}
             </div>
           </div>
         </button>
@@ -250,7 +237,9 @@ function PlaceDetail({
       </button>
 
       <div className="flex items-center gap-2 mb-3">
-        <CategoryBadge category={place.category} />
+        {place.categories[0] && (
+          <CategoryBadge category={place.categories[0].name} />
+        )}
         <StatusBadge status={place.status} />
       </div>
 
@@ -263,29 +252,19 @@ function PlaceDetail({
         {place.address}
       </p>
 
-      <div className="bg-surface-container rounded-xl p-5 mb-5 space-y-3">
-        <div className="flex items-center gap-2.5 text-body-sm">
-          <Clock className="w-4 h-4 text-outline" />
-          <span className="text-on-surface-variant">{place.hours}</span>
-        </div>
-        {place.closedDays.length > 0 && (
-          <p className="text-body-sm text-on-surface-variant pl-[26px]">
-            휴무: {place.closedDays.join(", ")}
-          </p>
-        )}
-      </div>
+      {/* TODO: hoursText, closedDays, brands are only on PlaceDetail — fetch from API when needed */}
 
       {place.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-5">
           {place.tags.map((tag) => (
-            <TagChip key={tag} label={tag} size="md" />
+            <TagChip key={tag.id} label={tag.name} size="md" />
           ))}
         </div>
       )}
 
-      {place.links.instagram && (
+      {place.instagramUrl && (
         <a
-          href={place.links.instagram}
+          href={place.instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-primary text-label-lg font-medium hover:underline decoration-2 underline-offset-4 mb-5"

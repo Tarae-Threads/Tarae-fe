@@ -12,13 +12,10 @@ import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import type { NaverMapHandle } from "@/domains/place/components/NaverMap";
 import { usePlaceExplorer } from "@/domains/place/hooks/usePlaceExplorer";
-import { getPlaceById } from "@/domains/place/utils/places";
-import {
-  getEvents,
-  getEventById,
-  getEventMarkers,
-} from "@/domains/event/utils/events";
-import type { AnyEvent } from "@/domains/event/types";
+import { getEvents, getEvent } from "@/domains/event/queries/eventApi";
+import { getPlace } from "@/domains/place/queries/placeApi";
+import type { Event, EventDetail } from "@/domains/event/types";
+import type { PlaceDetail } from "@/domains/place/types";
 import MobileBottomSheet from "@/domains/place/components/MobileBottomSheet";
 import PlacePanel from "@/domains/place/components/PlacePanel";
 import MapControls from "@/domains/place/components/MapControls";
@@ -42,7 +39,10 @@ function HomeContent() {
   const mapRef = useRef<NaverMapHandle>(null);
   const { openModal } = useModal();
   const [activeTab, setActiveTab] = useState<NavTab>("places");
-  const [selectedEvent, setSelectedEvent] = useState<AnyEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedEventDetail, setSelectedEventDetail] = useState<EventDetail | null>(null);
+  const [selectedPlaceDetail, setSelectedPlaceDetail] = useState<PlaceDetail | null>(null);
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
 
   const {
     filteredPlaces,
@@ -78,15 +78,23 @@ function HomeContent() {
     };
   }, [panelOpen]);
 
-  const eventPlaceIds = useMemo(() => {
-    const ids = new Set<string>();
-    for (const event of getEvents()) {
-      if (event.placeId) ids.add(event.placeId);
-    }
-    return ids;
+  // Fetch events from API
+  useEffect(() => {
+    getEvents()
+      .then(setAllEvents)
+      .catch(() => {});
   }, []);
 
-  const eventMarkers = useMemo(() => getEventMarkers(), []);
+  const eventPlaceIds = useMemo(() => {
+    const ids = new Set<number>();
+    // TODO: EventListResponse doesn't include placeId — update when BE supports it
+    return ids;
+  }, [allEvents]);
+
+  const eventMarkers = useMemo(() => {
+    // TODO: EventListResponse doesn't include lat/lng — derive from detail API or updated list endpoint
+    return [] as { id: string; title: string; lat: number; lng: number }[];
+  }, [allEvents]);
 
   useEffect(() => {
     if (selectedRegion === "all") return;
@@ -103,45 +111,83 @@ function HomeContent() {
     [],
   );
 
+  const fetchPlaceDetail = useCallback(
+    (placeId: number) => {
+      setSelectedPlaceDetail(null);
+      getPlace(placeId)
+        .then((detail) => setSelectedPlaceDetail(detail))
+        .catch(() => {});
+    },
+    [],
+  );
+
   const handleMarkerSelect = useCallback(
     (place: Parameters<typeof handlePlaceSelect>[0]) => {
       setActiveTab("places");
       setSelectedEvent(null);
+      setSelectedEventDetail(null);
       handlePlaceSelect(place);
-      smartPanTo(place.lat, place.lng, 13);
+      fetchPlaceDetail(place.id);
+      const p = place as Parameters<typeof handlePlaceSelect>[0] & { lat?: number; lng?: number };
+      if (typeof p.lat === "number" && typeof p.lng === "number") {
+        smartPanTo(p.lat, p.lng, 13);
+      }
     },
-    [handlePlaceSelect, smartPanTo],
+    [handlePlaceSelect, smartPanTo, fetchPlaceDetail],
   );
 
   const handleListSelect = useCallback(
     (place: Parameters<typeof handlePlaceSelect>[0]) => {
       setActiveTab("places");
       setSelectedEvent(null);
+      setSelectedEventDetail(null);
       handlePlaceSelect(place);
-      mapRef.current?.panTo(place.lat, place.lng, 14);
+      fetchPlaceDetail(place.id);
+      const p = place as Parameters<typeof handlePlaceSelect>[0] & { lat?: number; lng?: number };
+      if (typeof p.lat === "number" && typeof p.lng === "number") {
+        mapRef.current?.panTo(p.lat, p.lng, 14);
+      }
     },
-    [handlePlaceSelect],
+    [handlePlaceSelect, fetchPlaceDetail],
   );
 
   const handleEventSelect = useCallback(
-    (eventId: string) => {
-      const event = getEventById(eventId);
-      if (event) {
+    (eventId: number) => {
+      setSelectedPlaceDetail(null);
+      setSelectedEventDetail(null);
+
+      const fromList = allEvents.find((e) => e.id === eventId);
+      if (fromList) {
         setActiveTab("events");
         handlePanelClose();
-        setSelectedEvent(event);
-        if (event.placeId) {
-          const place = getPlaceById(event.placeId);
-          if (place) smartPanTo(place.lat, place.lng, 13);
-        } else if (
-          typeof event.lat === "number" &&
-          typeof event.lng === "number"
-        ) {
-          smartPanTo(event.lat, event.lng, 13);
-        }
+        setSelectedEvent(fromList);
       }
+
+      // 항상 상세 API 호출 (description 등 추가 정보)
+      getEvent(eventId)
+        .then((detail) => {
+          setSelectedEventDetail(detail);
+          if (!fromList) {
+            setActiveTab("events");
+            handlePanelClose();
+            setSelectedEvent({
+              id: detail.id,
+              title: detail.title,
+              eventType: detail.eventType,
+              startDate: detail.startDate,
+              endDate: detail.endDate,
+              locationText: detail.locationText,
+              active: detail.active,
+              links: detail.links,
+            });
+          }
+          if (typeof detail.lat === "number" && typeof detail.lng === "number") {
+            smartPanTo(detail.lat, detail.lng, 13);
+          }
+        })
+        .catch(() => {});
     },
-    [smartPanTo, handlePanelClose],
+    [allEvents, smartPanTo, handlePanelClose],
   );
 
   const handleDetailClose = useCallback(() => {
@@ -153,9 +199,9 @@ function HomeContent() {
   const mobileDetailOpen = panelOpen || !!selectedEvent;
   const mobileDetailData =
     selectedPlace && panelOpen
-      ? { type: "place" as const, place: selectedPlace }
+      ? { type: "place" as const, place: selectedPlace, placeDetail: selectedPlaceDetail }
       : selectedEvent
-        ? { type: "event" as const, event: selectedEvent }
+        ? { type: "event" as const, event: selectedEvent, eventDetail: selectedEventDetail }
         : null;
 
   return (
@@ -191,9 +237,9 @@ function HomeContent() {
       {(() => {
         const detailData =
           selectedPlace && panelOpen
-            ? { type: "place" as const, place: selectedPlace }
+            ? { type: "place" as const, place: selectedPlace, placeDetail: selectedPlaceDetail }
             : selectedEvent
-              ? { type: "event" as const, event: selectedEvent }
+              ? { type: "event" as const, event: selectedEvent, eventDetail: selectedEventDetail }
               : null;
         return (
           <div
@@ -217,7 +263,7 @@ function HomeContent() {
           selectedPlaceId={initialPlaceId}
           eventPlaceIds={eventPlaceIds}
           eventMarkers={eventMarkers}
-          onEventMarkerSelect={handleEventSelect}
+          onEventMarkerSelect={(eventId: string) => handleEventSelect(Number(eventId))}
         />
         <MapControls
           onZoomIn={() => mapRef.current?.zoomIn()}
@@ -262,6 +308,8 @@ function HomeContent() {
               onEventSelect={handleEventSelect}
               viewportFilterActive={viewportFilterActive}
               onClearViewportFilter={clearViewportFilter}
+              hasActiveFilters={searchQuery !== '' || selectedCategories.size > 0 || selectedRegion !== 'all'}
+              onClearFilters={() => { setSearchQuery(''); clearCategories(); setSelectedRegion('all'); }}
             />
           )}
 
