@@ -31,6 +31,12 @@ const toastVariants = cva(
 
 type ToastVariant = NonNullable<VariantProps<typeof toastVariants>["variant"]>
 
+// Base UI Toast의 data 필드에 전달하는 커스텀 페이로드
+interface ToastPayload {
+  variant: ToastVariant
+  action?: { label: string; onClick: () => void }
+}
+
 // ---------------------------------------------------------------------------
 // Zustand toast store
 // ---------------------------------------------------------------------------
@@ -83,7 +89,7 @@ function useToast() {
           actionProps: data.action
             ? { onClick: data.action.onClick, children: data.action.label }
             : undefined,
-          data: { variant: data.variant ?? "default", action: data.action } as any,
+          data: { variant: data.variant ?? "default", action: data.action } as ToastPayload,
         })
       } else {
         enqueue(data)
@@ -132,8 +138,9 @@ interface ToastItemProps {
 }
 
 function ToastItem({ toast: t }: ToastItemProps) {
-  const variant = ((t.data as any)?.variant ?? t.type ?? "default") as ToastVariant
-  const action = (t.data as any)?.action as ToastData["action"] | undefined
+  const payload = t.data as ToastPayload | undefined
+  const variant = payload?.variant ?? (t.type as ToastVariant) ?? "default"
+  const action = payload?.action
 
   return (
     <Toast.Root
@@ -215,7 +222,7 @@ function Toaster() {
         actionProps: data.action
           ? { onClick: data.action.onClick, children: data.action.label }
           : undefined,
-        data: { variant: data.variant ?? "default", action: data.action } as any,
+        data: { variant: data.variant ?? "default", action: data.action } as ToastPayload,
       })
     }
     return () => {

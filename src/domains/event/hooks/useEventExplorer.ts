@@ -10,7 +10,7 @@ interface YearMonth {
   month: number;
 }
 
-export function useEventExplorer() {
+export const useEventExplorer = () => {
   const allEvents = getEvents();
   const today = new Date();
 

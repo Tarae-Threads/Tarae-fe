@@ -21,7 +21,7 @@ function blurActiveElement(): void {
 // useModal hook
 // ---------------------------------------------------------------------------
 
-export function useModal() {
+export const useModal = () => {
   const push = useModalStore((s) => s.push)
 
   function openModal<P extends Record<string, unknown>, R = unknown>(
