@@ -130,9 +130,8 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     if (!viewportBounds) return filteredPlaces;
     const { sw, ne } = viewportBounds;
     return filteredPlaces.filter((p) => {
-      const lat = (p as Record<string, unknown>).lat as number | undefined;
-      const lng = (p as Record<string, unknown>).lng as number | undefined;
-      if (lat == null || lng == null) return true;
+      if (p.lat == null || p.lng == null) return true;
+      const { lat, lng } = p;
       return lat >= sw.lat && lat <= ne.lat && lng >= sw.lng && lng <= ne.lng;
     });
   }, [filteredPlaces, viewportBounds]);
@@ -168,9 +167,8 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
 
   const getDistance = useCallback((place: Place) => {
     if (!userLocation) return null;
-    const lat = (place as Record<string, unknown>).lat as number | undefined;
-    const lng = (place as Record<string, unknown>).lng as number | undefined;
-    if (lat == null || lng == null) return null;
+    if (place.lat == null || place.lng == null) return null;
+    const { lat, lng } = place;
     return haversineKm(userLocation.lat, userLocation.lng, lat, lng);
   }, [userLocation]);
 

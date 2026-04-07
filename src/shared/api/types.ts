@@ -179,6 +179,8 @@ export interface components {
             region: string;
             district: string;
             address: string;
+            lat?: number;
+            lng?: number;
             status: string;
             categories: components["schemas"]["CategoryInfo"][];
             tags: components["schemas"]["TagInfo"][];
@@ -222,6 +224,8 @@ export interface components {
             /** Format: date */
             endDate?: string;
             locationText?: string;
+            lat?: number;
+            lng?: number;
             active: boolean;
             links?: string;
         };

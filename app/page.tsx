@@ -128,9 +128,8 @@ function HomeContent() {
       setSelectedEventDetail(null);
       handlePlaceSelect(place);
       fetchPlaceDetail(place.id);
-      const p = place as Parameters<typeof handlePlaceSelect>[0] & { lat?: number; lng?: number };
-      if (typeof p.lat === "number" && typeof p.lng === "number") {
-        smartPanTo(p.lat, p.lng, 13);
+      if (typeof place.lat === "number" && typeof place.lng === "number") {
+        smartPanTo(place.lat, place.lng, 13);
       }
     },
     [handlePlaceSelect, smartPanTo, fetchPlaceDetail],
@@ -143,9 +142,8 @@ function HomeContent() {
       setSelectedEventDetail(null);
       handlePlaceSelect(place);
       fetchPlaceDetail(place.id);
-      const p = place as Parameters<typeof handlePlaceSelect>[0] & { lat?: number; lng?: number };
-      if (typeof p.lat === "number" && typeof p.lng === "number") {
-        mapRef.current?.panTo(p.lat, p.lng, 14);
+      if (typeof place.lat === "number" && typeof place.lng === "number") {
+        mapRef.current?.panTo(place.lat, place.lng, 14);
       }
     },
     [handlePlaceSelect, fetchPlaceDetail],

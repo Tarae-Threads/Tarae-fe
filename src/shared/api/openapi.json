@@ -323,6 +323,8 @@
           "region": { "type": "string" },
           "district": { "type": "string" },
           "address": { "type": "string" },
+          "lat": { "type": "number" },
+          "lng": { "type": "number" },
           "status": { "type": "string" },
           "categories": { "type": "array", "items": { "$ref": "#/components/schemas/CategoryInfo" } },
           "tags": { "type": "array", "items": { "$ref": "#/components/schemas/TagInfo" } },
@@ -378,6 +380,8 @@
           "startDate": { "type": "string", "format": "date" },
           "endDate": { "type": "string", "format": "date" },
           "locationText": { "type": "string" },
+          "lat": { "type": "number" },
+          "lng": { "type": "number" },
           "active": { "type": "boolean" },
           "links": { "type": "string" }
         }
