@@ -41,7 +41,8 @@ export const eventSubmissionSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요'),
   startDate: z.string().min(1, '시작일을 선택해주세요'),
   endDate: z.string().optional(),
-  location: z.string().optional(),
+  address: z.string().optional(),
+  addressDetail: z.string().optional(),
   description: z.string().optional(),
 })
 
