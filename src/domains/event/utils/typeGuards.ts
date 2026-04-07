@@ -1,5 +1,5 @@
-import type { AnyEvent, TesterRecruitment } from '../types'
+import type { Event } from '../types'
 
-export function isTesterRecruitment(event: AnyEvent | undefined | null): event is TesterRecruitment {
-  return event?.type === 'tester_recruitment'
+export function isTesterRecruitment(event: Event | undefined | null): boolean {
+  return event?.eventType === 'TESTER_RECRUIT'
 }

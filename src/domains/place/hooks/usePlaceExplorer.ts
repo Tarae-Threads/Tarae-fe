@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { getPlaces, filterPlaces } from "../utils/places";
-import type { Place, PlaceCategory } from "../types";
+import { getPlaces } from "@/domains/place/queries/placeApi";
+import type { Place } from "../types";
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
   const R = 6371;
@@ -15,20 +15,43 @@ function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
 }
 
 export const usePlaceExplorer = (initialPlaceId: string | null) => {
-  const allPlaces = getPlaces();
+  const [allPlaces, setAllPlaces] = useState<Place[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [selectedCategories, setSelectedCategories] = useState<
-    Set<PlaceCategory>
+    Set<string>
   >(new Set());
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(
-    initialPlaceId
-      ? (allPlaces.find((p) => p.id === initialPlaceId) ?? null)
-      : null,
-  );
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+
+  // Fetch places from API
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    getPlaces()
+      .then((data) => {
+        if (!cancelled) {
+          setAllPlaces(data);
+          if (initialPlaceId) {
+            const found = data.find((p) => String(p.id) === initialPlaceId);
+            if (found) {
+              setSelectedPlace(found);
+              setPanelOpen(true);
+            }
+          }
+        }
+      })
+      .catch(() => {
+        // Error is handled by apiClient interceptor (toast)
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Get user location once
   useEffect(() => {
@@ -54,7 +77,7 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     };
   }, [searchQuery]);
 
-  const toggleCategory = useCallback((category: PlaceCategory) => {
+  const toggleCategory = useCallback((category: string) => {
     setSelectedCategories((prev) => {
       const next = new Set(prev);
       if (next.has(category)) {
@@ -70,16 +93,31 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     setSelectedCategories(new Set());
   }, [setSelectedCategories]);
 
-  const filteredPlaces = useMemo(
-    () =>
-      filterPlaces(
-        allPlaces,
-        selectedCategories.size > 0 ? selectedCategories : "all",
-        selectedRegion,
-        debouncedQuery,
-      ),
-    [allPlaces, selectedCategories, selectedRegion, debouncedQuery],
-  );
+  const filteredPlaces = useMemo(() => {
+    const q = debouncedQuery.trim().toLowerCase();
+    const qNoSpace = q.replace(/\s+/g, "");
+    const hasCategories = selectedCategories.size > 0;
+
+    return allPlaces.filter((place) => {
+      if (hasCategories) {
+        const placeCategories = place.categories.map((c) => c.name);
+        if (!placeCategories.some((name) => selectedCategories.has(name))) return false;
+      }
+      if (selectedRegion !== "all" && place.region !== selectedRegion) return false;
+      if (q) {
+        const haystack = [
+          place.name,
+          place.address,
+          place.district,
+          ...place.tags.map((t) => t.name),
+        ]
+          .join(" ")
+          .toLowerCase();
+        if (!haystack.includes(q) && !haystack.replace(/\s+/g, "").includes(qNoSpace)) return false;
+      }
+      return true;
+    });
+  }, [allPlaces, selectedCategories, selectedRegion, debouncedQuery]);
 
   // Viewport filter
   const [viewportBounds, setViewportBounds] = useState<{
@@ -88,11 +126,15 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
   } | null>(null);
 
   const displayPlaces = useMemo(() => {
+    // PlaceListResponse may not have lat/lng — skip viewport filter if absent
     if (!viewportBounds) return filteredPlaces;
     const { sw, ne } = viewportBounds;
-    return filteredPlaces.filter(
-      (p) => p.lat >= sw.lat && p.lat <= ne.lat && p.lng >= sw.lng && p.lng <= ne.lng,
-    );
+    return filteredPlaces.filter((p) => {
+      const lat = (p as Record<string, unknown>).lat as number | undefined;
+      const lng = (p as Record<string, unknown>).lng as number | undefined;
+      if (lat == null || lng == null) return true;
+      return lat >= sw.lat && lat <= ne.lat && lng >= sw.lng && lng <= ne.lng;
+    });
   }, [filteredPlaces, viewportBounds]);
 
   // Clear viewport filter when other filters change
@@ -126,7 +168,10 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
 
   const getDistance = useCallback((place: Place) => {
     if (!userLocation) return null;
-    return haversineKm(userLocation.lat, userLocation.lng, place.lat, place.lng);
+    const lat = (place as Record<string, unknown>).lat as number | undefined;
+    const lng = (place as Record<string, unknown>).lng as number | undefined;
+    if (lat == null || lng == null) return null;
+    return haversineKm(userLocation.lat, userLocation.lng, lat, lng);
   }, [userLocation]);
 
   return {
@@ -134,6 +179,7 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     filteredPlaces,
     displayPlaces,
     selectedPlace,
+    loading,
     // filter state
     selectedCategories,
     toggleCategory,

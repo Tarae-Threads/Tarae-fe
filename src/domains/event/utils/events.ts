@@ -1,90 +1,65 @@
-import eventsData from '../data/events.json'
-import type { AnyEvent, EventType } from '../types'
-import { getPlaceById } from '@/domains/place/utils/places'
-import type { Place } from '@/domains/place/types'
+import type { Event, EventType } from '../types'
 
 const EVENT_TYPE_ORDER: Record<EventType, number> = {
-  sale: 0,
-  event_popup: 1,
-  tester_recruitment: 2,
-}
-
-const events: AnyEvent[] = eventsData as AnyEvent[]
-
-export function getEvents(): AnyEvent[] {
-  return [...events].sort((a, b) => EVENT_TYPE_ORDER[a.type] - EVENT_TYPE_ORDER[b.type])
-}
-
-export function getEventById(id: string): AnyEvent | undefined {
-  return events.find(e => e.id === id)
-}
-
-export function getEventsByType(type: EventType): AnyEvent[] {
-  return events.filter(e => e.type === type)
-}
-
-export function getEventsByPlaceId(placeId: string): AnyEvent[] {
-  return events.filter(e => e.placeId === placeId)
-}
-
-export function getLinkedPlace(event: AnyEvent): Place | undefined {
-  return event.placeId ? getPlaceById(event.placeId) : undefined
-}
-
-export function getEventsByDate(date: string): AnyEvent[] {
-  return events.filter(e => e.startDate <= date && e.endDate >= date)
+  SALE: 0,
+  EVENT_POPUP: 1,
+  TESTER_RECRUIT: 2,
 }
 
 export function filterEvents(
-  allEvents: AnyEvent[],
+  allEvents: Event[],
   types: Set<EventType> | 'all',
   date?: string,
-): AnyEvent[] {
+): Event[] {
   return allEvents.filter(event => {
-    if (types !== 'all' && types.size > 0 && !types.has(event.type)) return false
-    if (date && !(event.startDate <= date && event.endDate >= date)) return false
+    if (types !== 'all' && types.size > 0 && !types.has(event.eventType as EventType)) return false
+    if (date) {
+      const end = event.endDate ?? event.startDate
+      if (!(event.startDate <= date && end >= date)) return false
+    }
     return true
   })
 }
 
-export function getEventsForMonth(year: number, month: number): AnyEvent[] {
+export function getEventsForMonth(events: Event[], year: number, month: number): Event[] {
   const firstDay = `${year}-${String(month).padStart(2, '0')}-01`
   const lastDay = `${year}-${String(month).padStart(2, '0')}-${new Date(year, month, 0).getDate()}`
-  return events.filter(e => e.startDate <= lastDay && e.endDate >= firstDay)
+  return events.filter(e => {
+    const end = e.endDate ?? e.startDate
+    return e.startDate <= lastDay && end >= firstDay
+  })
 }
 
 export interface CalendarBar {
-  id: string
+  id: number
   title: string
   type: EventType
-  startCol: number // 0-6 column in the week row
-  span: number     // how many days it spans in this row
+  startCol: number
+  span: number
 }
 
 /** Get event bars for each week row of the month */
-export function getEventBarsForMonth(year: number, month: number): CalendarBar[][] {
-  // Sort by category order (sale → event_popup → tester), then shorter events first
-  const monthEvents = [...getEventsForMonth(year, month)].sort((a, b) => {
-    const typeOrder = EVENT_TYPE_ORDER[a.type] - EVENT_TYPE_ORDER[b.type]
+export function getEventBarsForMonth(events: Event[], year: number, month: number): CalendarBar[][] {
+  const monthEvents = [...getEventsForMonth(events, year, month)].sort((a, b) => {
+    const typeOrder = EVENT_TYPE_ORDER[a.eventType as EventType] - EVENT_TYPE_ORDER[b.eventType as EventType]
     if (typeOrder !== 0) return typeOrder
-    const durationA = new Date(a.endDate).getTime() - new Date(a.startDate).getTime()
-    const durationB = new Date(b.endDate).getTime() - new Date(b.startDate).getTime()
+    const endA = a.endDate ?? a.startDate
+    const endB = b.endDate ?? b.startDate
+    const durationA = new Date(endA).getTime() - new Date(a.startDate).getTime()
+    const durationB = new Date(endB).getTime() - new Date(b.startDate).getTime()
     return durationA - durationB
   })
   const firstDayOfMonth = new Date(year, month - 1, 1).getDay()
   const daysInMonth = new Date(year, month, 0).getDate()
 
-  // Build all cells (null for padding, day number for actual dates)
   const cells: (number | null)[] = []
   for (let i = 0; i < firstDayOfMonth; i++) cells.push(null)
   for (let d = 1; d <= daysInMonth; d++) cells.push(d)
 
-  // Split into week rows
   const weeks: (number | null)[][] = []
   for (let i = 0; i < cells.length; i += 7) {
     weeks.push(cells.slice(i, i + 7))
   }
-  // Pad last week
   while (weeks.length > 0 && weeks[weeks.length - 1].length < 7) {
     weeks[weeks.length - 1].push(null)
   }
@@ -98,12 +73,12 @@ export function getEventBarsForMonth(year: number, month: number): CalendarBar[]
     )
 
     for (const event of monthEvents) {
-      // Find first and last column in this week that the event covers
+      const eventEnd = event.endDate ?? event.startDate
       let startCol = -1
       let endCol = -1
       for (let col = 0; col < 7; col++) {
         const date = weekDates[col]
-        if (date && event.startDate <= date && event.endDate >= date) {
+        if (date && event.startDate <= date && eventEnd >= date) {
           if (startCol === -1) startCol = col
           endCol = col
         }
@@ -112,44 +87,32 @@ export function getEventBarsForMonth(year: number, month: number): CalendarBar[]
         bars.push({
           id: event.id,
           title: event.title,
-          type: event.type,
+          type: event.eventType as EventType,
           startCol,
           span: endCol - startCol + 1,
         })
       }
     }
 
-    result.push(bars) // return all bars, UI handles truncation
+    result.push(bars)
   }
 
   return result
 }
 
-export interface EventMarkerData {
-  id: string
-  title: string
-  lat: number
-  lng: number
-}
-
-export function getEventMarkers(): EventMarkerData[] {
-  return events
-    .filter((e): e is AnyEvent & { lat: number; lng: number } =>
-      typeof e.lat === 'number' && typeof e.lng === 'number' && !e.placeId
-    )
-    .map(e => ({ id: e.id, title: e.title, lat: e.lat, lng: e.lng }))
-}
-
-export function getDatesWithEvents(year: number, month: number): Map<string, EventType[]> {
-  const monthEvents = getEventsForMonth(year, month)
+export function getDatesWithEvents(events: Event[], year: number, month: number): Map<string, EventType[]> {
+  const monthEvents = getEventsForMonth(events, year, month)
   const dateMap = new Map<string, EventType[]>()
   const daysInMonth = new Date(year, month, 0).getDate()
 
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`
     const types = monthEvents
-      .filter(e => e.startDate <= dateStr && e.endDate >= dateStr)
-      .map(e => e.type)
+      .filter(e => {
+        const end = e.endDate ?? e.startDate
+        return e.startDate <= dateStr && end >= dateStr
+      })
+      .map(e => e.eventType as EventType)
     if (types.length > 0) {
       dateMap.set(dateStr, [...new Set(types)])
     }

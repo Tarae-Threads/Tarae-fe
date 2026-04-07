@@ -11,7 +11,7 @@ interface ApplicationFormData {
   portfolio?: string
 }
 
-export const useApplicationSubmit = (recruitmentId: string) => {
+export const useApplicationSubmit = (recruitmentId: number | string) => {
   const [submitted, setSubmitted] = useState(false)
 
   const submit = useCallback((data: ApplicationFormData) => {

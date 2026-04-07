@@ -1,61 +1,10 @@
-export type EventType = "tester_recruitment" | "sale" | "event_popup";
+export type {
+  EventListResponse as Event,
+  EventDetailResponse as EventDetail,
+} from "@/shared/api/client"
 
-export type RecruitmentStatus =
-  | "draft"
-  | "pending"
-  | "open"
-  | "closed"
-  | "in_progress"
-  | "completed"
-  | "hidden";
+// BE eventType enum
+export type EventType = "TESTER_RECRUIT" | "SALE" | "EVENT_POPUP"
 
-export type ApplicationStatus =
-  | "submitted"
-  | "reviewing"
-  | "accepted"
-  | "rejected"
-  | "canceled";
-
-export interface CalendarEvent {
-  id: string;
-  title: string;
-  type: EventType;
-  description: string;
-  startDate: string;
-  endDate: string;
-  link?: string;
-  location?: string;
-  placeId?: string;
-  lat?: number;
-  lng?: number;
-}
-
-export interface TesterRecruitment extends CalendarEvent {
-  type: "tester_recruitment";
-  patternName: string;
-  category: string;
-  maxParticipants: number;
-  currentParticipants: number;
-  applicationStart: string;
-  applicationEnd: string;
-  testPeriodStart: string;
-  testPeriodEnd: string;
-  conditions: string;
-  requirements: string;
-  contactMethod: string;
-  recruitmentStatus: RecruitmentStatus;
-}
-
-export interface TesterApplication {
-  id: string;
-  recruitmentId: string;
-  nickname: string;
-  contact: string;
-  experience: string;
-  reason: string;
-  portfolio?: string;
-  status: ApplicationStatus;
-  appliedAt: string;
-}
-
-export type AnyEvent = CalendarEvent | TesterRecruitment;
+/** @deprecated Use `Event` instead */
+export type { EventListResponse as AnyEvent } from "@/shared/api/client"

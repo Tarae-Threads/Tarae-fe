@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
-import { getEvents, filterEvents, getDatesWithEvents } from "../utils/events";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { getEvents } from "../queries/eventApi";
+import { filterEvents, getDatesWithEvents } from "../utils/events";
 import { getTodayString } from "../utils/date";
-import type { EventType } from "../types";
+import type { Event, EventType } from "../types";
 
 interface YearMonth {
   year: number;
@@ -11,8 +12,10 @@ interface YearMonth {
 }
 
 export const useEventExplorer = () => {
-  const allEvents = getEvents();
   const today = new Date();
+
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [yearMonth, setYearMonth] = useState<YearMonth>({
     year: today.getFullYear(),
@@ -21,11 +24,29 @@ export const useEventExplorer = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTypes, setSelectedTypes] = useState<Set<EventType>>(new Set());
 
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    getEvents()
+      .then((events) => {
+        if (!cancelled) setAllEvents(events);
+      })
+      .catch(() => {
+        if (!cancelled) setAllEvents([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const { year: currentYear, month: currentMonth } = yearMonth;
 
   const datesWithEvents = useMemo(
-    () => getDatesWithEvents(currentYear, currentMonth),
-    [currentYear, currentMonth],
+    () => getDatesWithEvents(allEvents, currentYear, currentMonth),
+    [allEvents, currentYear, currentMonth],
   );
 
   const filteredEvents = useMemo(
@@ -78,6 +99,8 @@ export const useEventExplorer = () => {
   }, []);
 
   return {
+    allEvents,
+    loading,
     currentYear,
     currentMonth,
     selectedDate,
@@ -91,4 +114,4 @@ export const useEventExplorer = () => {
     selectDate,
     goToday,
   };
-}
+};
