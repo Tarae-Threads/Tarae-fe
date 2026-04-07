@@ -1,0 +1,419 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Tarae API",
+    "description": "타래 — 뜨개 커뮤니티 서비스 API",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.taraethreads.com",
+      "description": "Production server"
+    }
+  ],
+  "tags": [
+    { "name": "장소", "description": "뜨개 관련 장소 API" },
+    { "name": "등록 요청", "description": "장소/이벤트 등록 요청 API" },
+    { "name": "이벤트", "description": "뜨개 관련 이벤트/팝업/세일 API" }
+  ],
+  "paths": {
+    "/api/requests/places": {
+      "post": {
+        "tags": ["등록 요청"],
+        "summary": "장소 등록 요청",
+        "operationId": "requestPlace",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PlaceRequestInput" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "요청 등록 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseRequestResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "유효하지 않은 요청 값",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseRequestResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/requests/events": {
+      "post": {
+        "tags": ["등록 요청"],
+        "summary": "이벤트 등록 요청",
+        "operationId": "requestEvent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EventRequestInput" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "요청 등록 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseRequestResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "유효하지 않은 요청 값",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseRequestResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/places": {
+      "get": {
+        "tags": ["장소"],
+        "summary": "장소 목록 조회",
+        "operationId": "getPlaces",
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "검색어 (장소명, 주소, 태그, 브랜드 통합 검색)",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "description": "지역 필터 (예: 서울, 경기)",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "description": "카테고리 ID",
+            "required": false,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "tagId",
+            "in": "query",
+            "description": "태그 ID",
+            "required": false,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "조회 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseListPlaceListResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/places/{id}": {
+      "get": {
+        "tags": ["장소"],
+        "summary": "장소 상세 조회",
+        "operationId": "getPlace",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "장소 ID",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "조회 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponsePlaceDetailResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "존재하지 않는 장소",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponsePlaceDetailResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "get": {
+        "tags": ["이벤트"],
+        "summary": "이벤트 목록 조회",
+        "operationId": "getEvents",
+        "parameters": [
+          {
+            "name": "eventType",
+            "in": "query",
+            "description": "이벤트 타입 (TESTER_RECRUIT, SALE, EVENT_POPUP)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["TESTER_RECRUIT", "SALE", "EVENT_POPUP"]
+            }
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "description": "활성 여부 (기본값: true)",
+            "required": false,
+            "schema": { "type": "boolean" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "조회 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseListEventListResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{id}": {
+      "get": {
+        "tags": ["이벤트"],
+        "summary": "이벤트 상세 조회",
+        "operationId": "getEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "이벤트 ID",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "조회 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseEventDetailResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "존재하지 않는 이벤트",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseEventDetailResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PlaceRequestInput": {
+        "type": "object",
+        "required": ["requestType"],
+        "properties": {
+          "requestType": { "type": "string", "enum": ["NEW", "UPDATE"] },
+          "placeId": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "addressDetail": { "type": "string" },
+          "lat": { "type": "number" },
+          "lng": { "type": "number" },
+          "categoryIds": { "type": "array", "items": { "type": "integer", "format": "int64" } },
+          "hoursText": { "type": "string" },
+          "closedDays": { "type": "string" },
+          "brandsYarn": { "type": "string" },
+          "brandsNeedle": { "type": "string" },
+          "brandsNotions": { "type": "string" },
+          "instagramUrl": { "type": "string" },
+          "websiteUrl": { "type": "string" },
+          "naverMapUrl": { "type": "string" },
+          "tags": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      },
+      "EventRequestInput": {
+        "type": "object",
+        "required": ["title", "eventType", "startDate"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "eventType": { "type": "string", "enum": ["TESTER_RECRUIT", "SALE", "EVENT_POPUP"] },
+          "startDate": { "type": "string", "format": "date" },
+          "endDate": { "type": "string", "format": "date" },
+          "locationText": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      },
+      "RequestResponse": {
+        "type": "object",
+        "required": ["id"],
+        "description": "등록 요청 응답",
+        "properties": {
+          "id": { "type": "integer", "format": "int64", "description": "생성된 요청 ID", "example": 1 }
+        }
+      },
+      "ApiResponseRequestResponse": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": { "$ref": "#/components/schemas/RequestResponse" }
+        }
+      },
+      "CategoryInfo": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" }
+        }
+      },
+      "TagInfo": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" }
+        }
+      },
+      "BrandInfo": {
+        "type": "object",
+        "required": ["id", "name", "type"],
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "type": { "type": "string" }
+        }
+      },
+      "PlaceListResponse": {
+        "type": "object",
+        "required": ["id", "name", "region", "district", "address", "status", "categories", "tags"],
+        "description": "장소 목록 응답",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "region": { "type": "string" },
+          "district": { "type": "string" },
+          "address": { "type": "string" },
+          "status": { "type": "string" },
+          "categories": { "type": "array", "items": { "$ref": "#/components/schemas/CategoryInfo" } },
+          "tags": { "type": "array", "items": { "$ref": "#/components/schemas/TagInfo" } },
+          "instagramUrl": { "type": "string" },
+          "naverMapUrl": { "type": "string" }
+        }
+      },
+      "ApiResponseListPlaceListResponse": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/PlaceListResponse" } }
+        }
+      },
+      "PlaceDetailResponse": {
+        "type": "object",
+        "required": ["id", "name", "region", "district", "address", "status", "categories", "tags", "brands"],
+        "description": "장소 상세 응답",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "region": { "type": "string" },
+          "district": { "type": "string" },
+          "address": { "type": "string" },
+          "lat": { "type": "number" },
+          "lng": { "type": "number" },
+          "hoursText": { "type": "string" },
+          "closedDays": { "type": "string" },
+          "description": { "type": "string" },
+          "status": { "type": "string" },
+          "categories": { "type": "array", "items": { "$ref": "#/components/schemas/CategoryInfo" } },
+          "tags": { "type": "array", "items": { "$ref": "#/components/schemas/TagInfo" } },
+          "brands": { "type": "array", "items": { "$ref": "#/components/schemas/BrandInfo" } },
+          "instagramUrl": { "type": "string" },
+          "websiteUrl": { "type": "string" },
+          "naverMapUrl": { "type": "string" }
+        }
+      },
+      "ApiResponsePlaceDetailResponse": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": { "$ref": "#/components/schemas/PlaceDetailResponse" }
+        }
+      },
+      "EventListResponse": {
+        "type": "object",
+        "required": ["id", "title", "eventType", "startDate", "active"],
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "title": { "type": "string" },
+          "eventType": { "type": "string" },
+          "startDate": { "type": "string", "format": "date" },
+          "endDate": { "type": "string", "format": "date" },
+          "locationText": { "type": "string" },
+          "active": { "type": "boolean" },
+          "links": { "type": "string" }
+        }
+      },
+      "ApiResponseListEventListResponse": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/EventListResponse" } }
+        }
+      },
+      "EventDetailResponse": {
+        "type": "object",
+        "required": ["id", "title", "eventType", "startDate", "active"],
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "eventType": { "type": "string" },
+          "startDate": { "type": "string", "format": "date" },
+          "endDate": { "type": "string", "format": "date" },
+          "placeId": { "type": "integer", "format": "int64" },
+          "locationText": { "type": "string" },
+          "lat": { "type": "number" },
+          "lng": { "type": "number" },
+          "active": { "type": "boolean" },
+          "links": { "type": "string" }
+        }
+      },
+      "ApiResponseEventDetailResponse": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": { "$ref": "#/components/schemas/EventDetailResponse" }
+        }
+      }
+    }
+  }
+}
