@@ -29,6 +29,7 @@ import BasePanel from "@/shared/components/layout/BasePanel";
 import DetailPanel from "@/shared/components/layout/DetailPanel";
 import BottomNav from "@/shared/components/layout/BottomNav";
 import SubmitForm from "@/shared/components/layout/SubmitForm";
+import { useModal } from "@/shared/hooks/useModal";
 import { REGION_CENTER } from "@/domains/place/constants";
 
 const NaverMap = dynamic(() => import("@/domains/place/components/NaverMap"), {
@@ -39,7 +40,7 @@ function HomeContent() {
   const searchParams = useSearchParams();
   const initialPlaceId = searchParams.get("placeId");
   const mapRef = useRef<NaverMapHandle>(null);
-  const [submitOpen, setSubmitOpen] = useState(false);
+  const { openModal } = useModal();
   const [activeTab, setActiveTab] = useState<NavTab>("places");
   const [selectedEvent, setSelectedEvent] = useState<AnyEvent | null>(null);
 
@@ -166,7 +167,7 @@ function HomeContent() {
           setActiveTab(tab);
           handleDetailClose();
         }}
-        onSubmit={() => setSubmitOpen(true)}
+        onSubmit={() => openModal(SubmitForm, {}, { title: "제보하기", size: "md" })}
       />
 
       <BasePanel
@@ -280,11 +281,10 @@ function HomeContent() {
             setActiveTab(tab);
             handleDetailClose();
           }}
-          onSubmit={() => setSubmitOpen(true)}
+          onSubmit={() => openModal(SubmitForm, {}, { title: "제보하기", size: "md" })}
         />
       </div>
 
-      <SubmitForm open={submitOpen} onClose={() => setSubmitOpen(false)} />
     </main>
   );
 }
