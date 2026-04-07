@@ -206,11 +206,8 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
       const N = window.naver.maps;
 
       places.forEach((place) => {
-        // PlaceListResponse may not include lat/lng; skip if absent
-        const lat = (place as Record<string, unknown>).lat as number | undefined;
-        const lng = (place as Record<string, unknown>).lng as number | undefined;
-        if (lat == null || lng == null) return;
-        const position = new N.LatLng(lat, lng);
+        if (place.lat == null || place.lng == null) return;
+        const position = new N.LatLng(place.lat, place.lng);
         const hasEvent = eventPlaceIds?.has(place.id) ?? false;
         const pinGradient = hasEvent
           ? 'linear-gradient(135deg,#53624f 0%,#7a8c73 100%)'
@@ -398,6 +395,13 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
     }
   }, [initMap]);
 
+  // places/eventMarkers 변경 시 마커 갱신
+  useEffect(() => {
+    if (mapInstanceRef.current && initializedRef.current) {
+      renderMarkers(mapInstanceRef.current);
+    }
+  }, [places, eventMarkers, renderMarkers]);
+
   // Pan to selected place + highlight marker
   useEffect(() => {
     // Reset all markers
@@ -431,10 +435,8 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
     // eslint-disable-next-line eqeqeq -- selectedPlaceId may be string or number
     const place = places.find((p) => p.id == selectedPlaceId);
     if (place) {
-      const lat = (place as Record<string, unknown>).lat as number | undefined;
-      const lng = (place as Record<string, unknown>).lng as number | undefined;
-      if (lat != null && lng != null) {
-        const position = new window.naver.maps.LatLng(lat, lng);
+      if (place.lat != null && place.lng != null) {
+        const position = new window.naver.maps.LatLng(place.lat, place.lng);
         mapInstanceRef.current.morph(position, 13, { duration: 500 });
       }
     }

@@ -224,10 +224,11 @@ export default function SubmitForm({ onClose }: Props) {
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
-  // Place options for update dropdown
+  // Place options for update dropdown + 카테고리 ID 매핑
   const [placeOptions, setPlaceOptions] = useState<
     { value: string; label: string; sub?: string }[]
   >([]);
+  const [categoryIdMap, setCategoryIdMap] = useState<Record<string, number>>({});
   useEffect(() => {
     getPlaces()
       .then((places) => {
@@ -238,6 +239,14 @@ export default function SubmitForm({ onClose }: Props) {
             sub: p.address,
           })),
         );
+        // 카테고리 name→id 매핑 구축
+        const catMap: Record<string, number> = {};
+        for (const p of places) {
+          for (const c of p.categories) {
+            catMap[c.name] = c.id;
+          }
+        }
+        setCategoryIdMap(catMap);
       })
       .catch(() => {});
   }, []);
@@ -395,6 +404,9 @@ export default function SubmitForm({ onClose }: Props) {
     }
     setSubmitting(true);
     try {
+      const categoryIds = [...selectedCategories]
+        .map((name) => categoryIdMap[name])
+        .filter((id): id is number => id != null);
       await requestPlace({
         requestType: "NEW",
         name: data.name,
@@ -402,6 +414,7 @@ export default function SubmitForm({ onClose }: Props) {
         addressDetail: data.addressDetail || undefined,
         lat: coords?.lat,
         lng: coords?.lng,
+        categoryIds,
         hoursText: data.hours || undefined,
         closedDays: data.closedDays || undefined,
         brandsYarn: data.brandsYarn || undefined,

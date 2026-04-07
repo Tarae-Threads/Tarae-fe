@@ -12,11 +12,11 @@ import TagChip from '@/shared/components/ui/TagChip'
 import { Search, SlidersHorizontal, X, MapPin, Store, Palette, Coffee, Pipette, Scissors, Navigation } from 'lucide-react'
 
 const CATEGORY_ICON: Record<string, React.ReactNode> = {
-  yarn_store: <Store className="w-8 h-8 text-white/50" />,
-  studio: <Palette className="w-8 h-8 text-white/50" />,
-  cafe: <Coffee className="w-8 h-8 text-white/50" />,
-  dye_shop: <Pipette className="w-8 h-8 text-white/50" />,
-  craft_supply: <Scissors className="w-8 h-8 text-white/50" />,
+  '뜨개샵': <Store className="w-8 h-8 text-white/50" />,
+  '공방': <Palette className="w-8 h-8 text-white/50" />,
+  '뜨개카페': <Coffee className="w-8 h-8 text-white/50" />,
+  '손염색실': <Pipette className="w-8 h-8 text-white/50" />,
+  '공예용품점': <Scissors className="w-8 h-8 text-white/50" />,
 }
 
 interface Props {

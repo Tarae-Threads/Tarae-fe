@@ -11,6 +11,7 @@ interface ApplicationFormData {
   portfolio?: string
 }
 
+// TODO: BE에 테스터 신청 API 추가되면 localStorage → API 호출로 전환
 export const useApplicationSubmit = (recruitmentId: number | string) => {
   const [submitted, setSubmitted] = useState(false)
 

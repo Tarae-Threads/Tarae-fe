@@ -1,7 +1,7 @@
 'use client'
 
 import type { Place, PlaceDetail, BrandInfo } from '../types'
-import type { AnyEvent, EventDetail } from '@/domains/event/types'
+import type { Event, EventDetail } from '@/domains/event/types'
 import CategoryBadge from './CategoryBadge'
 import StatusBadge from './StatusBadge'
 import TagChip from '@/shared/components/ui/TagChip'
@@ -9,7 +9,7 @@ import { X, MapPin, ExternalLink, Globe, Calendar } from 'lucide-react'
 
 type DetailData =
   | { type: 'place'; place: Place; placeDetail?: PlaceDetail | null }
-  | { type: 'event'; event: AnyEvent; eventDetail?: EventDetail | null }
+  | { type: 'event'; event: Event; eventDetail?: EventDetail | null }
 
 interface Props {
   data: DetailData | null
@@ -138,7 +138,7 @@ function PlaceContent({ place, detail }: { place: Place; detail?: PlaceDetail | 
 /* ---- Event Content ---- */
 // TODO: Reconnect with event detail API when event domain migration is complete.
 // Currently only uses fields available on EventListResponse.
-function EventContent({ event, detail }: { event: AnyEvent; detail?: EventDetail | null }) {
+function EventContent({ event, detail }: { event: Event; detail?: EventDetail | null }) {
   const description = detail?.description
   const locationText = detail?.locationText ?? event.locationText
   const links = detail?.links ?? event.links

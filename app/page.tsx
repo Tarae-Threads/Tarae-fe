@@ -86,14 +86,19 @@ function HomeContent() {
   }, []);
 
   const eventPlaceIds = useMemo(() => {
-    const ids = new Set<number>();
-    // TODO: EventListResponse doesn't include placeId — update when BE supports it
-    return ids;
+    // BE EventListResponse에 placeId 미포함 — 추후 추가 시 활성화
+    return new Set<number>();
   }, [allEvents]);
 
   const eventMarkers = useMemo(() => {
-    // TODO: EventListResponse doesn't include lat/lng — derive from detail API or updated list endpoint
-    return [] as { id: string; title: string; lat: number; lng: number }[];
+    return allEvents
+      .filter((e) => e.lat != null && e.lng != null)
+      .map((e) => ({
+        id: String(e.id),
+        title: e.title,
+        lat: e.lat!,
+        lng: e.lng!,
+      }));
   }, [allEvents]);
 
   useEffect(() => {

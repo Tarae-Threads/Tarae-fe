@@ -5,7 +5,7 @@ import {
   CATEGORY_BG,
   REGION_ORDER,
 } from '../constants'
-const ALL_CATEGORIES: string[] = ['yarn_store', 'studio', 'cafe', 'dye_shop', 'craft_supply']
+const ALL_CATEGORIES: string[] = ['뜨개샵', '공방', '뜨개카페', '손염색실', '공예용품점']
 
 describe('CATEGORY_LABEL', () => {
   it('has a label for every category', () => {
