@@ -48,6 +48,7 @@ function HomeContent() {
     filteredPlaces,
     displayPlaces,
     selectedPlace,
+    loading: placesLoading,
     selectedCategories,
     toggleCategory,
     clearCategories,
@@ -222,6 +223,7 @@ function HomeContent() {
       <BasePanel
         activeTab={activeTab}
         places={displayPlaces}
+        loading={placesLoading}
         selectedCategories={selectedCategories}
         selectedRegion={selectedRegion}
         searchQuery={searchQuery}
@@ -303,18 +305,17 @@ function HomeContent() {
             />
           </div>
 
-          {!mobileDetailOpen && (
-            <MobileBottomSheet
-              activeTab={activeTab}
-              places={displayPlaces}
-              onPlaceSelect={handleListSelect}
-              onEventSelect={handleEventSelect}
-              viewportFilterActive={viewportFilterActive}
-              onClearViewportFilter={clearViewportFilter}
-              hasActiveFilters={searchQuery !== '' || selectedCategories.size > 0 || selectedRegion !== 'all'}
-              onClearFilters={() => { setSearchQuery(''); clearCategories(); setSelectedRegion('all'); }}
-            />
-          )}
+          <MobileBottomSheet
+            activeTab={activeTab}
+            places={displayPlaces}
+            loading={placesLoading}
+            onPlaceSelect={handleListSelect}
+            onEventSelect={handleEventSelect}
+            viewportFilterActive={viewportFilterActive}
+            onClearViewportFilter={clearViewportFilter}
+            hasActiveFilters={searchQuery !== '' || selectedCategories.size > 0 || selectedRegion !== 'all'}
+            onClearFilters={() => { setSearchQuery(''); clearCategories(); setSelectedRegion('all'); }}
+          />
 
           <PlacePanel
             data={mobileDetailData}

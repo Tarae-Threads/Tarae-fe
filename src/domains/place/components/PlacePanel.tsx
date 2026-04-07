@@ -1,11 +1,13 @@
 'use client'
 
-import type { Place, PlaceDetail, BrandInfo } from '../types'
+import type { Place, PlaceDetail } from '../types'
 import type { Event, EventDetail } from '@/domains/event/types'
 import CategoryBadge from './CategoryBadge'
 import StatusBadge from './StatusBadge'
+import EventTypeBadge from '@/domains/event/components/EventTypeBadge'
 import TagChip from '@/shared/components/ui/TagChip'
-import { X, MapPin, ExternalLink, Globe, Calendar } from 'lucide-react'
+import { ChevronLeft, MapPin, ExternalLink, Globe, Calendar } from 'lucide-react'
+import type { EventType } from '@/domains/event/types'
 
 type DetailData =
   | { type: 'place'; place: Place; placeDetail?: PlaceDetail | null }
@@ -18,35 +20,32 @@ interface Props {
 }
 
 export default function PlacePanel({ data, open, onClose }: Props) {
-  if (!data || !open) return null
-
   return (
-    <>
-      <div
-        className="fixed inset-0 z-30 bg-on-surface/20 transition-opacity"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      <div
-        role="dialog"
-        aria-label="상세 정보"
-        className="fixed bottom-[48px] left-0 w-full z-40 flex flex-col bg-surface-container-low rounded-t-[2rem] shadow-[0_-12px_48px_rgba(29,27,22,0.15)]"
-        style={{ height: '65vh' }}
-      >
-        {/* Handle + Close */}
-        <div className="flex-shrink-0 pt-3 px-4">
-          <div className="flex justify-center pb-2">
-            <div className="w-10 h-1 bg-outline-variant rounded-full" />
-          </div>
-          <div className="flex justify-end">
-            <button onClick={onClose} aria-label="닫기" className="p-2 hover:bg-surface-container rounded-full transition-colors">
-              <X className="w-5 h-5 text-outline" />
-            </button>
-          </div>
+    <div
+      role="dialog"
+      aria-label="상세 정보"
+      className={`fixed bottom-[48px] left-0 w-full z-40 flex flex-col bg-surface-container-low rounded-t-[2rem] shadow-[0_-12px_48px_rgba(29,27,22,0.15)] transition-transform duration-300 ease-out ${
+        open && data ? 'translate-y-0' : 'translate-y-full'
+      }`}
+      style={{ height: '50vh' }}
+    >
+      {/* Header — 뒤로가기 */}
+      <div className="flex-shrink-0 pt-3 px-4">
+        <div className="flex justify-center pb-2">
+          <div className="w-10 h-1 bg-outline-variant rounded-full" />
         </div>
+        <button
+          onClick={onClose}
+          aria-label="뒤로가기"
+          className="flex items-center gap-1 text-on-surface-variant text-label-lg font-medium py-1 hover:text-on-surface transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5" />
+          뒤로
+        </button>
+      </div>
 
-        {/* Scrollable Content */}
+      {/* Scrollable Content */}
+      {data && (
         <div className="flex-1 overflow-y-auto hide-scrollbar px-4 pb-8" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="max-w-2xl mx-auto">
             {data.type === 'place' ? (
@@ -56,8 +55,8 @@ export default function PlacePanel({ data, open, onClose }: Props) {
             )}
           </div>
         </div>
-      </div>
-    </>
+      )}
+    </div>
   )
 }
 
@@ -136,8 +135,6 @@ function PlaceContent({ place, detail }: { place: Place; detail?: PlaceDetail | 
 }
 
 /* ---- Event Content ---- */
-// TODO: Reconnect with event detail API when event domain migration is complete.
-// Currently only uses fields available on EventListResponse.
 function EventContent({ event, detail }: { event: Event; detail?: EventDetail | null }) {
   const description = detail?.description
   const locationText = detail?.locationText ?? event.locationText
@@ -145,6 +142,10 @@ function EventContent({ event, detail }: { event: Event; detail?: EventDetail | 
 
   return (
     <>
+      <div className="flex items-center gap-2 mb-3">
+        <EventTypeBadge type={event.eventType as EventType} size="md" />
+      </div>
+
       <h2 className="font-display font-extrabold text-headline-sm tracking-editorial text-on-surface mb-2">
         {event.title}
       </h2>

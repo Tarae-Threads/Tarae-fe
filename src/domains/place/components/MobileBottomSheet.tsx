@@ -6,11 +6,12 @@ import type { NavTab } from "@/shared/components/layout/NavBar";
 import PlaceCardCompact from "./PlaceCardCompact";
 import EventSidePanelContent from "@/domains/event/components/EventSidePanelContent";
 import EmptyState from "@/shared/components/ui/EmptyState";
+import { PlaceCardSkeleton } from "@/shared/components/ui/Skeleton";
 import { X, MapPin } from "lucide-react";
 
 type SnapPoint = "peek" | "half" | "full";
 
-const SNAP_PEEK = 0.28;
+const SNAP_PEEK = 0.40;
 const SNAP_HALF = 0.5;
 const SNAP_FULL = 0.85;
 
@@ -54,6 +55,7 @@ function closestSnap(height: number, velocity: number): SnapPoint {
 interface Props {
   activeTab: NavTab;
   places: Place[];
+  loading?: boolean;
   onPlaceSelect: (place: Place) => void;
   onEventSelect?: (eventId: number) => void;
   viewportFilterActive?: boolean;
@@ -71,6 +73,7 @@ export default function MobileBottomSheet({
   onClearViewportFilter,
   hasActiveFilters,
   onClearFilters,
+  loading,
 }: Props) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -218,7 +221,11 @@ export default function MobileBottomSheet({
       >
         {activeTab === "places" ? (
           <div className="px-6 pb-20 space-y-3">
-            {places.length === 0 ? (
+            {loading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <PlaceCardSkeleton key={i} />
+              ))
+            ) : places.length === 0 ? (
               <EmptyState
                 icon={<MapPin className="w-8 h-8 text-outline" />}
                 title="검색 결과가 없어요"
