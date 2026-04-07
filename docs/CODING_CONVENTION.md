@@ -18,12 +18,15 @@ src/
 │   └── event/            # 이벤트 도메인 (동일 구조)
 ├── shared/               # 도메인 무관 공통 코드
 │   ├── components/
-│   │   ├── ui/           # 범용 UI (ColorBadge, TagChip, FilterChip 등)
-│   │   └── layout/       # 레이아웃 (NavBar, BasePanel, DetailPanel, TopAppBar 등)
-│   ├── hooks/            # 공통 훅 (useLocalStorage, useDebounce)
+│   │   ├── ui/           # 범용 UI (ColorBadge, TagChip, FilterChip, Dialog, Toast 등)
+│   │   └── layout/       # 레이아웃 (NavBar, BasePanel, DetailPanel, SubmitForm 등)
+│   ├── hooks/            # 공통 훅 (useModal, useLocalStorage, useDebounce)
+│   ├── stores/           # zustand 스토어 (useModalStore)
+│   ├── providers/        # Provider 컴포넌트 (ModalProvider)
 │   ├── types/            # 공통 타입
 │   └── lib/              # 유틸 (cn 함수)
 app/                      # Next.js App Router 페이지
+├── providers.tsx          # 클라이언트 Providers 래퍼 (ModalProvider 등)
 ```
 
 ### 핵심 규칙
@@ -146,13 +149,60 @@ export default function CategoryBadge({ category, size = 'sm' }: Props) {
 - 이벤트 핸들러, 상태, 브라우저 API 사용 시 반드시 `'use client'` 선언
 - 서버 컴포넌트가 기본 — 필요한 경우에만 클라이언트로 전환
 
+### 모달 시스템 (명령형)
+
+zustand 스토어 기반 명령형 모달. `useModal()` hook 사용.
+
+```tsx
+import { useModal } from '@/shared/hooks/useModal'
+
+const { openModal, openConfirm } = useModal()
+
+// 커스텀 컴포넌트 모달
+await openModal(EditForm, { placeId: 'abc' }, { title: '수정', size: 'lg' })
+
+// 확인/취소 다이얼로그 (되돌릴 수 없는 액션 전)
+const ok = await openConfirm({ title: '삭제', children: '정말 삭제하시겠습니까?' })
+if (ok) { /* 삭제 처리 */ }
+```
+
+**모달 컴포넌트 규칙:**
+- `onClose: (v?: unknown) => void` prop을 받는 컴포넌트로 작성
+- 내부에서 스크롤/sticky footer 직접 관리: `flex flex-1 flex-col min-h-0` 구조
+- 스크롤 영역: `flex-1 min-h-0 overflow-y-auto no-scrollbar`
+- 하단 고정 버튼: `shrink-0 pt-4`
+
+**반응형:** size `md`/`lg`/`xl`이면 모바일에서 full-screen, 데스크톱에서 센터 모달
+
+### Toast (피드백)
+
+정보성 피드백(성공/실패/알림)은 모달이 아닌 toast로 처리.
+
+```tsx
+import { toast } from '@/shared/components/ui/toast'
+
+toast.success('저장 완료')
+toast.error('네트워크 오류가 발생했습니다')
+toast.info('새 버전이 있습니다')
+```
+
+### 사용 기준
+
+| 상황 | 방식 |
+|------|------|
+| API 응답 성공/실패 피드백 | `toast.success()` / `toast.error()` |
+| 되돌릴 수 없는 액션 전 확인 | `openConfirm()` |
+| 커스텀 폼/컨텐츠 모달 | `openModal(Component, props, frame)` |
+
+> **alert 모달은 사용하지 않는다** — "확인" 클릭은 불필요한 UX 마찰. toast는 자동 사라져서 사용자 흐름을 끊지 않음.
+
 ---
 
 ## 5. 상태 관리
 
 ### 원칙
 
-- **외부 라이브러리 없음** — React hooks만 사용
+- **전역 상태**: zustand 사용 — 모달 스택(`useModalStore`), 토스트 큐 등
 - **도메인별 커스텀 훅으로 추출** — `usePlaceExplorer`, `useEventExplorer`
 - **관심사 분리** — UI 상태와 비즈니스 로직을 훅으로 분리
 
@@ -377,6 +427,7 @@ expect(screen.getByText('뜨개샵')).toBeInTheDocument()
 | `FormInput` | 텍스트/날짜 입력 (label, required, error, readOnly, onClick) |
 | `FormTextarea` | 다중 행 입력 (label, required, error, rows) |
 | `FormChipGroup` | 칩 선택 (multi/single, options, error) |
+| `SearchSelect` | 검색 가능한 드롭다운 (label, options, error) |
 
 ### 패턴
 
@@ -425,3 +476,5 @@ const form = useForm({ resolver: zodResolver(schema) })
 - 폼 필드당 `useState` → `react-hook-form` + `useForm` 사용
 - 인라인 폼 유효성 검증 → Zod 스키마 사용
 - 주소 자유 입력 → 카카오 우편번호 서비스로만 입력
+- 정보성 피드백에 alert 모달 사용 → `toast` 사용
+- CTA 버튼에 `signature-gradient` 인라인 → `Button` variant `gradient` 사용

@@ -3,8 +3,6 @@
 import * as React from "react"
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import {
-  CircleAlertIcon,
-  CircleCheckIcon,
   InfoIcon,
   XIcon,
 } from "lucide-react"
@@ -15,7 +13,6 @@ import {
   useModalStore,
   type Entry,
   type ModalEntry,
-  type AlertEntry,
   type ConfirmEntry,
 } from "@/shared/stores/useModalStore"
 
@@ -36,32 +33,14 @@ const SIZE_MAP: Record<string, { popup: string; mobile: boolean }> = {
 }
 
 // ---------------------------------------------------------------------------
-// Alert 아이콘 매핑
+// Confirm 아이콘
 // ---------------------------------------------------------------------------
 
-const ALERT_ICON: Record<string, React.ReactNode> = {
-  info: (
-    <div className="flex size-8 items-center justify-center rounded-xl bg-primary-fixed">
-      <InfoIcon className="size-4 text-primary" />
-    </div>
-  ),
-  success: (
-    <div className="flex size-8 items-center justify-center rounded-xl bg-secondary-container">
-      <CircleCheckIcon className="size-4 text-secondary" />
-    </div>
-  ),
-  error: (
-    <div className="flex size-8 items-center justify-center rounded-xl bg-destructive/10">
-      <CircleAlertIcon className="size-4 text-destructive" />
-    </div>
-  ),
-}
-
-const ALERT_TITLE: Record<string, string> = {
-  info: "알림",
-  success: "성공",
-  error: "오류",
-}
+const CONFIRM_ICON = (
+  <div className="flex size-8 items-center justify-center rounded-xl bg-primary-fixed">
+    <InfoIcon className="size-4 text-primary" />
+  </div>
+)
 
 // ---------------------------------------------------------------------------
 // 공통 Popup 래퍼
@@ -214,48 +193,6 @@ function ModalRenderer({
 }
 
 // ---------------------------------------------------------------------------
-// Alert 렌더러
-// ---------------------------------------------------------------------------
-
-function AlertRenderer({
-  entry,
-  isTop,
-  zIndex,
-}: {
-  entry: AlertEntry
-  isTop: boolean
-  zIndex: number
-}) {
-  const popById = useModalStore((s) => s.popById)
-  const { state, children, actionText = "확인" } = entry.props
-
-  return (
-    <ModalPopup entry={entry} isTop={isTop} zIndex={zIndex} size="sm">
-      {/* Header */}
-      <div data-slot="alert-header" className="flex items-center gap-3">
-        {ALERT_ICON[state]}
-        <DialogPrimitive.Title className="text-title-lg font-bold text-on-surface">
-          {ALERT_TITLE[state]}
-        </DialogPrimitive.Title>
-      </div>
-
-      {/* Body */}
-      {children && (
-        <div className="text-body-sm text-on-surface-variant">{children}</div>
-      )}
-
-      {/* Footer */}
-      <div
-        data-slot="alert-footer"
-        className="mt-auto flex justify-end"
-      >
-        <Button onClick={() => popById(entry.id)}>{actionText}</Button>
-      </div>
-    </ModalPopup>
-  )
-}
-
-// ---------------------------------------------------------------------------
 // Confirm 렌더러
 // ---------------------------------------------------------------------------
 
@@ -280,7 +217,7 @@ function ConfirmRenderer({
     <ModalPopup entry={entry} isTop={isTop} zIndex={zIndex} size="sm">
       {/* Header */}
       <div data-slot="confirm-header" className="flex items-center gap-3">
-        {ALERT_ICON.info}
+        {CONFIRM_ICON}
         <DialogPrimitive.Title className="text-title-lg font-bold text-on-surface">
           {title}
         </DialogPrimitive.Title>
@@ -328,15 +265,6 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
           case "modal":
             return (
               <ModalRenderer
-                key={entry.id}
-                entry={entry}
-                isTop={isTop}
-                zIndex={zIndex}
-              />
-            )
-          case "alert":
-            return (
-              <AlertRenderer
                 key={entry.id}
                 entry={entry}
                 isTop={isTop}

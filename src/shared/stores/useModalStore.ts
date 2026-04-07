@@ -34,16 +34,6 @@ export interface ModalEntry {
   frame: ModalFrame
 }
 
-export interface AlertEntry {
-  id: string
-  type: "alert"
-  props: {
-    state: "info" | "success" | "error"
-    children?: React.ReactNode
-    actionText?: string
-  }
-}
-
 export interface ConfirmEntry {
   id: string
   type: "confirm"
@@ -55,7 +45,7 @@ export interface ConfirmEntry {
   }
 }
 
-export type Entry = ModalEntry | AlertEntry | ConfirmEntry
+export type Entry = ModalEntry | ConfirmEntry
 
 // ---------------------------------------------------------------------------
 // Promise resolver
@@ -75,10 +65,7 @@ interface ModalStoreState {
   resolvers: Record<string, Resolver>
 
   push: (
-    entry:
-      | Omit<ModalEntry, "id">
-      | Omit<AlertEntry, "id">
-      | Omit<ConfirmEntry, "id">,
+    entry: Omit<ModalEntry, "id"> | Omit<ConfirmEntry, "id">,
     resolver: Resolver
   ) => string
   popById: (id: string, result?: unknown) => void

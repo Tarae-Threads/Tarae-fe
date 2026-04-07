@@ -46,22 +46,6 @@ export function useModal() {
     })
   }
 
-  function openAlert(options: {
-    state: "info" | "success" | "error"
-    children?: React.ReactNode
-    actionText?: string
-  }): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      push(
-        { type: "alert", props: options },
-        {
-          resolve: () => resolve(),
-          reject: (e?: unknown) => reject(e),
-        }
-      )
-    })
-  }
-
   function openConfirm(options: {
     title?: string
     children?: React.ReactNode
@@ -80,5 +64,5 @@ export function useModal() {
     })
   }
 
-  return { openModal, openAlert, openConfirm }
+  return { openModal, openConfirm }
 }
