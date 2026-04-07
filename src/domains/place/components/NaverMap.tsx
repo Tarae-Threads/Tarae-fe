@@ -75,8 +75,8 @@ export interface EventMarker {
 interface NaverMapProps {
   places: Place[];
   onPlaceSelect: (place: Place) => void;
-  selectedPlaceId?: string | null;
-  eventPlaceIds?: Set<string>;
+  selectedPlaceId?: number | string | null;
+  eventPlaceIds?: Set<number>;
   eventMarkers?: EventMarker[];
   onEventMarkerSelect?: (eventId: string) => void;
 }
@@ -120,7 +120,7 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
     null,
   );
   const myLocationMarkerRef = useRef<NaverMarker | null>(null);
-  const markerMapRef = useRef<Map<string, NaverMarker>>(new Map());
+  const markerMapRef = useRef<Map<number | string, NaverMarker>>(new Map());
   const initializedRef = useRef(false);
   const [mapError, setMapError] = useState<string | null>(null);
 
@@ -206,7 +206,11 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
       const N = window.naver.maps;
 
       places.forEach((place) => {
-        const position = new N.LatLng(place.lat, place.lng);
+        // PlaceListResponse may not include lat/lng; skip if absent
+        const lat = (place as Record<string, unknown>).lat as number | undefined;
+        const lng = (place as Record<string, unknown>).lng as number | undefined;
+        if (lat == null || lng == null) return;
+        const position = new N.LatLng(lat, lng);
         const hasEvent = eventPlaceIds?.has(place.id) ?? false;
         const pinGradient = hasEvent
           ? 'linear-gradient(135deg,#53624f 0%,#7a8c73 100%)'
@@ -424,10 +428,15 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
       }
     }
     if (!selectedPlaceId || !mapInstanceRef.current) return;
-    const place = places.find((p) => p.id === selectedPlaceId);
+    // eslint-disable-next-line eqeqeq -- selectedPlaceId may be string or number
+    const place = places.find((p) => p.id == selectedPlaceId);
     if (place) {
-      const position = new window.naver.maps.LatLng(place.lat, place.lng);
-      mapInstanceRef.current.morph(position, 13, { duration: 500 });
+      const lat = (place as Record<string, unknown>).lat as number | undefined;
+      const lng = (place as Record<string, unknown>).lng as number | undefined;
+      if (lat != null && lng != null) {
+        const position = new window.naver.maps.LatLng(lat, lng);
+        mapInstanceRef.current.morph(position, 13, { duration: 500 });
+      }
     }
   }, [selectedPlaceId, places]);
 

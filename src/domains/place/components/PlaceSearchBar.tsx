@@ -1,6 +1,5 @@
 'use client'
 
-import type { PlaceCategory } from '../types'
 import PlaceFilter from './PlaceFilter'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
 
@@ -9,9 +8,9 @@ interface PlaceSearchBarProps {
   onSearchChange: (query: string) => void
   filterOpen: boolean
   onToggleFilter: () => void
-  selectedCategories: Set<PlaceCategory>
+  selectedCategories: Set<string>
   selectedRegion: string
-  onToggleCategory: (category: PlaceCategory) => void
+  onToggleCategory: (category: string) => void
   onClearCategories: () => void
   onRegionChange: (region: string) => void
   resultCount?: number

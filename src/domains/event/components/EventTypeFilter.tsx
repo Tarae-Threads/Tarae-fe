@@ -4,7 +4,7 @@ import type { EventType } from '../types'
 import { EVENT_TYPE_LABEL, EVENT_TYPE_COLOR } from '../constants'
 import FilterChip from '@/shared/components/ui/FilterChip'
 
-const eventTypes: EventType[] = ['tester_recruitment', 'sale', 'event_popup']
+const eventTypes: EventType[] = ['TESTER_RECRUIT', 'SALE', 'EVENT_POPUP']
 
 interface Props {
   selectedTypes: Set<EventType>

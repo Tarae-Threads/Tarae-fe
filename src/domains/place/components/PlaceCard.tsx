@@ -1,20 +1,18 @@
 'use client'
 
-import Image from 'next/image'
 import type { Place } from '../types'
 import CategoryBadge from './CategoryBadge'
 import StatusBadge from './StatusBadge'
-import { Clock, Store, Palette, Coffee, Pipette, Scissors } from 'lucide-react'
-import type { PlaceCategory } from '../types'
+import { Store, Palette, Coffee, Pipette, Scissors } from 'lucide-react'
+import TagChip from '@/shared/components/ui/TagChip'
 
-const CATEGORY_ICON: Record<PlaceCategory, React.ReactNode> = {
+const CATEGORY_ICON: Record<string, React.ReactNode> = {
   yarn_store: <Store className="w-10 h-10 text-white/50" />,
   studio: <Palette className="w-10 h-10 text-white/50" />,
   cafe: <Coffee className="w-10 h-10 text-white/50" />,
   dye_shop: <Pipette className="w-10 h-10 text-white/50" />,
   craft_supply: <Scissors className="w-10 h-10 text-white/50" />,
 }
-import TagChip from '@/shared/components/ui/TagChip'
 
 interface PlaceCardProps {
   place: Place
@@ -22,6 +20,7 @@ interface PlaceCardProps {
 }
 
 export default function PlaceCard({ place, onClick }: PlaceCardProps) {
+  const primaryCategory = place.categories[0]?.name
   return (
     <button
       onClick={() => onClick(place)}
@@ -29,21 +28,11 @@ export default function PlaceCard({ place, onClick }: PlaceCardProps) {
     >
       {/* Image area */}
       <div className="h-44 relative overflow-hidden">
-        {place.images[0] ? (
-          <Image
-            src={place.images[0]}
-            alt={place.name}
-            fill
-            sizes="280px"
-            className="object-cover group-hover:scale-105 transition-transform duration-700"
-          />
-        ) : (
-          <div className="w-full h-full signature-gradient opacity-30 flex items-center justify-center">
-            {CATEGORY_ICON[place.category]}
-          </div>
-        )}
+        <div className="w-full h-full signature-gradient opacity-30 flex items-center justify-center">
+          {primaryCategory ? CATEGORY_ICON[primaryCategory] : null}
+        </div>
         <div className="absolute top-4 left-4 flex items-center gap-1.5">
-          <CategoryBadge category={place.category} size="md" />
+          {primaryCategory && <CategoryBadge category={primaryCategory} size="md" />}
           <StatusBadge status={place.status} />
         </div>
       </div>
@@ -58,26 +47,13 @@ export default function PlaceCard({ place, onClick }: PlaceCardProps) {
           {place.address}
         </p>
 
-        {place.note && (
-          <p className="text-on-surface-variant text-label-md line-clamp-1 mb-3">
-            {place.note}
-          </p>
-        )}
-
         {place.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
             {place.tags.slice(0, 3).map(tag => (
-              <TagChip key={tag} label={tag} size="md" />
+              <TagChip key={tag.id} label={tag.name} size="md" />
             ))}
           </div>
         )}
-
-        <div className="flex items-center gap-2">
-          <Clock className="w-[18px] h-[18px] text-outline" />
-          <span className="text-label-sm font-bold text-outline uppercase tracking-wider">
-            {place.hours}
-          </span>
-        </div>
       </div>
     </button>
   )

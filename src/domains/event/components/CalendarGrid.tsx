@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import type { EventType } from '../types'
+import type { Event, EventType } from '../types'
 import { WEEKDAY_NAMES, EVENT_TYPE_COLOR, EVENT_TYPE_BG } from '../constants'
 import { getTodayString } from '../utils/date'
 import { getEventBarsForMonth } from '../utils/events'
@@ -15,17 +15,19 @@ interface Props {
   month: number
   selectedDate: string | null
   datesWithEvents: Map<string, EventType[]>
+  events: Event[]
   onSelectDate: (date: string | null) => void
   onPrevMonth: () => void
   onNextMonth: () => void
   onToday?: () => void
-  onEventSelect?: (eventId: string) => void
+  onEventSelect?: (eventId: number) => void
 }
 
 export default function CalendarGrid({
   year,
   month,
   selectedDate,
+  events,
   onSelectDate,
   onPrevMonth,
   onNextMonth,
@@ -51,8 +53,8 @@ export default function CalendarGrid({
   }
 
   const eventBars = useMemo(
-    () => getEventBarsForMonth(year, month),
-    [year, month],
+    () => getEventBarsForMonth(events, year, month),
+    [events, year, month],
   )
 
   return (
@@ -153,7 +155,7 @@ export default function CalendarGrid({
   )
 }
 
-function EventBar({ bar, row, onSelect }: { bar: CalendarBar; row: number; onSelect?: (id: string) => void }) {
+function EventBar({ bar, row, onSelect }: { bar: CalendarBar; row: number; onSelect?: (id: number) => void }) {
   const left = `${(bar.startCol / 7) * 100}%`
   const width = `${(bar.span / 7) * 100}%`
 

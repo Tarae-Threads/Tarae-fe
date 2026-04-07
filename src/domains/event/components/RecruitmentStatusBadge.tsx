@@ -1,17 +1,22 @@
-import type { RecruitmentStatus } from '../types'
-import { RECRUITMENT_STATUS_LABEL } from '../constants'
 import ColorBadge from '@/shared/components/ui/ColorBadge'
 
 interface Props {
-  status: RecruitmentStatus
+  status: string
+}
+
+const STATUS_LABEL: Record<string, string> = {
+  open: '모집중',
+  closed: '모집마감',
+  in_progress: '진행중',
+  completed: '완료',
 }
 
 export default function RecruitmentStatusBadge({ status }: Props) {
-  if (status === 'hidden') return null
+  if (status === 'hidden' || !STATUS_LABEL[status]) return null
 
   return (
     <ColorBadge
-      label={RECRUITMENT_STATUS_LABEL[status]}
+      label={STATUS_LABEL[status]}
       bg="var(--primary-fixed)"
       color="var(--primary)"
     />

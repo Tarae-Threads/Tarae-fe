@@ -2,12 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-import type { Place, PlaceCategory } from '../types'
+import type { Place } from '../types'
 import CategoryBadge from './CategoryBadge'
 import PlaceFilter from './PlaceFilter'
 import {
-  X, Search, Clock, MapPin, ExternalLink,
+  X, Search, MapPin, ExternalLink,
 } from 'lucide-react'
 import TagChip from '@/shared/components/ui/TagChip'
 
@@ -15,13 +14,13 @@ interface PlaceSidePanelProps {
   places: Place[]
   selectedPlace: Place | null
   panelOpen: boolean
-  selectedCategories: Set<PlaceCategory>
+  selectedCategories: Set<string>
   selectedRegion: string
   searchQuery: string
   onSearchChange: (query: string) => void
   onPlaceSelect: (place: Place) => void
   onPanelClose: () => void
-  onToggleCategory: (category: PlaceCategory) => void
+  onToggleCategory: (category: string) => void
   onClearCategories: () => void
   onRegionChange: (region: string) => void
   onClose: () => void
@@ -138,29 +137,12 @@ function PlaceList({ places, onSelect }: { places: Place[]; onSelect: (p: Place)
           onClick={() => onSelect(place)}
           className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow text-left group transition-all hover:shadow-xl"
         >
-          {place.images[0] && (
-            <div className="h-36 overflow-hidden relative">
-              <Image
-                src={place.images[0]}
-                alt={place.name}
-                fill
-                sizes="340px"
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </div>
-          )}
           <div className="p-4">
             <div className="flex items-center justify-between mb-1.5">
               <h3 className="font-display font-bold text-label-lg text-on-surface">{place.name}</h3>
-              <CategoryBadge category={place.category} />
+              {place.categories[0] && <CategoryBadge category={place.categories[0].name} />}
             </div>
             <p className="text-on-surface-variant text-label-md line-clamp-1 mb-2">{place.address}</p>
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-3 h-3 text-outline" />
-              <span className="text-label-xs font-bold text-outline uppercase tracking-wider">
-                {place.hours}
-              </span>
-            </div>
           </div>
         </button>
       ))}
@@ -179,9 +161,11 @@ function PlaceDetail({ place, onClose }: { place: Place; onClose: () => void }) 
         ← 목록으로
       </button>
 
-      <div className="mb-3">
-        <CategoryBadge category={place.category} />
-      </div>
+      {place.categories[0] && (
+        <div className="mb-3">
+          <CategoryBadge category={place.categories[0].name} />
+        </div>
+      )}
 
       <h2 className="font-display font-extrabold text-headline-sm tracking-editorial text-on-surface mb-2">
         {place.name}
@@ -192,29 +176,17 @@ function PlaceDetail({ place, onClose }: { place: Place; onClose: () => void }) 
         {place.address}
       </p>
 
-      <div className="bg-surface-container rounded-xl p-5 mb-5 space-y-3">
-        <div className="flex items-center gap-2.5 text-body-sm">
-          <Clock className="w-4 h-4 text-outline" />
-          <span className="text-on-surface-variant">{place.hours}</span>
-        </div>
-        {place.closedDays.length > 0 && (
-          <p className="text-body-sm text-on-surface-variant pl-[26px]">
-            휴무: {place.closedDays.join(', ')}
-          </p>
-        )}
-      </div>
-
       {place.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-5">
           {place.tags.map(tag => (
-            <TagChip key={tag} label={tag} size="md" />
+            <TagChip key={tag.id} label={tag.name} size="md" />
           ))}
         </div>
       )}
 
-      {place.links.instagram && (
+      {place.instagramUrl && (
         <a
-          href={place.links.instagram}
+          href={place.instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-primary text-label-lg font-medium hover:underline decoration-2 underline-offset-4 mb-5"

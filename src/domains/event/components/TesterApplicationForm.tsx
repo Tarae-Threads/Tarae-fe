@@ -11,7 +11,7 @@ import FormTextarea from "@/shared/components/ui/FormTextarea";
 import { Send, ChevronDown, ChevronUp } from "lucide-react";
 
 interface Props {
-  recruitmentId: string;
+  recruitmentId: number | string;
 }
 
 export default function TesterApplicationForm({ recruitmentId }: Props) {

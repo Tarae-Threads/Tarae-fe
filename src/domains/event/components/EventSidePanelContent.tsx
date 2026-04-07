@@ -6,11 +6,13 @@ import EventTypeFilter from './EventTypeFilter'
 import EventList from './EventList'
 
 interface Props {
-  onEventSelect?: (eventId: string) => void
+  onEventSelect?: (eventId: number) => void
 }
 
 export default function EventSidePanelContent({ onEventSelect }: Props) {
   const {
+    allEvents,
+    loading,
     currentYear,
     currentMonth,
     selectedDate,
@@ -32,6 +34,7 @@ export default function EventSidePanelContent({ onEventSelect }: Props) {
         month={currentMonth}
         selectedDate={selectedDate}
         datesWithEvents={datesWithEvents}
+        events={allEvents}
         onSelectDate={selectDate}
         onPrevMonth={prevMonth}
         onNextMonth={nextMonth}
@@ -52,7 +55,9 @@ export default function EventSidePanelContent({ onEventSelect }: Props) {
               ? `${selectedDate.slice(5).replace('-', '월 ')}일`
               : '전체 일정'}
           </h3>
-          <span className="text-label-xs text-outline font-medium" aria-live="polite">{filteredEvents.length}개</span>
+          <span className="text-label-xs text-outline font-medium" aria-live="polite">
+            {loading ? '불러오는 중...' : `${filteredEvents.length}개`}
+          </span>
         </div>
         <EventList events={filteredEvents} selectedDate={selectedDate} onEventSelect={onEventSelect} />
       </div>

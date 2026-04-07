@@ -5,7 +5,8 @@ import type { Place } from "../types";
 import type { NavTab } from "@/shared/components/layout/NavBar";
 import PlaceCardCompact from "./PlaceCardCompact";
 import EventSidePanelContent from "@/domains/event/components/EventSidePanelContent";
-import { X } from "lucide-react";
+import EmptyState from "@/shared/components/ui/EmptyState";
+import { X, MapPin } from "lucide-react";
 
 type SnapPoint = "peek" | "half" | "full";
 
@@ -54,9 +55,11 @@ interface Props {
   activeTab: NavTab;
   places: Place[];
   onPlaceSelect: (place: Place) => void;
-  onEventSelect?: (eventId: string) => void;
+  onEventSelect?: (eventId: number) => void;
   viewportFilterActive?: boolean;
   onClearViewportFilter?: () => void;
+  hasActiveFilters?: boolean;
+  onClearFilters?: () => void;
 }
 
 export default function MobileBottomSheet({
@@ -66,6 +69,8 @@ export default function MobileBottomSheet({
   onEventSelect,
   viewportFilterActive,
   onClearViewportFilter,
+  hasActiveFilters,
+  onClearFilters,
 }: Props) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -213,13 +218,25 @@ export default function MobileBottomSheet({
       >
         {activeTab === "places" ? (
           <div className="px-6 pb-20 space-y-3">
-            {places.map((place) => (
-              <PlaceCardCompact
-                key={place.id}
-                place={place}
-                onClick={onPlaceSelect}
+            {places.length === 0 ? (
+              <EmptyState
+                icon={<MapPin className="w-8 h-8 text-outline" />}
+                title="검색 결과가 없어요"
+                description="필터를 변경하거나 검색어를 수정해보세요."
+                action={hasActiveFilters && onClearFilters ? {
+                  label: '필터 초기화',
+                  onClick: onClearFilters,
+                } : undefined}
               />
-            ))}
+            ) : (
+              places.map((place) => (
+                <PlaceCardCompact
+                  key={place.id}
+                  place={place}
+                  onClick={onPlaceSelect}
+                />
+              ))
+            )}
           </div>
         ) : (
           <div className="pb-20">

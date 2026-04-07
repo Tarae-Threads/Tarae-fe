@@ -1,12 +1,12 @@
-import type { AnyEvent } from '../types'
+import type { Event } from '../types'
 import EventCard from './EventCard'
 import EmptyState from '@/shared/components/ui/EmptyState'
 import { Calendar } from 'lucide-react'
 
 interface Props {
-  events: AnyEvent[]
+  events: Event[]
   selectedDate: string | null
-  onEventSelect?: (eventId: string) => void
+  onEventSelect?: (eventId: number) => void
 }
 
 export default function EventList({ events, selectedDate, onEventSelect }: Props) {

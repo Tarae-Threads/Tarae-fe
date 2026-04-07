@@ -1,19 +1,19 @@
 'use client'
 
-import type { PlaceCategory } from '../types'
 import { CATEGORY_LABEL, REGION_ORDER } from '../constants'
 import FilterChip from '@/shared/components/ui/FilterChip'
 import { RotateCcw } from 'lucide-react'
 
 interface PlaceFilterProps {
-  selectedCategories: Set<PlaceCategory>
+  selectedCategories: Set<string>
   selectedRegion: string
-  onToggleCategory: (category: PlaceCategory) => void
+  onToggleCategory: (category: string) => void
   onClearCategories: () => void
   onRegionChange: (region: string) => void
 }
 
-const categoryList: PlaceCategory[] = ['yarn_store', 'studio', 'cafe', 'dye_shop', 'craft_supply']
+// BE CategoryInfo.name은 한국어 라벨 (뜨개샵, 공방 등)
+const categoryList = Object.entries(CATEGORY_LABEL)
 
 export default function PlaceFilter({
   selectedCategories,
@@ -43,12 +43,12 @@ export default function PlaceFilter({
           )}
         </div>
         <div className="flex flex-wrap gap-2">
-          {categoryList.map(cat => (
+          {categoryList.map(([, label]) => (
             <FilterChip
-              key={cat}
-              label={CATEGORY_LABEL[cat]}
-              selected={selectedCategories.has(cat)}
-              onClick={() => onToggleCategory(cat)}
+              key={label}
+              label={label}
+              selected={selectedCategories.has(label)}
+              onClick={() => onToggleCategory(label)}
             />
           ))}
         </div>
