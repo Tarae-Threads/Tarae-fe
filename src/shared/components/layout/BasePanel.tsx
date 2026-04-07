@@ -8,20 +8,14 @@ import StatusBadge from '@/domains/place/components/StatusBadge'
 import PlaceFilter from '@/domains/place/components/PlaceFilter'
 import EventSidePanelContent from '@/domains/event/components/EventSidePanelContent'
 import EmptyState from '@/shared/components/ui/EmptyState'
+import { PlaceCardSkeleton } from '@/shared/components/ui/Skeleton'
 import TagChip from '@/shared/components/ui/TagChip'
-import { Search, SlidersHorizontal, X, MapPin, Store, Palette, Coffee, Pipette, Scissors, Navigation } from 'lucide-react'
-
-const CATEGORY_ICON: Record<string, React.ReactNode> = {
-  '뜨개샵': <Store className="w-8 h-8 text-white/50" />,
-  '공방': <Palette className="w-8 h-8 text-white/50" />,
-  '뜨개카페': <Coffee className="w-8 h-8 text-white/50" />,
-  '손염색실': <Pipette className="w-8 h-8 text-white/50" />,
-  '공예용품점': <Scissors className="w-8 h-8 text-white/50" />,
-}
+import { Search, SlidersHorizontal, X, MapPin, Navigation } from 'lucide-react'
 
 interface Props {
   activeTab: NavTab
   places: Place[]
+  loading?: boolean
   selectedCategories: Set<string>
   selectedRegion: string
   searchQuery: string
@@ -39,6 +33,7 @@ interface Props {
 export default function BasePanel({
   activeTab,
   places,
+  loading,
   selectedCategories,
   selectedRegion,
   searchQuery,
@@ -134,7 +129,13 @@ export default function BasePanel({
 
           {/* Place list */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto hide-scrollbar">
-            {places.length === 0 ? (
+            {loading ? (
+              <div className="px-4 space-y-3 pb-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <PlaceCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : places.length === 0 ? (
               <EmptyState
                 title="검색 결과가 없어요"
                 description="필터를 변경하거나 검색어를 수정해보세요."
@@ -150,13 +151,8 @@ export default function BasePanel({
                   <button
                     key={place.id}
                     onClick={() => handlePlaceClick(place)}
-                    className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow text-left group transition-all hover:shadow-xl border border-border/30"
+                    className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow text-left group transition-all hover:shadow-xl"
                   >
-                    <div className="h-32 overflow-hidden relative">
-                      <div className="w-full h-full signature-gradient opacity-30 flex items-center justify-center">
-                        {CATEGORY_ICON[place.categories[0]?.name ?? '']}
-                      </div>
-                    </div>
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-1.5">
