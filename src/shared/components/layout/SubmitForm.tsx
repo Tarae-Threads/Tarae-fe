@@ -35,10 +35,10 @@ import {
   Send,
   ChevronRight,
   ChevronLeft,
+  Map,
   MapPin,
   Pencil,
   Calendar,
-  Sparkles,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 
@@ -795,7 +795,7 @@ export default function SubmitForm({ onClose }: Props) {
               : "bg-surface-container text-on-surface-variant",
           )}
         >
-          <Sparkles className="w-3.5 h-3.5" /> 장소
+          <Map className="w-3.5 h-3.5" /> 장소
         </button>
         <button
           type="button"
