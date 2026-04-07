@@ -1,6 +1,14 @@
-import { describe, it, expect } from 'vitest'
-import { renderHook, act } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { renderHook, act, waitFor } from '@testing-library/react'
 import { useEventExplorer } from '../hooks/useEventExplorer'
+
+// Mock the API
+vi.mock('../queries/eventApi', () => ({
+  getEvents: vi.fn().mockResolvedValue([
+    { id: 1, title: 'Test Sale', eventType: 'SALE', startDate: '2026-04-01', endDate: '2026-04-07', active: true },
+    { id: 2, title: 'Test Popup', eventType: 'EVENT_POPUP', startDate: '2026-04-10', endDate: '2026-04-15', active: true },
+  ]),
+}))
 
 describe('useEventExplorer — month navigation', () => {
   it('initializes to current month', () => {
@@ -122,21 +130,37 @@ describe('useEventExplorer — type toggle', () => {
 
     expect(result.current.selectedTypes.size).toBe(0)
 
-    act(() => result.current.toggleType('sale'))
-    expect(result.current.selectedTypes.has('sale')).toBe(true)
+    act(() => result.current.toggleType('SALE'))
+    expect(result.current.selectedTypes.has('SALE')).toBe(true)
 
-    act(() => result.current.toggleType('sale'))
-    expect(result.current.selectedTypes.has('sale')).toBe(false)
+    act(() => result.current.toggleType('SALE'))
+    expect(result.current.selectedTypes.has('SALE')).toBe(false)
   })
 
   it('clearTypes resets all selected types', () => {
     const { result } = renderHook(() => useEventExplorer())
 
-    act(() => result.current.toggleType('sale'))
-    act(() => result.current.toggleType('event_popup'))
+    act(() => result.current.toggleType('SALE'))
+    act(() => result.current.toggleType('EVENT_POPUP'))
     expect(result.current.selectedTypes.size).toBe(2)
 
     act(() => result.current.clearTypes())
     expect(result.current.selectedTypes.size).toBe(0)
+  })
+})
+
+describe('useEventExplorer — loading state', () => {
+  it('starts with loading true and events empty', () => {
+    const { result } = renderHook(() => useEventExplorer())
+    expect(result.current.loading).toBe(true)
+    expect(result.current.allEvents).toEqual([])
+  })
+
+  it('loads events from API', async () => {
+    const { result } = renderHook(() => useEventExplorer())
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+    expect(result.current.allEvents.length).toBe(2)
   })
 })
