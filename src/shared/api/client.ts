@@ -18,7 +18,7 @@ export interface ApiError {
 // ---------------------------------------------------------------------------
 
 export const apiClient = axios.create({
-  baseURL: "https://api.taraethreads.com",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
