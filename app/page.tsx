@@ -8,7 +8,7 @@ import {
   useCallback,
   Suspense,
 } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import type { NaverMapHandle } from "@/domains/place/components/NaverMap";
 import { usePlaceExplorer } from "@/domains/place/hooks/usePlaceExplorer";
@@ -35,7 +35,9 @@ const NaverMap = dynamic(() => import("@/domains/place/components/NaverMap"), {
 
 function HomeContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialPlaceId = searchParams.get("placeId");
+  const initialEventId = searchParams.get("eventId");
   const mapRef = useRef<NaverMapHandle>(null);
   const { openModal } = useModal();
   const [activeTab, setActiveTab] = useState<NavTab>("places");
@@ -67,6 +69,13 @@ function HomeContent() {
     getDistance,
   } = usePlaceExplorer(initialPlaceId);
 
+  // initialPlaceId로 진입 시 상세 조회
+  useEffect(() => {
+    if (initialPlaceId && selectedPlace && selectedPlace.id === Number(initialPlaceId)) {
+      fetchPlaceDetail(selectedPlace.id);
+    }
+  }, [initialPlaceId, selectedPlace]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Map resize on detail panel toggle
   useEffect(() => {
     const t1 = setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
@@ -79,12 +88,24 @@ function HomeContent() {
     };
   }, [panelOpen]);
 
-  // Fetch events from API
+  // Fetch events from API + initialEventId 처리
   useEffect(() => {
     getEvents()
-      .then(setAllEvents)
+      .then((events) => {
+        setAllEvents(events);
+        if (initialEventId) {
+          const found = events.find((e) => String(e.id) === initialEventId);
+          if (found) {
+            setActiveTab("events");
+            setSelectedEvent(found);
+            getEvent(found.id)
+              .then((detail) => setSelectedEventDetail(detail))
+              .catch(() => {});
+          }
+        }
+      })
       .catch(() => {});
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const eventPlaceIds = useMemo(() => {
     // BE EventListResponse에 placeId 미포함 — 추후 추가 시 활성화
@@ -134,11 +155,12 @@ function HomeContent() {
       setSelectedEventDetail(null);
       handlePlaceSelect(place);
       fetchPlaceDetail(place.id);
+      router.replace(`/?placeId=${place.id}`, { scroll: false });
       if (typeof place.lat === "number" && typeof place.lng === "number") {
         smartPanTo(place.lat, place.lng, 13);
       }
     },
-    [handlePlaceSelect, smartPanTo, fetchPlaceDetail],
+    [handlePlaceSelect, smartPanTo, fetchPlaceDetail, router],
   );
 
   const handleListSelect = useCallback(
@@ -148,11 +170,12 @@ function HomeContent() {
       setSelectedEventDetail(null);
       handlePlaceSelect(place);
       fetchPlaceDetail(place.id);
+      router.replace(`/?placeId=${place.id}`, { scroll: false });
       if (typeof place.lat === "number" && typeof place.lng === "number") {
         mapRef.current?.panTo(place.lat, place.lng, 14);
       }
     },
-    [handlePlaceSelect, fetchPlaceDetail],
+    [handlePlaceSelect, fetchPlaceDetail, router],
   );
 
   const handleEventSelect = useCallback(
@@ -166,6 +189,8 @@ function HomeContent() {
         handlePanelClose();
         setSelectedEvent(fromList);
       }
+
+      router.replace(`/?eventId=${eventId}`, { scroll: false });
 
       // 항상 상세 API 호출 (description 등 추가 정보)
       getEvent(eventId)
@@ -191,13 +216,14 @@ function HomeContent() {
         })
         .catch(() => {});
     },
-    [allEvents, smartPanTo, handlePanelClose],
+    [allEvents, smartPanTo, handlePanelClose, router],
   );
 
   const handleDetailClose = useCallback(() => {
     handlePanelClose();
     setSelectedEvent(null);
-  }, [handlePanelClose]);
+    router.replace("/", { scroll: false });
+  }, [handlePanelClose, router]);
 
   // Mobile detail data
   const mobileDetailOpen = panelOpen || !!selectedEvent;
@@ -233,6 +259,8 @@ function HomeContent() {
         onClearCategories={clearCategories}
         onRegionChange={setSelectedRegion}
         onEventSelect={handleEventSelect}
+        selectedPlaceId={panelOpen && selectedPlace ? selectedPlace.id : null}
+        selectedEventId={selectedEvent?.id ?? null}
         viewportFilterActive={viewportFilterActive}
         onClearViewportFilter={clearViewportFilter}
         getDistance={getDistance}
