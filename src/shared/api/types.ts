@@ -106,10 +106,35 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 카테고리 목록 조회 */
+        get: operations["getCategories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        CategoryResponse: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+        };
+        ApiResponseListCategoryResponse: {
+            data: components["schemas"]["CategoryResponse"][];
+        };
         PlaceRequestInput: {
             /** @enum {string} */
             requestType: "NEW" | "UPDATE";
@@ -442,6 +467,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiResponseEventDetailResponse"];
+                };
+            };
+        };
+    };
+    getCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiResponseListCategoryResponse"];
                 };
             };
         };

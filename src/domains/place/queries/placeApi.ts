@@ -4,6 +4,7 @@ import type {
   PlaceDetailResponse,
   PlaceRequestInput,
   RequestResponse,
+  CategoryResponse,
 } from "@/shared/api/client"
 import type { operations } from "@/shared/api/types"
 
@@ -20,6 +21,13 @@ export const getPlaces = async (
 export const getPlace = async (id: number) => {
   const { data } = await apiClient.get<{ data: PlaceDetailResponse }>(
     `/api/places/${id}`
+  )
+  return data.data
+}
+
+export const getCategories = async () => {
+  const { data } = await apiClient.get<{ data: CategoryResponse[] }>(
+    "/api/categories"
   )
   return data.data
 }

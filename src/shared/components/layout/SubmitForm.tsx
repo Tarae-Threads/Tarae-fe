@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { EventType } from "@/domains/event/types";
 import {
-  CATEGORY_LABEL,
   CATEGORY_BG,
   CATEGORY_COLOR,
 } from "@/domains/place/constants";
@@ -24,7 +23,7 @@ import type {
   EventSubmissionData,
   PlaceUpdateData,
 } from "@/shared/schemas/submitForm";
-import { requestPlace } from "@/domains/place/queries/placeApi";
+import { requestPlace, getCategories } from "@/domains/place/queries/placeApi";
 import { requestEvent } from "@/domains/event/queries/eventApi";
 import { getPlaces } from "@/domains/place/queries/placeApi";
 import { toast } from "@/shared/components/ui/toast";
@@ -45,20 +44,6 @@ import { cn } from "@/shared/lib/utils";
 // ---------------------------------------------------------------------------
 // 상수
 // ---------------------------------------------------------------------------
-
-const CATEGORY_KEYS = [
-  "뜨개샵",
-  "공방",
-  "뜨개카페",
-  "손염색실",
-  "공예용품점",
-] as const;
-const categoryOptions = CATEGORY_KEYS.map((cat) => ({
-  value: cat,
-  label: CATEGORY_LABEL[cat],
-  bg: CATEGORY_BG[cat],
-  color: CATEGORY_COLOR[cat],
-}));
 
 const EVENT_TYPE_KEYS: EventType[] = ["TESTER_RECRUIT", "SALE", "EVENT_POPUP"];
 const eventTypeOptions = EVENT_TYPE_KEYS.map((type) => ({
@@ -224,14 +209,39 @@ export default function SubmitForm({ onClose }: Props) {
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
-  // Place options for update dropdown + 카테고리 ID 매핑
+  // 카테고리 목록 (API에서 가져옴)
+  const [categoryOptions, setCategoryOptions] = useState<
+    { value: string; label: string; bg: string; color: string; id: number }[]
+  >([]);
+  const [categoryIdMap, setCategoryIdMap] = useState<Record<string, number>>({});
+  const [customCategory, setCustomCategory] = useState("");
+
+  // Place options for update dropdown
   const [placeOptions, setPlaceOptions] = useState<
     { value: string; label: string; sub?: string }[]
   >([]);
-  const [categoryIdMap, setCategoryIdMap] = useState<Record<string, number>>(
-    {},
-  );
+
   useEffect(() => {
+    // 카테고리 API 호출
+    getCategories()
+      .then((categories) => {
+        const options = categories.map((c) => ({
+          value: c.name,
+          label: c.name,
+          bg: CATEGORY_BG[c.name] ?? "#e8dfcc",
+          color: CATEGORY_COLOR[c.name] ?? "#7a6840",
+          id: c.id,
+        }));
+        setCategoryOptions(options);
+        const idMap: Record<string, number> = {};
+        for (const c of categories) {
+          idMap[c.name] = c.id;
+        }
+        setCategoryIdMap(idMap);
+      })
+      .catch(() => {});
+
+    // 장소 목록 (업데이트 드롭다운용)
     getPlaces()
       .then((places) => {
         setPlaceOptions(
@@ -241,14 +251,6 @@ export default function SubmitForm({ onClose }: Props) {
             sub: p.address,
           })),
         );
-        // 카테고리 name→id 매핑 구축
-        const catMap: Record<string, number> = {};
-        for (const p of places) {
-          for (const c of p.categories) {
-            catMap[c.name] = c.id;
-          }
-        }
-        setCategoryIdMap(catMap);
       })
       .catch(() => {});
   }, []);
@@ -426,7 +428,10 @@ export default function SubmitForm({ onClose }: Props) {
         websiteUrl: data.linkWebsite || undefined,
         naverMapUrl: data.linkNaverMap || undefined,
         tags: data.tags || undefined,
-        note: data.note || undefined,
+        note: [
+          data.note,
+          customCategory ? `[카테고리 제안: ${customCategory}]` : "",
+        ].filter(Boolean).join(" ") || undefined,
       });
       toast.success("제보가 등록되었습니다");
       onClose();
@@ -602,6 +607,18 @@ export default function SubmitForm({ onClose }: Props) {
               mode="multi"
               error={categoryError}
             />
+            <div>
+              <label className="text-label-md font-bold text-on-surface-variant mb-1 block">
+                기타 카테고리가 있나요?
+              </label>
+              <input
+                type="text"
+                value={customCategory}
+                onChange={(e) => setCustomCategory(e.target.value)}
+                placeholder="목록에 없는 카테고리 직접 입력"
+                className="w-full h-11 px-4 rounded-xl text-label-lg text-on-surface placeholder:text-outline bg-surface-container focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+            </div>
           </div>
         );
       case 2:

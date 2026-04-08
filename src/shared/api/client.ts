@@ -47,3 +47,4 @@ export type CategoryInfo = components["schemas"]["CategoryInfo"];
 export type TagInfo = components["schemas"]["TagInfo"];
 export type BrandInfo = components["schemas"]["BrandInfo"];
 export type RequestResponse = components["schemas"]["RequestResponse"];
+export type CategoryResponse = components["schemas"]["CategoryResponse"];

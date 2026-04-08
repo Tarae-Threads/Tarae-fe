@@ -233,10 +233,42 @@
           }
         }
       }
+    },
+    "/api/categories": {
+      "get": {
+        "tags": ["장소"],
+        "summary": "카테고리 목록 조회",
+        "operationId": "getCategories",
+        "responses": {
+          "200": {
+            "description": "조회 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseListCategoryResponse" }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "CategoryResponse": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" }
+        }
+      },
+      "ApiResponseListCategoryResponse": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/CategoryResponse" } }
+        }
+      },
       "PlaceRequestInput": {
         "type": "object",
         "required": ["requestType"],
