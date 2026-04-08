@@ -18,6 +18,7 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
   const [allPlaces, setAllPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [sortBy, setSortBy] = useState<"name-asc" | "name-desc" | "distance">("name-asc");
   const [selectedCategories, setSelectedCategories] = useState<
     Set<string>
   >(new Set());
@@ -53,11 +54,14 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     return () => { cancelled = true; };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Get user location once
+  // Get user location once → 위치 허용 시 가까운순 기본 정렬
   useEffect(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
-      (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      (pos) => {
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setSortBy("distance");
+      },
       () => {}, // silently fail
       { maximumAge: 300000 },
     );
@@ -126,15 +130,33 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
   } | null>(null);
 
   const displayPlaces = useMemo(() => {
-    // PlaceListResponse may not have lat/lng — skip viewport filter if absent
-    if (!viewportBounds) return filteredPlaces;
-    const { sw, ne } = viewportBounds;
-    return filteredPlaces.filter((p) => {
-      if (p.lat == null || p.lng == null) return true;
-      const { lat, lng } = p;
-      return lat >= sw.lat && lat <= ne.lat && lng >= sw.lng && lng <= ne.lng;
-    });
-  }, [filteredPlaces, viewportBounds]);
+    let result = filteredPlaces;
+
+    // 뷰포트 필터
+    if (viewportBounds) {
+      const { sw, ne } = viewportBounds;
+      result = result.filter((p) => {
+        if (p.lat == null || p.lng == null) return true;
+        return p.lat >= sw.lat && p.lat <= ne.lat && p.lng >= sw.lng && p.lng <= ne.lng;
+      });
+    }
+
+    // 정렬
+    const sorted = [...result];
+    if (sortBy === "name-asc") {
+      sorted.sort((a, b) => a.name.localeCompare(b.name, "ko"));
+    } else if (sortBy === "name-desc") {
+      sorted.sort((a, b) => b.name.localeCompare(a.name, "ko"));
+    } else if (sortBy === "distance" && userLocation) {
+      sorted.sort((a, b) => {
+        const distA = a.lat != null && a.lng != null ? haversineKm(userLocation.lat, userLocation.lng, a.lat, a.lng) : Infinity;
+        const distB = b.lat != null && b.lng != null ? haversineKm(userLocation.lat, userLocation.lng, b.lat, b.lng) : Infinity;
+        return distA - distB;
+      });
+    }
+
+    return sorted;
+  }, [filteredPlaces, viewportBounds, sortBy, userLocation]);
 
   // Clear viewport filter when other filters change
   useEffect(() => {
@@ -199,6 +221,9 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     handlePlaceSelect,
     handlePanelClose,
     toggleFilter,
+    // sort
+    sortBy,
+    setSortBy,
     // distance
     getDistance,
   };

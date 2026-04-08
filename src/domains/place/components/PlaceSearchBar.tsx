@@ -1,6 +1,7 @@
 'use client'
 
 import PlaceFilter from './PlaceFilter'
+import type { SortBy } from './PlaceFilter'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
 
 interface PlaceSearchBarProps {
@@ -13,6 +14,8 @@ interface PlaceSearchBarProps {
   onToggleCategory: (category: string) => void
   onClearCategories: () => void
   onRegionChange: (region: string) => void
+  sortBy: SortBy
+  onSortChange: (sort: SortBy) => void
   resultCount?: number
 }
 
@@ -26,6 +29,8 @@ export default function PlaceSearchBar({
   onToggleCategory,
   onClearCategories,
   onRegionChange,
+  sortBy,
+  onSortChange,
   resultCount,
 }: PlaceSearchBarProps) {
   const activeFilterCount = selectedCategories.size + (selectedRegion !== 'all' ? 1 : 0)
@@ -75,6 +80,8 @@ export default function PlaceSearchBar({
             onToggleCategory={onToggleCategory}
             onClearCategories={onClearCategories}
             onRegionChange={onRegionChange}
+            sortBy={sortBy}
+            onSortChange={onSortChange}
           />
         </div>
       )}

@@ -6,6 +6,7 @@ import type { NavTab } from './NavBar'
 import CategoryBadge from '@/domains/place/components/CategoryBadge'
 import StatusBadge from '@/domains/place/components/StatusBadge'
 import PlaceFilter from '@/domains/place/components/PlaceFilter'
+import type { SortBy } from '@/domains/place/components/PlaceFilter'
 import EventSidePanelContent from '@/domains/event/components/EventSidePanelContent'
 import EmptyState from '@/shared/components/ui/EmptyState'
 import { PlaceCardSkeleton } from '@/shared/components/ui/Skeleton'
@@ -27,6 +28,8 @@ interface Props {
   onEventSelect?: (eventId: number) => void
   selectedPlaceId?: number | null
   selectedEventId?: number | null
+  sortBy: SortBy
+  onSortChange: (sort: SortBy) => void
   viewportFilterActive?: boolean
   onClearViewportFilter?: () => void
   getDistance?: (place: Place) => number | null
@@ -47,6 +50,8 @@ export default function BasePanel({
   onEventSelect,
   selectedPlaceId,
   selectedEventId,
+  sortBy,
+  onSortChange,
   viewportFilterActive,
   onClearViewportFilter,
   getDistance,
@@ -114,6 +119,8 @@ export default function BasePanel({
                   onToggleCategory={onToggleCategory}
                   onClearCategories={onClearCategories}
                   onRegionChange={onRegionChange}
+                  sortBy={sortBy}
+                  onSortChange={onSortChange}
                 />
               </div>
             )}

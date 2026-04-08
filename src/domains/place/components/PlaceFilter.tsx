@@ -4,16 +4,26 @@ import { CATEGORY_LABEL, REGION_ORDER } from '../constants'
 import FilterChip from '@/shared/components/ui/FilterChip'
 import { RotateCcw } from 'lucide-react'
 
+export type SortBy = 'name-asc' | 'name-desc' | 'distance'
+
 interface PlaceFilterProps {
   selectedCategories: Set<string>
   selectedRegion: string
   onToggleCategory: (category: string) => void
   onClearCategories: () => void
   onRegionChange: (region: string) => void
+  sortBy: SortBy
+  onSortChange: (sort: SortBy) => void
 }
 
 // BE CategoryInfo.name은 한국어 라벨 (뜨개샵, 공방 등)
 const categoryList = Object.entries(CATEGORY_LABEL)
+
+const SORT_OPTIONS: { value: SortBy; label: string }[] = [
+  { value: 'name-asc', label: '이름순 ↑' },
+  { value: 'name-desc', label: '이름순 ↓' },
+  { value: 'distance', label: '가까운순' },
+]
 
 export default function PlaceFilter({
   selectedCategories,
@@ -21,11 +31,30 @@ export default function PlaceFilter({
   onToggleCategory,
   onClearCategories,
   onRegionChange,
+  sortBy,
+  onSortChange,
 }: PlaceFilterProps) {
   const isAllCategories = selectedCategories.size === 0
 
   return (
     <div className="space-y-4">
+      {/* Sort */}
+      <div>
+        <p className="text-label-md font-bold text-on-surface-variant mb-2 uppercase tracking-widest">
+          정렬
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {SORT_OPTIONS.map(opt => (
+            <FilterChip
+              key={opt.value}
+              label={opt.label}
+              selected={sortBy === opt.value}
+              onClick={() => onSortChange(opt.value)}
+            />
+          ))}
+        </div>
+      </div>
+
       {/* Category chips */}
       <div>
         <div className="flex items-center gap-2 mb-2">

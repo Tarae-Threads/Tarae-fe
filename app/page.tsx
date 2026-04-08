@@ -66,6 +66,8 @@ function HomeContent() {
     handlePlaceSelect,
     handlePanelClose,
     toggleFilter,
+    sortBy,
+    setSortBy,
     getDistance,
   } = usePlaceExplorer(initialPlaceId);
 
@@ -261,6 +263,8 @@ function HomeContent() {
         onEventSelect={handleEventSelect}
         selectedPlaceId={panelOpen && selectedPlace ? selectedPlace.id : null}
         selectedEventId={selectedEvent?.id ?? null}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
         viewportFilterActive={viewportFilterActive}
         onClearViewportFilter={clearViewportFilter}
         getDistance={getDistance}
@@ -329,6 +333,8 @@ function HomeContent() {
               onToggleCategory={toggleCategory}
               onClearCategories={clearCategories}
               onRegionChange={setSelectedRegion}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
               resultCount={displayPlaces.length}
             />
           </div>
