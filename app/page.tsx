@@ -8,7 +8,7 @@ import {
   useCallback,
   Suspense,
 } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import type { NaverMapHandle } from "@/domains/place/components/NaverMap";
 import { usePlaceExplorer } from "@/domains/place/hooks/usePlaceExplorer";
@@ -35,7 +35,6 @@ const NaverMap = dynamic(() => import("@/domains/place/components/NaverMap"), {
 
 function HomeContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const initialPlaceId = searchParams.get("placeId");
   const initialEventId = searchParams.get("eventId");
   const mapRef = useRef<NaverMapHandle>(null);
@@ -157,12 +156,12 @@ function HomeContent() {
       setSelectedEventDetail(null);
       handlePlaceSelect(place);
       fetchPlaceDetail(place.id);
-      router.replace(`/?placeId=${place.id}`, { scroll: false });
+      window.history.replaceState(null, "", `/?placeId=${place.id}`);
       if (typeof place.lat === "number" && typeof place.lng === "number") {
         smartPanTo(place.lat, place.lng, 13);
       }
     },
-    [handlePlaceSelect, smartPanTo, fetchPlaceDetail, router],
+    [handlePlaceSelect, smartPanTo, fetchPlaceDetail],
   );
 
   const handleListSelect = useCallback(
@@ -172,12 +171,12 @@ function HomeContent() {
       setSelectedEventDetail(null);
       handlePlaceSelect(place);
       fetchPlaceDetail(place.id);
-      router.replace(`/?placeId=${place.id}`, { scroll: false });
+      window.history.replaceState(null, "", `/?placeId=${place.id}`);
       if (typeof place.lat === "number" && typeof place.lng === "number") {
         mapRef.current?.panTo(place.lat, place.lng, 14);
       }
     },
-    [handlePlaceSelect, fetchPlaceDetail, router],
+    [handlePlaceSelect, fetchPlaceDetail],
   );
 
   const handleEventSelect = useCallback(
@@ -192,7 +191,7 @@ function HomeContent() {
         setSelectedEvent(fromList);
       }
 
-      router.replace(`/?eventId=${eventId}`, { scroll: false });
+      window.history.replaceState(null, "", `/?eventId=${eventId}`);
 
       // 항상 상세 API 호출 (description 등 추가 정보)
       getEvent(eventId)
@@ -218,14 +217,14 @@ function HomeContent() {
         })
         .catch(() => {});
     },
-    [allEvents, smartPanTo, handlePanelClose, router],
+    [allEvents, smartPanTo, handlePanelClose],
   );
 
   const handleDetailClose = useCallback(() => {
     handlePanelClose();
     setSelectedEvent(null);
-    router.replace("/", { scroll: false });
-  }, [handlePanelClose, router]);
+    window.history.replaceState(null, "", "/");
+  }, [handlePanelClose]);
 
   // Mobile detail data
   const mobileDetailOpen = panelOpen || !!selectedEvent;
