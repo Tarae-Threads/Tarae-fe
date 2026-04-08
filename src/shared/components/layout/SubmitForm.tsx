@@ -559,14 +559,16 @@ export default function SubmitForm({ onClose }: Props) {
                 주소 *
               </label>
               <div className="flex gap-2">
-                <FormInput
-                  label=""
-                  readOnly
-                  placeholder="주소 검색을 눌러주세요"
-                  registration={placeForm.register("address")}
-                  error={placeForm.formState.errors.address?.message}
-                  onClick={openAddressSearch}
-                />
+                <div className="flex-1 min-w-0">
+                  <FormInput
+                    label=""
+                    readOnly
+                    placeholder="주소 검색을 눌러주세요"
+                    registration={placeForm.register("address")}
+                    error={placeForm.formState.errors.address?.message}
+                    onClick={openAddressSearch}
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={openAddressSearch}
@@ -709,13 +711,15 @@ export default function SubmitForm({ onClose }: Props) {
                 장소
               </label>
               <div className="flex gap-2">
-                <FormInput
-                  label=""
-                  readOnly
-                  placeholder="주소 검색을 눌러주세요"
-                  registration={eventForm.register("address")}
-                  onClick={openEventAddressSearch}
-                />
+                <div className="flex-1 min-w-0">
+                  <FormInput
+                    label=""
+                    readOnly
+                    placeholder="주소 검색을 눌러주세요"
+                    registration={eventForm.register("address")}
+                    onClick={openEventAddressSearch}
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={openEventAddressSearch}
