@@ -5,6 +5,3 @@ export type {
 
 // BE eventType enum
 export type EventType = "TESTER_RECRUIT" | "SALE" | "EVENT_POPUP"
-
-/** @deprecated Use `Event` instead */
-export type { EventListResponse as AnyEvent } from "@/shared/api/client"
