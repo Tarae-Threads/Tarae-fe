@@ -6,15 +6,20 @@ import { Calendar, MapPin } from 'lucide-react'
 interface Props {
   event: Event
   onSelect?: (eventId: number) => void
+  active?: boolean
 }
 
-export default function EventCard({ event, onSelect }: Props) {
+export default function EventCard({ event, onSelect, active }: Props) {
   const endDate = event.endDate ?? event.startDate
 
   return (
     <div
       onClick={() => onSelect?.(event.id)}
-      className="bg-surface-container-high rounded-2xl p-5 editorial-shadow hover:shadow-xl transition-all group cursor-pointer"
+      className={`rounded-2xl p-5 transition-all group cursor-pointer ${
+        active
+          ? 'bg-surface-container-high editorial-shadow border-2 border-primary'
+          : 'bg-surface-container-high editorial-shadow hover:shadow-xl border-2 border-transparent'
+      }`}
     >
       <div className="flex items-center gap-2 mb-3">
         <EventTypeBadge type={event.eventType as import('../types').EventType} />

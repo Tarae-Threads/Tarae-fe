@@ -7,9 +7,10 @@ interface Props {
   events: Event[]
   selectedDate: string | null
   onEventSelect?: (eventId: number) => void
+  selectedEventId?: number | null
 }
 
-export default function EventList({ events, selectedDate, onEventSelect }: Props) {
+export default function EventList({ events, selectedDate, onEventSelect, selectedEventId }: Props) {
   if (events.length === 0) {
     return (
       <EmptyState
@@ -23,7 +24,7 @@ export default function EventList({ events, selectedDate, onEventSelect }: Props
   return (
     <div className="space-y-3">
       {events.map(event => (
-        <EventCard key={event.id} event={event} onSelect={onEventSelect} />
+        <EventCard key={event.id} event={event} onSelect={onEventSelect} active={selectedEventId === event.id} />
       ))}
     </div>
   )

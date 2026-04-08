@@ -25,6 +25,8 @@ interface Props {
   onClearCategories: () => void
   onRegionChange: (region: string) => void
   onEventSelect?: (eventId: number) => void
+  selectedPlaceId?: number | null
+  selectedEventId?: number | null
   viewportFilterActive?: boolean
   onClearViewportFilter?: () => void
   getDistance?: (place: Place) => number | null
@@ -43,6 +45,8 @@ export default function BasePanel({
   onClearCategories,
   onRegionChange,
   onEventSelect,
+  selectedPlaceId,
+  selectedEventId,
   viewportFilterActive,
   onClearViewportFilter,
   getDistance,
@@ -151,7 +155,11 @@ export default function BasePanel({
                   <button
                     key={place.id}
                     onClick={() => handlePlaceClick(place)}
-                    className="w-full bg-surface-container-high rounded-2xl overflow-hidden editorial-shadow text-left group transition-all hover:shadow-xl"
+                    className={`w-full rounded-2xl overflow-hidden text-left group transition-all ${
+                      selectedPlaceId === place.id
+                        ? 'bg-surface-container-high editorial-shadow border-2 border-primary'
+                        : 'bg-surface-container-high editorial-shadow hover:shadow-xl border-2 border-transparent'
+                    }`}
                   >
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-1.5">
@@ -197,7 +205,7 @@ export default function BasePanel({
         </>
       ) : (
         <div className="flex-1 overflow-y-auto hide-scrollbar">
-          <EventSidePanelContent onEventSelect={onEventSelect} />
+          <EventSidePanelContent onEventSelect={onEventSelect} selectedEventId={selectedEventId} />
         </div>
       )}
     </div>

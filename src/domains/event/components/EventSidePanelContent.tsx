@@ -7,9 +7,10 @@ import EventList from './EventList'
 
 interface Props {
   onEventSelect?: (eventId: number) => void
+  selectedEventId?: number | null
 }
 
-export default function EventSidePanelContent({ onEventSelect }: Props) {
+export default function EventSidePanelContent({ onEventSelect, selectedEventId }: Props) {
   const {
     allEvents,
     loading,
@@ -59,7 +60,7 @@ export default function EventSidePanelContent({ onEventSelect }: Props) {
             {loading ? '불러오는 중...' : `${filteredEvents.length}개`}
           </span>
         </div>
-        <EventList events={filteredEvents} selectedDate={selectedDate} onEventSelect={onEventSelect} />
+        <EventList events={filteredEvents} selectedDate={selectedDate} onEventSelect={onEventSelect} selectedEventId={selectedEventId} />
       </div>
     </div>
   )
