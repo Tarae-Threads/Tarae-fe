@@ -9,15 +9,17 @@
    ============================================ */
 
 @font-face {
-  font-family: 'GangwonEducationModuche';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFLightA.woff') format('woff');
+  font-family: "GangwonEducationModuche";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFLightA.woff")
+    format("woff");
   font-weight: 300;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'GangwonEducationModuche';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+  font-family: "GangwonEducationModuche";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff")
+    format("woff");
   font-weight: 700;
   font-display: swap;
 }
@@ -28,11 +30,13 @@
 
 @theme inline {
   /* --- Fonts --- */
-  --font-sans: 'GangwonEducationModuche', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-  --font-body: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-  --font-display: 'GangwonEducationModuche', sans-serif;
+  --font-sans:
+    "GangwonEducationModuche", "Apple SD Gothic Neo", "Malgun Gothic",
+    sans-serif;
+  --font-body: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-display: "GangwonEducationModuche", sans-serif;
   --font-mono: var(--font-geist-mono);
-  --font-heading: 'GangwonEducationModuche', sans-serif;
+  --font-heading: "GangwonEducationModuche", sans-serif;
 
   /* --- Typography Scale --- */
   --text-display-lg: 3.625rem;
@@ -117,6 +121,11 @@
   --color-secondary-container: var(--secondary-container);
   --color-on-secondary-container: var(--on-secondary-container);
 
+  --color-warmyellow: var(--warmyellow);
+  --color-warmyellow-foreground: var(--warmyellow-foreground);
+  --color-warmyellow-container: var(--warmyellow-container);
+  --color-on-warmyellow-container: var(--on-warmyellow-container);
+
   --color-tertiary: var(--tertiary);
   --color-tertiary-container: var(--tertiary-container);
   --color-on-tertiary-container: var(--on-tertiary-container);
@@ -188,6 +197,11 @@
   --tertiary: #68594a;
   --tertiary-container: #827261;
   --on-tertiary-container: #fffbff;
+
+  --warmyellow: #ffe7bb;
+  --warmyellow-foreground: #fffded;
+  --warmyellow-container: #625640;
+  --on-warmyellow-container: #fff7c3;
 
   /* Surface hierarchy (from mockup) */
   --surface: #fff9ef;
@@ -377,6 +391,13 @@
 
 /* My location pulse animation */
 @keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.4; }
-  50% { transform: scale(1.6); opacity: 0; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
 }
