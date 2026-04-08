@@ -333,17 +333,19 @@ function HomeContent() {
             />
           </div>
 
-          <MobileBottomSheet
-            activeTab={activeTab}
-            places={displayPlaces}
-            loading={placesLoading}
-            onPlaceSelect={handleListSelect}
-            onEventSelect={handleEventSelect}
-            viewportFilterActive={viewportFilterActive}
-            onClearViewportFilter={clearViewportFilter}
-            hasActiveFilters={searchQuery !== '' || selectedCategories.size > 0 || selectedRegion !== 'all'}
-            onClearFilters={() => { setSearchQuery(''); clearCategories(); setSelectedRegion('all'); }}
-          />
+          {!mobileDetailOpen && (
+            <MobileBottomSheet
+              activeTab={activeTab}
+              places={displayPlaces}
+              loading={placesLoading}
+              onPlaceSelect={handleListSelect}
+              onEventSelect={handleEventSelect}
+              viewportFilterActive={viewportFilterActive}
+              onClearViewportFilter={clearViewportFilter}
+              hasActiveFilters={searchQuery !== '' || selectedCategories.size > 0 || selectedRegion !== 'all'}
+              onClearFilters={() => { setSearchQuery(''); clearCategories(); setSelectedRegion('all'); }}
+            />
+          )}
 
           <PlacePanel
             data={mobileDetailData}

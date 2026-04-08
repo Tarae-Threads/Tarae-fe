@@ -11,7 +11,7 @@ import { X, MapPin } from "lucide-react";
 
 type SnapPoint = "peek" | "half" | "full";
 
-const SNAP_PEEK = 0.40;
+const SNAP_PEEK = 0.4;
 const SNAP_HALF = 0.5;
 const SNAP_FULL = 0.85;
 
@@ -192,12 +192,14 @@ export default function MobileBottomSheet({
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <h2 className="font-display text-title-sm font-extrabold tracking-tight text-on-surface">
-            뜨개 장소
-          </h2>
-          <p className="text-label-md text-outline font-medium">
-            {places.length}개 장소
-          </p>
+          <div className="flex flex-row w-full justify-between">
+            <h2 className="font-display text-title-sm font-extrabold tracking-tight text-on-surface">
+              장소
+            </h2>
+            <p className="text-label-md text-outline font-medium">
+              {places.length}개 장소
+            </p>
+          </div>
           {viewportFilterActive && (
             <button
               onClick={onClearViewportFilter}
@@ -230,10 +232,14 @@ export default function MobileBottomSheet({
                 icon={<MapPin className="w-8 h-8 text-outline" />}
                 title="검색 결과가 없어요"
                 description="필터를 변경하거나 검색어를 수정해보세요."
-                action={hasActiveFilters && onClearFilters ? {
-                  label: '필터 초기화',
-                  onClick: onClearFilters,
-                } : undefined}
+                action={
+                  hasActiveFilters && onClearFilters
+                    ? {
+                        label: "필터 초기화",
+                        onClick: onClearFilters,
+                      }
+                    : undefined
+                }
               />
             ) : (
               places.map((place) => (

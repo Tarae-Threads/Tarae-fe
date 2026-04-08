@@ -1,16 +1,19 @@
-'use client'
+"use client";
 
-import { useEventExplorer } from '../hooks/useEventExplorer'
-import CalendarGrid from './CalendarGrid'
-import EventTypeFilter from './EventTypeFilter'
-import EventList from './EventList'
+import { useEventExplorer } from "../hooks/useEventExplorer";
+import CalendarGrid from "./CalendarGrid";
+import EventTypeFilter from "./EventTypeFilter";
+import EventList from "./EventList";
 
 interface Props {
-  onEventSelect?: (eventId: number) => void
-  selectedEventId?: number | null
+  onEventSelect?: (eventId: number) => void;
+  selectedEventId?: number | null;
 }
 
-export default function EventSidePanelContent({ onEventSelect, selectedEventId }: Props) {
+export default function EventSidePanelContent({
+  onEventSelect,
+  selectedEventId,
+}: Props) {
   const {
     allEvents,
     loading,
@@ -26,7 +29,7 @@ export default function EventSidePanelContent({ onEventSelect, selectedEventId }
     prevMonth,
     selectDate,
     goToday,
-  } = useEventExplorer()
+  } = useEventExplorer();
 
   return (
     <div className="px-5 py-3 space-y-4">
@@ -51,17 +54,22 @@ export default function EventSidePanelContent({ onEventSelect, selectedEventId }
 
       <div>
         <div className="flex items-center justify-between mb-2">
-          <h3 className="font-display font-bold text-label-lg text-on-surface">
+          <h2 className="font-display text-title-sm font-extrabold tracking-tight text-on-surface">
             {selectedDate
-              ? `${selectedDate.slice(5).replace('-', '월 ')}일`
-              : '전체 일정'}
-          </h3>
-          <span className="text-label-xs text-outline font-medium" aria-live="polite">
-            {loading ? '불러오는 중...' : `${filteredEvents.length}개`}
-          </span>
+              ? `${selectedDate.slice(5).replace("-", "월 ")}일`
+              : "전체 일정"}
+          </h2>
+          <p className="text-label-md text-outline font-medium">
+            {filteredEvents.length}개 일정
+          </p>
         </div>
-        <EventList events={filteredEvents} selectedDate={selectedDate} onEventSelect={onEventSelect} selectedEventId={selectedEventId} />
+        <EventList
+          events={filteredEvents}
+          selectedDate={selectedDate}
+          onEventSelect={onEventSelect}
+          selectedEventId={selectedEventId}
+        />
       </div>
     </div>
-  )
+  );
 }
