@@ -1,41 +1,46 @@
-"use client"
+"use client";
 
-import { useRef, useState, useCallback, useEffect } from "react"
-import type { Place } from "../types"
-import type { NavTab } from "@/shared/components/layout/NavBar"
-import PlaceCardCompact from "./PlaceCardCompact"
-import EventSidePanelContent from "@/domains/event/components/EventSidePanelContent"
-import EmptyState from "@/shared/components/ui/EmptyState"
-import { PlaceCardSkeleton } from "@/shared/components/ui/Skeleton"
-import { X, MapPin } from "lucide-react"
+import { useRef, useState, useCallback, useEffect } from "react";
+import type { Place } from "../types";
+import type { NavTab } from "@/shared/components/layout/NavBar";
+import PlaceCardCompact from "./PlaceCardCompact";
+import EventSidePanelContent from "@/domains/event/components/EventSidePanelContent";
+import EmptyState from "@/shared/components/ui/EmptyState";
+import { PlaceCardSkeleton } from "@/shared/components/ui/Skeleton";
+import { X, MapPin } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Snap Points: closed(10%) → peek(30%) → full(100% - 48px bottomNav)
 // ---------------------------------------------------------------------------
 
-type SnapPoint = "closed" | "peek" | "full"
-export type { SnapPoint as MobileSnapPoint }
-const SNAP_RATIOS: Record<SnapPoint, number> = { closed: 0.1, peek: 0.3, full: 1 }
-const BOTTOM_NAV_HEIGHT = 48
-const SEARCH_BAR_BOTTOM = 72 // top-4(16px) + h-14(56px)
+type SnapPoint = "closed" | "peek" | "full";
+export type { SnapPoint as MobileSnapPoint };
+const SNAP_RATIOS: Record<SnapPoint, number> = {
+  closed: 0.1,
+  peek: 0.3,
+  full: 1,
+};
+const BOTTOM_NAV_HEIGHT = 48;
+const SEARCH_BAR_BOTTOM = 72; // top-4(16px) + h-14(56px)
 
 function getSnapHeight(snap: SnapPoint): number {
-  if (typeof window === "undefined") return 0
+  if (typeof window === "undefined") return 0;
   // full: 검색창 아래까지
-  if (snap === "full") return window.innerHeight - SEARCH_BAR_BOTTOM - BOTTOM_NAV_HEIGHT
-  return window.innerHeight * SNAP_RATIOS[snap]
+  if (snap === "full")
+    return window.innerHeight - SEARCH_BAR_BOTTOM - BOTTOM_NAV_HEIGHT;
+  return window.innerHeight * SNAP_RATIOS[snap];
 }
 
 // 한 단계씩만 이동
 function nextSnap(current: SnapPoint, direction: "up" | "down"): SnapPoint {
   if (direction === "up") {
-    if (current === "closed") return "peek"
-    if (current === "peek") return "full"
-    return "full"
+    if (current === "closed") return "peek";
+    if (current === "peek") return "full";
+    return "full";
   } else {
-    if (current === "full") return "peek"
-    if (current === "peek") return "closed"
-    return "closed"
+    if (current === "full") return "peek";
+    if (current === "peek") return "closed";
+    return "closed";
   }
 }
 
@@ -44,18 +49,18 @@ function nextSnap(current: SnapPoint, direction: "up" | "down"): SnapPoint {
 // ---------------------------------------------------------------------------
 
 interface Props {
-  activeTab: NavTab
-  places: Place[]
-  loading?: boolean
-  onPlaceSelect: (place: Place) => void
-  onEventSelect?: (eventId: number) => void
-  viewportFilterActive?: boolean
-  onClearViewportFilter?: () => void
-  hasActiveFilters?: boolean
-  onClearFilters?: () => void
-  getDistance?: (place: Place) => number | null
-  onHeightChange?: (height: number) => void
-  onSnapChange?: (snap: SnapPoint) => void
+  activeTab: NavTab;
+  places: Place[];
+  loading?: boolean;
+  onPlaceSelect: (place: Place) => void;
+  onEventSelect?: (eventId: number) => void;
+  viewportFilterActive?: boolean;
+  onClearViewportFilter?: () => void;
+  hasActiveFilters?: boolean;
+  onClearFilters?: () => void;
+  getDistance?: (place: Place) => number | null;
+  onHeightChange?: (height: number) => void;
+  onSnapChange?: (snap: SnapPoint) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -76,18 +81,18 @@ export default function MobileBottomSheet({
   onHeightChange,
   onSnapChange,
 }: Props) {
-  const contentRef = useRef<HTMLDivElement>(null)
-  const [snap, setSnap] = useState<SnapPoint>("peek")
-  const [sheetHeight, setSheetHeight] = useState(0)
-  const [isDragging, setIsDragging] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [snap, setSnap] = useState<SnapPoint>("peek");
+  const [sheetHeight, setSheetHeight] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-    const h = getSnapHeight("peek")
-    setSheetHeight(h)
-    onHeightChange?.(h)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    setMounted(true);
+    const h = getSnapHeight("peek");
+    setSheetHeight(h);
+    onHeightChange?.(h);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const dragState = useRef({
     startY: 0,
@@ -97,32 +102,34 @@ export default function MobileBottomSheet({
     velocity: 0,
     isScrolling: false,
     dragDirection: null as "up" | "down" | null,
-  })
+  });
 
-  const animateTo = useCallback((target: SnapPoint) => {
-    const h = getSnapHeight(target)
-    setSnap(target)
-    setSheetHeight(h)
-    onHeightChange?.(h)
-    onSnapChange?.(target)
-  }, [onHeightChange, onSnapChange])
+  const animateTo = useCallback(
+    (target: SnapPoint) => {
+      const h = getSnapHeight(target);
+      setSnap(target);
+      setSheetHeight(h);
+      onHeightChange?.(h);
+      onSnapChange?.(target);
+    },
+    [onHeightChange, onSnapChange],
+  );
 
   // 탭 전환 시
-  const prevTabRef = useRef(activeTab)
+  const prevTabRef = useRef(activeTab);
   useEffect(() => {
     if (prevTabRef.current !== activeTab) {
-      prevTabRef.current = activeTab
+      prevTabRef.current = activeTab;
       if (activeTab === "events" && snap === "closed") {
-        animateTo("peek")
+        animateTo("peek");
       }
     }
-  }, [activeTab, snap, animateTo])
+  }, [activeTab, snap, animateTo]);
 
   // 높이 변경 알림
   useEffect(() => {
-    onHeightChange?.(sheetHeight)
-  }, [sheetHeight, onHeightChange])
-
+    onHeightChange?.(sheetHeight);
+  }, [sheetHeight, onHeightChange]);
 
   // ---------------------------------------------------------------------------
   // Touch handlers — 핸들/헤더 전용 (스크롤 체크 없이 항상 드래그)
@@ -130,92 +137,101 @@ export default function MobileBottomSheet({
 
   const handleTouchStart = useCallback(
     (e: React.TouchEvent) => {
-      e.stopPropagation()
-      const touch = e.touches[0]
-      const ds = dragState.current
-      ds.isScrolling = false
-      ds.dragDirection = null
-      ds.startY = touch.clientY
-      ds.startHeight = sheetHeight
-      ds.lastY = touch.clientY
-      ds.lastTime = Date.now()
-      ds.velocity = 0
-      setIsDragging(true)
+      e.stopPropagation();
+      const touch = e.touches[0];
+      const ds = dragState.current;
+      ds.isScrolling = false;
+      ds.dragDirection = null;
+      ds.startY = touch.clientY;
+      ds.startHeight = sheetHeight;
+      ds.lastY = touch.clientY;
+      ds.lastTime = Date.now();
+      ds.velocity = 0;
+      setIsDragging(true);
     },
     [sheetHeight],
-  )
+  );
 
   const handleTouchMove = useCallback(
     (e: React.TouchEvent) => {
-      e.stopPropagation()
-      const ds = dragState.current
-      if (ds.isScrolling) return
+      e.stopPropagation();
+      const ds = dragState.current;
+      if (ds.isScrolling) return;
 
-      const touch = e.touches[0]
-      const now = Date.now()
-      const deltaY = ds.startY - touch.clientY
+      const touch = e.touches[0];
+      const now = Date.now();
+      const deltaY = ds.startY - touch.clientY;
 
       // full 상태 + scrollTop 0 + 아래로 드래그할 때만 패널 내리기
-      if (snap === "full" && contentRef.current && contentRef.current.scrollTop === 0 && deltaY < -10) {
+      if (
+        snap === "full" &&
+        contentRef.current &&
+        contentRef.current.scrollTop === 0 &&
+        deltaY < -10
+      ) {
         // 패널 드래그 모드로 전환
       } else if (snap === "full" && deltaY >= 0) {
         // 위로 드래그 → 스크롤에 맡기기
-        ds.isScrolling = true
-        setIsDragging(false)
-        return
+        ds.isScrolling = true;
+        setIsDragging(false);
+        return;
       }
 
-      const available = window.innerHeight - BOTTOM_NAV_HEIGHT
+      const available = window.innerHeight - BOTTOM_NAV_HEIGHT;
       const newHeight = Math.max(
         window.innerHeight * 0.05,
         Math.min(available, ds.startHeight + deltaY),
-      )
+      );
 
-      const dt = now - ds.lastTime
-      if (dt > 0) ds.velocity = (ds.lastY - touch.clientY) / dt
-      ds.lastY = touch.clientY
-      ds.lastTime = now
-      ds.dragDirection = deltaY > 0 ? "up" : "down"
+      const dt = now - ds.lastTime;
+      if (dt > 0) ds.velocity = (ds.lastY - touch.clientY) / dt;
+      ds.lastY = touch.clientY;
+      ds.lastTime = now;
+      ds.dragDirection = deltaY > 0 ? "up" : "down";
 
-      setSheetHeight(newHeight)
-      e.preventDefault()
+      setSheetHeight(newHeight);
+      e.preventDefault();
     },
     [snap],
-  )
+  );
 
   const handleTouchEnd = useCallback(() => {
-    const ds = dragState.current
-    if (ds.isScrolling) return
-    setIsDragging(false)
+    const ds = dragState.current;
+    if (ds.isScrolling) return;
+    setIsDragging(false);
 
     // 속도 기반 방향 결정
     const direction: "up" | "down" =
       Math.abs(ds.velocity) > 0.3
-        ? ds.velocity > 0 ? "up" : "down"
-        : ds.dragDirection ?? "down"
+        ? ds.velocity > 0
+          ? "up"
+          : "down"
+        : (ds.dragDirection ?? "down");
 
-    animateTo(nextSnap(snap, direction))
-  }, [snap, animateTo])
+    animateTo(nextSnap(snap, direction));
+  }, [snap, animateTo]);
 
   // 콘텐츠 터치 이벤트 전파 방지
   const stopPropagation = useCallback((e: React.TouchEvent) => {
-    e.stopPropagation()
-  }, [])
+    e.stopPropagation();
+  }, []);
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-30 bg-surface-container-low shadow-[0_-12px_48px_rgba(29,27,22,0.15)] flex flex-col ${
-        snap === "full" ? "rounded-none" : "rounded-t-[2rem]"
-      }`}
-      style={mounted ? {
-        height: sheetHeight,
-        marginBottom: BOTTOM_NAV_HEIGHT,
-        transition: isDragging
-          ? "none"
-          : "height 0.4s cubic-bezier(0.32, 0.72, 0, 1)",
-        willChange: "height",
-        touchAction: "none",
-      } : { height: 0, overflow: "hidden" }}
+      className="fixed bottom-0 left-0 right-0 z-30 bg-surface-container-low rounded-t-[2rem] shadow-[0_-12px_48px_rgba(29,27,22,0.15)] flex flex-col"
+      style={
+        mounted
+          ? {
+              height: sheetHeight,
+              marginBottom: BOTTOM_NAV_HEIGHT,
+              transition: isDragging
+                ? "none"
+                : "height 0.4s cubic-bezier(0.32, 0.72, 0, 1)",
+              willChange: "height",
+              touchAction: "none",
+            }
+          : { height: 0, overflow: "hidden" }
+      }
     >
       {/* Drag Handle */}
       <div
@@ -300,5 +316,5 @@ export default function MobileBottomSheet({
         )}
       </div>
     </div>
-  )
+  );
 }
