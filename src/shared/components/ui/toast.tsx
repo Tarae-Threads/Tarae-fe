@@ -242,10 +242,10 @@ function Toaster() {
     <Toast.Viewport
       data-slot="toast-viewport"
       className={cn(
-        "fixed z-[100] flex max-h-screen flex-col-reverse gap-2 p-4",
-        // bottom-center on mobile, bottom-right on desktop
-        "inset-x-0 bottom-0 items-center",
-        "sm:right-0 sm:left-auto sm:items-end sm:w-[380px]",
+        "fixed z-[100] flex max-h-screen gap-2 p-4",
+        // 모바일: 상단 중앙, PC: 좌측 하단
+        "inset-x-0 top-0 flex-col items-center",
+        "sm:top-auto sm:bottom-0 sm:left-0 sm:right-auto sm:items-start sm:w-[380px] sm:flex-col-reverse",
       )}
     >
       {manager.toasts.map((t) => (
@@ -261,7 +261,7 @@ function Toaster() {
 
 function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
-    <Toast.Provider timeout={5000} limit={3}>
+    <Toast.Provider timeout={3000} limit={3}>
       {children}
       <Toaster />
     </Toast.Provider>

@@ -225,6 +225,7 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     sortBy,
     setSortBy,
     // distance
+    userLocation,
     getDistance,
   };
 }

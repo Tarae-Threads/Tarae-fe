@@ -6,11 +6,12 @@ interface MapControlsProps {
   onZoomIn: () => void
   onZoomOut: () => void
   onLocate: () => void
+  mobileBottomOffset?: number
 }
 
-export default function MapControls({ onZoomIn, onZoomOut, onLocate }: MapControlsProps) {
+function ControlButtons({ onZoomIn, onZoomOut, onLocate }: Pick<MapControlsProps, 'onZoomIn' | 'onZoomOut' | 'onLocate'>) {
   return (
-    <div className="absolute right-4 bottom-[340px] md:right-6 md:bottom-8 flex flex-col gap-2 z-20" role="group" aria-label="지도 컨트롤">
+    <>
       <button
         onClick={onZoomIn}
         aria-label="확대"
@@ -33,6 +34,31 @@ export default function MapControls({ onZoomIn, onZoomOut, onLocate }: MapContro
       >
         <LocateFixed className="w-5 h-5" />
       </button>
-    </div>
+    </>
+  )
+}
+
+export default function MapControls({ onZoomIn, onZoomOut, onLocate, mobileBottomOffset }: MapControlsProps) {
+  return (
+    <>
+      {/* 모바일: 동적 bottom */}
+      <div
+        className="absolute right-4 flex flex-col gap-2 z-20 md:hidden"
+        style={{ bottom: mobileBottomOffset != null ? `${mobileBottomOffset + 16}px` : '120px' }}
+        role="group"
+        aria-label="지도 컨트롤"
+      >
+        <ControlButtons onZoomIn={onZoomIn} onZoomOut={onZoomOut} onLocate={onLocate} />
+      </div>
+
+      {/* PC: 고정 bottom */}
+      <div
+        className="absolute right-6 bottom-8 flex-col gap-2 z-20 hidden md:flex"
+        role="group"
+        aria-label="지도 컨트롤"
+      >
+        <ControlButtons onZoomIn={onZoomIn} onZoomOut={onZoomOut} onLocate={onLocate} />
+      </div>
+    </>
   )
 }

@@ -371,7 +371,7 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
       initializedRef.current = true;
 
       const map = new window.naver.maps.Map(mapRef.current, {
-        center: new window.naver.maps.LatLng(37.5665, 126.978),
+        center: new window.naver.maps.LatLng(36.5, 127.5),
         zoom: 7,
         zoomControl: false,
         mapTypeControl: false,

@@ -33,6 +33,8 @@ const NaverMap = dynamic(() => import("@/domains/place/components/NaverMap"), {
   ssr: false,
 });
 
+const BOTTOM_NAV_HEIGHT = 48
+
 function HomeContent() {
   const searchParams = useSearchParams();
   const initialPlaceId = searchParams.get("placeId");
@@ -44,6 +46,9 @@ function HomeContent() {
   const [selectedEventDetail, setSelectedEventDetail] = useState<EventDetail | null>(null);
   const [selectedPlaceDetail, setSelectedPlaceDetail] = useState<PlaceDetail | null>(null);
   const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [mobileSheetHeight, setMobileSheetHeight] = useState(0);
+  const [mobileSheetSnap, setMobileSheetSnap] = useState<"closed" | "peek" | "full">("peek");
+  const [detailSnap, setDetailSnap] = useState<"peek" | "full">("peek");
 
   const {
     filteredPlaces,
@@ -67,8 +72,16 @@ function HomeContent() {
     toggleFilter,
     sortBy,
     setSortBy,
+    userLocation,
     getDistance,
   } = usePlaceExplorer(initialPlaceId);
+
+  // 위치 허용 시 지도 내 위치로 이동
+  useEffect(() => {
+    if (userLocation && mapRef.current) {
+      mapRef.current.panTo(userLocation.lat, userLocation.lng, 13);
+    }
+  }, [userLocation]);
 
   // initialPlaceId로 진입 시 상세 조회
   useEffect(() => {
@@ -305,23 +318,40 @@ function HomeContent() {
           onZoomIn={() => mapRef.current?.zoomIn()}
           onZoomOut={() => mapRef.current?.zoomOut()}
           onLocate={() => mapRef.current?.locate()}
+          mobileBottomOffset={mobileSheetHeight + BOTTOM_NAV_HEIGHT}
         />
 
         {activeTab === "places" && !viewportFilterActive && (
-          <button
-            onClick={() => {
-              const bounds = mapRef.current?.getBounds();
-              if (bounds) activateViewportFilter(bounds);
-            }}
-            className="absolute bottom-[calc(28vh+60px)] md:bottom-8 left-1/2 -translate-x-1/2 z-20 bg-surface/90 backdrop-blur-md text-on-surface font-bold text-label-lg px-5 py-2.5 rounded-full shadow-lg border border-border hover:bg-surface transition-colors active:scale-95"
-          >
-            현재 지역만 보기
-          </button>
+          <>
+            {/* 모바일: 패널 위 동적 위치 */}
+            <button
+              onClick={() => {
+                const bounds = mapRef.current?.getBounds();
+                if (bounds) activateViewportFilter(bounds);
+              }}
+              className="absolute left-1/2 -translate-x-1/2 z-20 bg-surface/90 backdrop-blur-md text-on-surface font-bold text-label-lg px-5 py-2.5 rounded-full shadow-lg border border-border hover:bg-surface transition-colors active:scale-95 md:hidden"
+              style={{ bottom: `${mobileSheetHeight + BOTTOM_NAV_HEIGHT + 16}px` }}
+            >
+              현재 지역만 보기
+            </button>
+            {/* PC: 하단 중앙 고정 */}
+            <button
+              onClick={() => {
+                const bounds = mapRef.current?.getBounds();
+                if (bounds) activateViewportFilter(bounds);
+              }}
+              className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 bg-surface/90 backdrop-blur-md text-on-surface font-bold text-label-lg px-5 py-2.5 rounded-full shadow-lg border border-border hover:bg-surface transition-colors active:scale-95 hidden md:block"
+            >
+              현재 지역만 보기
+            </button>
+          </>
         )}
 
         {/* Mobile UI */}
         <div className="md:hidden">
-          <div className="absolute top-4 left-4 right-4 z-20">
+          <div className={`absolute top-0 left-0 right-0 z-50 px-4 pt-4 pb-2 transition-colors duration-300 ${
+            mobileSheetSnap === "full" || (mobileDetailOpen && detailSnap === "peek") ? "bg-surface-container-low" : ""
+          } ${mobileDetailOpen && detailSnap === "full" ? "hidden" : ""}`}>
             <PlaceSearchBar
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
@@ -349,6 +379,9 @@ function HomeContent() {
               onClearViewportFilter={clearViewportFilter}
               hasActiveFilters={searchQuery !== '' || selectedCategories.size > 0 || selectedRegion !== 'all'}
               onClearFilters={() => { setSearchQuery(''); clearCategories(); setSelectedRegion('all'); }}
+              getDistance={getDistance}
+              onHeightChange={setMobileSheetHeight}
+              onSnapChange={setMobileSheetSnap}
             />
           )}
 
@@ -356,6 +389,7 @@ function HomeContent() {
             data={mobileDetailData}
             open={mobileDetailOpen}
             onClose={handleDetailClose}
+            onSnapChange={setDetailSnap}
           />
         </div>
       </div>
