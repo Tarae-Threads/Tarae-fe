@@ -1,6 +1,12 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
+import {
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+  useSyncExternalStore,
+} from "react";
 import type { Place, PlaceDetail } from "../types";
 import type { Event, EventDetail, EventType } from "@/domains/event/types";
 import PlaceDetailView from "./PlaceDetailView";
@@ -48,12 +54,21 @@ interface Props {
 // Component
 // ---------------------------------------------------------------------------
 
-export default function PlacePanel({ data, open, onClose, onSnapChange }: Props) {
+export default function PlacePanel({
+  data,
+  open,
+  onClose,
+  onSnapChange,
+}: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [snap, setSnap] = useState<SnapPoint>("peek");
   const [sheetHeight, setSheetHeight] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   const dragState = useRef({
     startY: 0,
@@ -64,23 +79,22 @@ export default function PlacePanel({ data, open, onClose, onSnapChange }: Props)
     isScrolling: false,
   });
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   // open 변경 시 peek로 초기화
   useEffect(() => {
     if (open && mounted) {
-      setSnap("peek");
+      setSnap("peek"); // eslint-disable-line react-hooks/set-state-in-effect -- open 변경 시 초기화 필수
       setSheetHeight(getSnapHeight("peek"));
     }
   }, [open, mounted]);
 
-  const animateTo = useCallback((target: SnapPoint) => {
-    setSnap(target);
-    setSheetHeight(getSnapHeight(target));
-    onSnapChange?.(target);
-  }, [onSnapChange]);
+  const animateTo = useCallback(
+    (target: SnapPoint) => {
+      setSnap(target);
+      setSheetHeight(getSnapHeight(target));
+      onSnapChange?.(target);
+    },
+    [onSnapChange],
+  );
 
   // ---------------------------------------------------------------------------
   // Touch handlers (드래그 핸들 영역)
@@ -207,7 +221,6 @@ export default function PlacePanel({ data, open, onClose, onSnapChange }: Props)
     if (!isDragging) return;
     setIsDragging(false);
 
-    const ds = dragState.current;
     const peekH = getSnapHeight("peek");
     if (sheetHeight < peekH * 0.6) {
       onClose();
@@ -222,9 +235,9 @@ export default function PlacePanel({ data, open, onClose, onSnapChange }: Props)
     <div
       role="dialog"
       aria-label="상세 정보"
-      className={`fixed bottom-0 left-0 w-full z-40 flex flex-col bg-surface-container-low shadow-[0_-12px_48px_rgba(29,27,22,0.15)] ${
+      className={`bg-surface-container-low fixed bottom-0 left-0 z-40 flex w-full flex-col shadow-[0_-12px_48px_rgba(29,27,22,0.15)] ${
         snap === "full" ? "rounded-none" : "rounded-t-[2rem]"
-      } ${open && data ? "" : "translate-y-full pointer-events-none"}`}
+      } ${open && data ? "" : "pointer-events-none translate-y-full"}`}
       style={{
         height: open ? sheetHeight : 0,
         marginBottom: BOTTOM_NAV_HEIGHT,
@@ -237,12 +250,12 @@ export default function PlacePanel({ data, open, onClose, onSnapChange }: Props)
     >
       {/* Drag Handle — 터치 영역 넓게 */}
       <div
-        className="flex-shrink-0 pt-4 pb-3 flex justify-center cursor-grab active:cursor-grabbing"
+        className="flex flex-shrink-0 cursor-grab justify-center pt-4 pb-3 active:cursor-grabbing"
         onTouchStart={handleDragStart}
         onTouchMove={handleDragMove}
         onTouchEnd={handleDragEnd}
       >
-        <div className="w-10 h-1 bg-outline-variant rounded-full" />
+        <div className="bg-outline-variant h-1 w-10 rounded-full" />
       </div>
 
       {/* Header */}
@@ -257,9 +270,9 @@ export default function PlacePanel({ data, open, onClose, onSnapChange }: Props)
             onTouchStart={(e) => e.stopPropagation()}
             onClick={onClose}
             aria-label="뒤로가기"
-            className="flex items-center gap-1 text-on-surface-variant text-label-lg font-medium py-1 hover:text-on-surface transition-colors"
+            className="text-on-surface-variant text-label-lg hover:text-on-surface flex items-center gap-1 py-1 font-medium transition-colors"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="h-5 w-5" />
           </button>
           {data && (
             <button
@@ -274,9 +287,9 @@ export default function PlacePanel({ data, open, onClose, onSnapChange }: Props)
                 shareOrCopy({ title, url });
               }}
               aria-label="공유하기"
-              className="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"
+              className="text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded-lg p-2 transition-colors"
             >
-              <Share2 className="w-5 h-5" />
+              <Share2 className="h-5 w-5" />
             </button>
           )}
         </div>
@@ -286,7 +299,7 @@ export default function PlacePanel({ data, open, onClose, onSnapChange }: Props)
       {data && (
         <div
           ref={contentRef}
-          className="flex-1 overflow-y-auto hide-scrollbar px-5 pb-8"
+          className="hide-scrollbar flex-1 overflow-y-auto px-5 pb-8"
           onTouchStart={handleContentTouchStart}
           onTouchMove={handleContentTouchMove}
           onTouchEnd={handleContentTouchEnd}
@@ -321,25 +334,25 @@ function EventContent({
   return (
     <div className="space-y-5">
       <div>
-        <div className="flex items-center gap-2 mb-2">
+        <div className="mb-2 flex items-center gap-2">
           <EventTypeBadge type={event.eventType as EventType} size="md" />
         </div>
-        <h2 className="font-display font-extrabold text-headline-sm tracking-editorial text-on-surface mb-1.5">
+        <h2 className="font-display text-headline-sm tracking-editorial text-on-surface mb-1.5 font-extrabold">
           {event.title}
         </h2>
       </div>
 
-      <div className="bg-surface-container rounded-2xl p-4 space-y-3">
-        <div className="flex items-center gap-3 text-body-sm">
-          <Calendar className="w-4 h-4 text-outline" />
+      <div className="bg-surface-container space-y-3 rounded-2xl p-4">
+        <div className="text-body-sm flex items-center gap-3">
+          <Calendar className="text-outline h-4 w-4" />
           <span className="text-on-surface">
             {event.startDate}
             {event.endDate ? ` — ${event.endDate}` : ""}
           </span>
         </div>
         {locationText && (
-          <div className="flex items-center gap-3 text-body-sm">
-            <MapPin className="w-4 h-4 text-outline" />
+          <div className="text-body-sm flex items-center gap-3">
+            <MapPin className="text-outline h-4 w-4" />
             <span className="text-on-surface">{locationText}</span>
           </div>
         )}
@@ -356,10 +369,10 @@ function EventContent({
           href={links}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors"
+          className="bg-surface-container hover:bg-surface-container-high flex items-center gap-3 rounded-xl px-4 py-3 transition-colors"
         >
-          <ExternalLink className="w-4 h-4 text-primary" />
-          <span className="flex-1 text-label-lg font-medium text-on-surface">
+          <ExternalLink className="text-primary h-4 w-4" />
+          <span className="text-label-lg text-on-surface flex-1 font-medium">
             자세히 보기
           </span>
           <span className="text-outline">→</span>

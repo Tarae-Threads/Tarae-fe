@@ -1,6 +1,12 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
+import {
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+  useSyncExternalStore,
+} from "react";
 import type { Place } from "../types";
 import type { NavTab } from "@/shared/components/layout/NavBar";
 import PlaceCardCompact from "./PlaceCardCompact";
@@ -85,12 +91,16 @@ export default function MobileBottomSheet({
   const [snap, setSnap] = useState<SnapPoint>("peek");
   const [sheetHeight, setSheetHeight] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
+  // 초기 높이 설정
   useEffect(() => {
-    setMounted(true);
     const h = getSnapHeight("peek");
-    setSheetHeight(h);
+    setSheetHeight(h); // eslint-disable-line react-hooks/set-state-in-effect
     onHeightChange?.(h);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -121,7 +131,7 @@ export default function MobileBottomSheet({
     if (prevTabRef.current !== activeTab) {
       prevTabRef.current = activeTab;
       if (activeTab === "events" && snap === "closed") {
-        animateTo("peek");
+        animateTo("peek"); // eslint-disable-line react-hooks/set-state-in-effect
       }
     }
   }, [activeTab, snap, animateTo]);
@@ -218,7 +228,7 @@ export default function MobileBottomSheet({
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-30 bg-surface-container-low rounded-t-[2rem] shadow-[0_-12px_48px_rgba(29,27,22,0.15)] flex flex-col"
+      className="bg-surface-container-low fixed right-0 bottom-0 left-0 z-30 flex flex-col rounded-t-[2rem] shadow-[0_-12px_48px_rgba(29,27,22,0.15)]"
       style={
         mounted
           ? {
@@ -235,12 +245,12 @@ export default function MobileBottomSheet({
     >
       {/* Drag Handle */}
       <div
-        className="flex-shrink-0 pt-3 pb-2 flex justify-center cursor-grab active:cursor-grabbing"
+        className="flex flex-shrink-0 cursor-grab justify-center pt-3 pb-2 active:cursor-grabbing"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="w-10 h-1 bg-outline-variant rounded-full" />
+        <div className="bg-outline-variant h-1 w-10 rounded-full" />
       </div>
 
       {/* Header (places only) */}
@@ -251,8 +261,8 @@ export default function MobileBottomSheet({
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="flex flex-row w-full justify-between">
-            <h2 className="font-display text-title-sm font-extrabold tracking-tight text-on-surface">
+          <div className="flex w-full flex-row justify-between">
+            <h2 className="font-display text-title-sm text-on-surface font-extrabold tracking-tight">
               장소
             </h2>
             <p className="text-label-md text-outline font-medium">
@@ -262,9 +272,9 @@ export default function MobileBottomSheet({
           {viewportFilterActive && (
             <button
               onClick={onClearViewportFilter}
-              className="mt-2 w-full flex items-center justify-center gap-1.5 bg-primary/10 text-primary font-bold text-label-md py-2 rounded-xl hover:bg-primary/15 transition-colors"
+              className="bg-primary/10 text-primary text-label-md hover:bg-primary/15 mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 font-bold transition-colors"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="h-3.5 w-3.5" />
               전체보기
             </button>
           )}
@@ -274,7 +284,7 @@ export default function MobileBottomSheet({
       {/* Content */}
       <div
         ref={contentRef}
-        className="flex-1 min-h-0 overflow-y-auto hide-scrollbar"
+        className="hide-scrollbar min-h-0 flex-1 overflow-y-auto"
         onTouchStart={stopPropagation}
         style={{
           overscrollBehavior: "contain",
@@ -282,14 +292,14 @@ export default function MobileBottomSheet({
         }}
       >
         {activeTab === "places" ? (
-          <div className="px-6 pb-20 space-y-3">
+          <div className="space-y-3 px-6 pb-20">
             {loading ? (
               Array.from({ length: 4 }).map((_, i) => (
                 <PlaceCardSkeleton key={i} />
               ))
             ) : places.length === 0 ? (
               <EmptyState
-                icon={<MapPin className="w-8 h-8 text-outline" />}
+                icon={<MapPin className="text-outline h-8 w-8" />}
                 title="검색 결과가 없어요"
                 description="필터를 변경하거나 검색어를 수정해보세요."
                 action={
