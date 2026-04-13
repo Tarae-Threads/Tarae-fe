@@ -123,18 +123,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/brands": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 타입별 브랜드 목록 조회 */
+        get: operations["getBrands"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        CategoryResponse: {
-            /** Format: int64 */
-            id: number;
-            name: string;
-        };
-        ApiResponseListCategoryResponse: {
-            data: components["schemas"]["CategoryResponse"][];
-        };
         PlaceRequestInput: {
             /** @enum {string} */
             requestType: "NEW" | "UPDATE";
@@ -146,16 +155,34 @@ export interface components {
             lat?: number;
             lng?: number;
             categoryIds?: number[];
+            categoryText?: string;
             hoursText?: string;
             closedDays?: string;
+            brandYarnIds?: number[];
             brandsYarn?: string;
+            brandNeedleIds?: number[];
             brandsNeedle?: string;
+            brandNotionsIds?: number[];
             brandsNotions?: string;
+            brandPatternbookIds?: number[];
+            brandsPatternbook?: string;
             instagramUrl?: string;
             websiteUrl?: string;
             naverMapUrl?: string;
             tags?: string;
             note?: string;
+        };
+        ApiResponseRequestResponse: {
+            data: components["schemas"]["RequestResponse"];
+        };
+        /** @description 등록 요청 응답 */
+        RequestResponse: {
+            /**
+             * Format: int64
+             * @description 생성된 요청 ID
+             * @example 1
+             */
+            id: number;
         };
         EventRequestInput: {
             title: string;
@@ -168,115 +195,343 @@ export interface components {
             locationText?: string;
             description?: string;
         };
-        /** @description 등록 요청 응답 */
-        RequestResponse: {
-            /**
-             * Format: int64
-             * @description 생성된 요청 ID
-             * @example 1
-             */
-            id: number;
-        };
-        ApiResponseRequestResponse: {
-            data: components["schemas"]["RequestResponse"];
-        };
-        CategoryInfo: {
-            /** Format: int64 */
-            id: number;
-            name: string;
-        };
-        TagInfo: {
-            /** Format: int64 */
-            id: number;
-            name: string;
-        };
-        BrandInfo: {
-            /** Format: int64 */
-            id: number;
-            name: string;
-            type: string;
-        };
-        /** @description 장소 목록 응답 */
-        PlaceListResponse: {
-            /** Format: int64 */
-            id: number;
-            name: string;
-            region: string;
-            district: string;
-            address: string;
-            lat?: number;
-            lng?: number;
-            status: string;
-            categories: components["schemas"]["CategoryInfo"][];
-            tags: components["schemas"]["TagInfo"][];
-            instagramUrl?: string;
-            naverMapUrl?: string;
-        };
         ApiResponseListPlaceListResponse: {
             data: components["schemas"]["PlaceListResponse"][];
         };
-        /** @description 장소 상세 응답 */
-        PlaceDetailResponse: {
-            /** Format: int64 */
+        /** @description 브랜드 요약 정보 */
+        BrandDto: {
+            /**
+             * Format: int64
+             * @description 브랜드 ID
+             * @example 1
+             */
             id: number;
+            /**
+             * @description 브랜드명
+             * @example 드미트리아
+             */
             name: string;
+            /**
+             * @description 브랜드 유형
+             * @example YARN
+             */
+            type: string;
+        };
+        /** @description 카테고리 요약 정보 */
+        CategoryDto: {
+            /**
+             * Format: int64
+             * @description 카테고리 ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description 카테고리명
+             * @example 공방
+             */
+            name: string;
+        };
+        /** @description 장소 목록 응답 */
+        PlaceListResponse: {
+            /**
+             * Format: int64
+             * @description 장소 ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description 장소명
+             * @example 실과 바늘
+             */
+            name: string;
+            /**
+             * @description 지역
+             * @example 서울
+             */
             region: string;
+            /**
+             * @description 동네
+             * @example 성수
+             */
             district: string;
+            /**
+             * @description 주소
+             * @example 서울 성동구 연무장길 1
+             */
             address: string;
+            /** @description 위도 */
             lat?: number;
+            /** @description 경도 */
             lng?: number;
-            hoursText?: string;
-            closedDays?: string;
-            description?: string;
+            /**
+             * @description 운영 상태
+             * @example OPEN
+             */
             status: string;
-            categories: components["schemas"]["CategoryInfo"][];
-            tags: components["schemas"]["TagInfo"][];
-            brands: components["schemas"]["BrandInfo"][];
+            /** @description 카테고리 목록 */
+            categories: components["schemas"]["CategoryDto"][];
+            /** @description 태그 목록 */
+            tags: components["schemas"]["TagDto"][];
+            /** @description 브랜드 목록 */
+            brands: components["schemas"]["BrandDto"][];
+            /** @description 인스타그램 URL */
             instagramUrl?: string;
-            websiteUrl?: string;
+            /** @description 네이버 지도 URL */
             naverMapUrl?: string;
+        };
+        /** @description 태그 요약 정보 */
+        TagDto: {
+            /**
+             * Format: int64
+             * @description 태그 ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description 태그명
+             * @example 초보환영
+             */
+            name: string;
         };
         ApiResponsePlaceDetailResponse: {
             data: components["schemas"]["PlaceDetailResponse"];
         };
-        EventListResponse: {
-            /** Format: int64 */
+        /** @description 장소 상세 응답 */
+        PlaceDetailResponse: {
+            /**
+             * Format: int64
+             * @description 장소 ID
+             * @example 1
+             */
             id: number;
-            title: string;
-            eventType: string;
-            /** Format: date */
-            startDate: string;
-            /** Format: date */
-            endDate?: string;
-            locationText?: string;
+            /**
+             * @description 장소명
+             * @example 실과 바늘
+             */
+            name: string;
+            /**
+             * @description 지역
+             * @example 서울
+             */
+            region: string;
+            /**
+             * @description 동네
+             * @example 성수
+             */
+            district: string;
+            /**
+             * @description 주소
+             * @example 서울 성동구 연무장길 1
+             */
+            address: string;
+            /** @description 위도 */
             lat?: number;
+            /** @description 경도 */
             lng?: number;
+            /**
+             * @description 영업시간 텍스트
+             * @example 화~금 10:00-19:00
+             */
+            hoursText?: string;
+            /**
+             * @description 휴무일
+             * @example 월요일
+             */
+            closedDays?: string;
+            /** @description 장소 설명 */
+            description?: string;
+            /**
+             * @description 운영 상태
+             * @example OPEN
+             */
+            status: string;
+            /** @description 카테고리 목록 */
+            categories: components["schemas"]["CategoryDto"][];
+            /** @description 태그 목록 */
+            tags: components["schemas"]["TagDto"][];
+            /** @description 브랜드 목록 */
+            brands: components["schemas"]["BrandDto"][];
+            /** @description 인스타그램 URL */
+            instagramUrl?: string;
+            /** @description 웹사이트 URL */
+            websiteUrl?: string;
+            /** @description 네이버 지도 URL */
+            naverMapUrl?: string;
+            /** @description 활성 이벤트 목록 */
+            events: components["schemas"]["PlaceEventDto"][];
+        };
+        /** @description 장소에 연결된 이벤트 요약 정보 */
+        PlaceEventDto: {
+            /**
+             * Format: int64
+             * @description 이벤트 ID
+             * @example 10
+             */
+            id: number;
+            /**
+             * @description 이벤트 제목
+             * @example 봄 시즌 클래스 모집
+             */
+            title: string;
+            /**
+             * @description 이벤트 유형
+             * @example TESTER_RECRUIT
+             */
+            eventType: string;
+            /**
+             * Format: date
+             * @description 시작일
+             * @example 2026-04-15
+             */
+            startDate: string;
+            /**
+             * Format: date
+             * @description 종료일
+             * @example 2026-05-10
+             */
+            endDate?: string;
+            /**
+             * @description 활성 여부
+             * @example true
+             */
             active: boolean;
+            /** @description 관련 링크 */
             links?: string;
         };
         ApiResponseListEventListResponse: {
             data: components["schemas"]["EventListResponse"][];
         };
-        EventDetailResponse: {
-            /** Format: int64 */
+        /** @description 이벤트 목록 응답 */
+        EventListResponse: {
+            /**
+             * Format: int64
+             * @description 이벤트 ID
+             * @example 1
+             */
             id: number;
+            /**
+             * @description 이벤트 제목
+             * @example 봄맞이 뜨개 마켓
+             */
             title: string;
-            description?: string;
+            /**
+             * @description 이벤트 유형
+             * @example POPUP
+             */
             eventType: string;
-            /** Format: date */
+            /**
+             * Format: date
+             * @description 시작일
+             */
             startDate: string;
-            /** Format: date */
+            /**
+             * Format: date
+             * @description 종료일
+             */
             endDate?: string;
-            /** Format: int64 */
-            placeId?: number;
+            /** @description 장소 텍스트 */
             locationText?: string;
+            /** @description 위도 */
             lat?: number;
+            /** @description 경도 */
             lng?: number;
+            /** @description 활성 여부 */
             active: boolean;
+            /** @description 관련 링크 */
             links?: string;
         };
         ApiResponseEventDetailResponse: {
             data: components["schemas"]["EventDetailResponse"];
+        };
+        /** @description 이벤트 상세 응답 */
+        EventDetailResponse: {
+            /**
+             * Format: int64
+             * @description 이벤트 ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description 이벤트 제목
+             * @example 봄맞이 뜨개 마켓
+             */
+            title: string;
+            /** @description 이벤트 설명 */
+            description?: string;
+            /**
+             * @description 이벤트 유형
+             * @example POPUP
+             */
+            eventType: string;
+            /**
+             * Format: date
+             * @description 시작일
+             */
+            startDate: string;
+            /**
+             * Format: date
+             * @description 종료일
+             */
+            endDate?: string;
+            /**
+             * Format: int64
+             * @description 연결된 장소 ID
+             */
+            placeId?: number;
+            /** @description 장소 텍스트 */
+            locationText?: string;
+            /** @description 위도 */
+            lat?: number;
+            /** @description 경도 */
+            lng?: number;
+            /** @description 활성 여부 */
+            active: boolean;
+            /** @description 관련 링크 */
+            links?: string;
+        };
+        ApiResponseListCategoryResponse: {
+            data: components["schemas"]["CategoryResponse"][];
+        };
+        /** @description 카테고리 응답 */
+        CategoryResponse: {
+            /**
+             * Format: int64
+             * @description 카테고리 ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description 카테고리명
+             * @example 뜨개카페
+             */
+            name: string;
+        };
+        ApiResponseListBrandTypeGroup: {
+            data: components["schemas"]["BrandTypeGroup"][];
+        };
+        /** @description 브랜드 항목 */
+        BrandItem: {
+            /**
+             * Format: int64
+             * @description 브랜드 ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description 브랜드명
+             * @example 산네스간
+             */
+            name: string;
+        };
+        /** @description 브랜드 타입 그룹 */
+        BrandTypeGroup: {
+            /**
+             * @description 브랜드 타입
+             * @example YARN
+             */
+            type: string;
+            /** @description 브랜드 목록 */
+            brands: components["schemas"]["BrandItem"][];
         };
     };
     responses: never;
@@ -306,7 +561,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiResponseRequestResponse"];
+                    "*/*": components["schemas"]["ApiResponseRequestResponse"];
                 };
             };
             /** @description 유효하지 않은 요청 값 */
@@ -315,7 +570,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiResponseRequestResponse"];
+                    "*/*": components["schemas"]["ApiResponseRequestResponse"];
                 };
             };
         };
@@ -339,7 +594,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiResponseRequestResponse"];
+                    "*/*": components["schemas"]["ApiResponseRequestResponse"];
                 };
             };
             /** @description 유효하지 않은 요청 값 */
@@ -348,7 +603,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiResponseRequestResponse"];
+                    "*/*": components["schemas"]["ApiResponseRequestResponse"];
                 };
             };
         };
@@ -377,7 +632,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiResponseListPlaceListResponse"];
+                    "*/*": components["schemas"]["ApiResponseListPlaceListResponse"];
                 };
             };
         };
@@ -400,7 +655,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiResponsePlaceDetailResponse"];
+                    "*/*": components["schemas"]["ApiResponsePlaceDetailResponse"];
                 };
             };
             /** @description 존재하지 않는 장소 */
@@ -409,7 +664,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiResponsePlaceDetailResponse"];
+                    "*/*": components["schemas"]["ApiResponsePlaceDetailResponse"];
                 };
             };
         };
@@ -434,7 +689,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiResponseListEventListResponse"];
+                    "*/*": components["schemas"]["ApiResponseListEventListResponse"];
                 };
             };
         };
@@ -457,7 +712,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiResponseEventDetailResponse"];
+                    "*/*": components["schemas"]["ApiResponseEventDetailResponse"];
                 };
             };
             /** @description 존재하지 않는 이벤트 */
@@ -466,7 +721,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiResponseEventDetailResponse"];
+                    "*/*": components["schemas"]["ApiResponseEventDetailResponse"];
                 };
             };
         };
@@ -486,7 +741,27 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiResponseListCategoryResponse"];
+                    "*/*": components["schemas"]["ApiResponseListCategoryResponse"];
+                };
+            };
+        };
+    };
+    getBrands: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListBrandTypeGroup"];
                 };
             };
         };

@@ -1,455 +1,1110 @@
 {
-  "openapi": "3.1.0",
-  "info": {
-    "title": "Tarae API",
-    "description": "타래 — 뜨개 커뮤니티 서비스 API",
-    "version": "v1"
-  },
-  "servers": [
-    {
-      "url": "https://api.taraethreads.com",
-      "description": "Production server"
-    }
-  ],
-  "tags": [
-    { "name": "장소", "description": "뜨개 관련 장소 API" },
-    { "name": "등록 요청", "description": "장소/이벤트 등록 요청 API" },
-    { "name": "이벤트", "description": "뜨개 관련 이벤트/팝업/세일 API" }
-  ],
-  "paths": {
-    "/api/requests/places": {
-      "post": {
-        "tags": ["등록 요청"],
-        "summary": "장소 등록 요청",
-        "operationId": "requestPlace",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/PlaceRequestInput" }
-            }
-          },
-          "required": true
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Tarae API",
+        "description": "\ud0c0\ub798 \u2014 \ub728\uac1c \ucee4\ubba4\ub2c8\ud2f0 \uc11c\ube44\uc2a4 API",
+        "version": "v1"
+    },
+    "servers": [
+        {
+            "url": "https://api.taraethreads.com",
+            "description": "Generated server url"
+        }
+    ],
+    "tags": [
+        {
+            "name": "\uc7a5\uc18c",
+            "description": "\ub728\uac1c \uad00\ub828 \uc7a5\uc18c API"
         },
-        "responses": {
-          "201": {
-            "description": "요청 등록 성공",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiResponseRequestResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "유효하지 않은 요청 값",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiResponseRequestResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/requests/events": {
-      "post": {
-        "tags": ["등록 요청"],
-        "summary": "이벤트 등록 요청",
-        "operationId": "requestEvent",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/EventRequestInput" }
-            }
-          },
-          "required": true
+        {
+            "name": "\ub4f1\ub85d \uc694\uccad",
+            "description": "\uc7a5\uc18c/\uc774\ubca4\ud2b8 \ub4f1\ub85d \uc694\uccad API"
         },
-        "responses": {
-          "201": {
-            "description": "요청 등록 성공",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiResponseRequestResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "유효하지 않은 요청 값",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiResponseRequestResponse" }
-              }
-            }
-          }
+        {
+            "name": "\uc774\ubca4\ud2b8",
+            "description": "\ub728\uac1c \uad00\ub828 \uc774\ubca4\ud2b8/\ud31d\uc5c5/\uc138\uc77c API"
+        },
+        {
+            "name": "\uce74\ud14c\uace0\ub9ac",
+            "description": "\uce74\ud14c\uace0\ub9ac API"
+        },
+        {
+            "name": "\ube0c\ub79c\ub4dc",
+            "description": "\ube0c\ub79c\ub4dc API"
         }
-      }
+    ],
+    "paths": {
+        "/api/requests/places": {
+            "post": {
+                "tags": [
+                    "\ub4f1\ub85d \uc694\uccad"
+                ],
+                "summary": "\uc7a5\uc18c \ub4f1\ub85d \uc694\uccad",
+                "operationId": "requestPlace",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PlaceRequestInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "\uc694\uccad \ub4f1\ub85d \uc131\uacf5",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "\uc720\ud6a8\ud558\uc9c0 \uc54a\uc740 \uc694\uccad \uac12",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseRequestResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/requests/events": {
+            "post": {
+                "tags": [
+                    "\ub4f1\ub85d \uc694\uccad"
+                ],
+                "summary": "\uc774\ubca4\ud2b8 \ub4f1\ub85d \uc694\uccad",
+                "operationId": "requestEvent",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EventRequestInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "\uc694\uccad \ub4f1\ub85d \uc131\uacf5",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "\uc720\ud6a8\ud558\uc9c0 \uc54a\uc740 \uc694\uccad \uac12",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseRequestResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/places": {
+            "get": {
+                "tags": [
+                    "\uc7a5\uc18c"
+                ],
+                "summary": "\uc7a5\uc18c \ubaa9\ub85d \uc870\ud68c",
+                "operationId": "getPlaces",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "\uac80\uc0c9\uc5b4 (\uc7a5\uc18c\uba85, \uc8fc\uc18c, \ud0dc\uadf8, \ube0c\ub79c\ub4dc \ud1b5\ud569 \uac80\uc0c9)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "description": "\uc9c0\uc5ed \ud544\ud130 (\uc608: \uc11c\uc6b8, \uacbd\uae30)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "categoryId",
+                        "in": "query",
+                        "description": "\uce74\ud14c\uace0\ub9ac ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "tagId",
+                        "in": "query",
+                        "description": "\ud0dc\uadf8 ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListPlaceListResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/places/{id}": {
+            "get": {
+                "tags": [
+                    "\uc7a5\uc18c"
+                ],
+                "summary": "\uc7a5\uc18c \uc0c1\uc138 \uc870\ud68c",
+                "operationId": "getPlace",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "\uc7a5\uc18c ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponsePlaceDetailResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "\uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc7a5\uc18c",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponsePlaceDetailResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/events": {
+            "get": {
+                "tags": [
+                    "\uc774\ubca4\ud2b8"
+                ],
+                "summary": "\uc774\ubca4\ud2b8 \ubaa9\ub85d \uc870\ud68c",
+                "operationId": "getEvents",
+                "parameters": [
+                    {
+                        "name": "eventType",
+                        "in": "query",
+                        "description": "\uc774\ubca4\ud2b8 \ud0c0\uc785 (TESTER_RECRUIT, SALE, EVENT_POPUP)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "TESTER_RECRUIT",
+                                "SALE",
+                                "EVENT_POPUP"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "active",
+                        "in": "query",
+                        "description": "\ud65c\uc131 \uc5ec\ubd80 (\uae30\ubcf8\uac12: true)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListEventListResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/events/{id}": {
+            "get": {
+                "tags": [
+                    "\uc774\ubca4\ud2b8"
+                ],
+                "summary": "\uc774\ubca4\ud2b8 \uc0c1\uc138 \uc870\ud68c",
+                "operationId": "getEvent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "\uc774\ubca4\ud2b8 ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseEventDetailResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "\uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc774\ubca4\ud2b8",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseEventDetailResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/categories": {
+            "get": {
+                "tags": [
+                    "\uce74\ud14c\uace0\ub9ac"
+                ],
+                "summary": "\uce74\ud14c\uace0\ub9ac \ubaa9\ub85d \uc870\ud68c",
+                "operationId": "getCategories",
+                "responses": {
+                    "200": {
+                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListCategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/brands": {
+            "get": {
+                "tags": [
+                    "\ube0c\ub79c\ub4dc"
+                ],
+                "summary": "\ud0c0\uc785\ubcc4 \ube0c\ub79c\ub4dc \ubaa9\ub85d \uc870\ud68c",
+                "operationId": "getBrands",
+                "responses": {
+                    "200": {
+                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseListBrandTypeGroup"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     },
-    "/api/places": {
-      "get": {
-        "tags": ["장소"],
-        "summary": "장소 목록 조회",
-        "operationId": "getPlaces",
-        "parameters": [
-          {
-            "name": "keyword",
-            "in": "query",
-            "description": "검색어 (장소명, 주소, 태그, 브랜드 통합 검색)",
-            "required": false,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "region",
-            "in": "query",
-            "description": "지역 필터 (예: 서울, 경기)",
-            "required": false,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "categoryId",
-            "in": "query",
-            "description": "카테고리 ID",
-            "required": false,
-            "schema": { "type": "integer", "format": "int64" }
-          },
-          {
-            "name": "tagId",
-            "in": "query",
-            "description": "태그 ID",
-            "required": false,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "조회 성공",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiResponseListPlaceListResponse" }
-              }
+    "components": {
+        "schemas": {
+            "PlaceRequestInput": {
+                "type": "object",
+                "properties": {
+                    "requestType": {
+                        "type": "string",
+                        "enum": [
+                            "NEW",
+                            "UPDATE"
+                        ]
+                    },
+                    "placeId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "addressDetail": {
+                        "type": "string"
+                    },
+                    "lat": {
+                        "type": "number"
+                    },
+                    "lng": {
+                        "type": "number"
+                    },
+                    "categoryIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    "categoryText": {
+                        "type": "string"
+                    },
+                    "hoursText": {
+                        "type": "string"
+                    },
+                    "closedDays": {
+                        "type": "string"
+                    },
+                    "brandYarnIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    "brandsYarn": {
+                        "type": "string"
+                    },
+                    "brandNeedleIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    "brandsNeedle": {
+                        "type": "string"
+                    },
+                    "brandNotionsIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    "brandsNotions": {
+                        "type": "string"
+                    },
+                    "brandPatternbookIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    "brandsPatternbook": {
+                        "type": "string"
+                    },
+                    "instagramUrl": {
+                        "type": "string"
+                    },
+                    "websiteUrl": {
+                        "type": "string"
+                    },
+                    "naverMapUrl": {
+                        "type": "string"
+                    },
+                    "tags": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "requestType"
+                ]
+            },
+            "ApiResponseRequestResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/RequestResponse"
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            },
+            "RequestResponse": {
+                "type": "object",
+                "description": "\ub4f1\ub85d \uc694\uccad \uc751\ub2f5",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\uc0dd\uc131\ub41c \uc694\uccad ID",
+                        "example": 1
+                    }
+                },
+                "required": [
+                    "id"
+                ]
+            },
+            "EventRequestInput": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "eventType": {
+                        "type": "string",
+                        "enum": [
+                            "TESTER_RECRUIT",
+                            "SALE",
+                            "EVENT_POPUP"
+                        ]
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "locationText": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "eventType",
+                    "startDate",
+                    "title"
+                ]
+            },
+            "ApiResponseListPlaceListResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PlaceListResponse"
+                        }
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            },
+            "BrandDto": {
+                "type": "object",
+                "description": "\ube0c\ub79c\ub4dc \uc694\uc57d \uc815\ubcf4",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\ube0c\ub79c\ub4dc ID",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "\ube0c\ub79c\ub4dc\uba85",
+                        "example": "\ub4dc\ubbf8\ud2b8\ub9ac\uc544"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "\ube0c\ub79c\ub4dc \uc720\ud615",
+                        "example": "YARN"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "type"
+                ]
+            },
+            "CategoryDto": {
+                "type": "object",
+                "description": "\uce74\ud14c\uace0\ub9ac \uc694\uc57d \uc815\ubcf4",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\uce74\ud14c\uace0\ub9ac ID",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "\uce74\ud14c\uace0\ub9ac\uba85",
+                        "example": "\uacf5\ubc29"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ]
+            },
+            "PlaceListResponse": {
+                "type": "object",
+                "description": "\uc7a5\uc18c \ubaa9\ub85d \uc751\ub2f5",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\uc7a5\uc18c ID",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "\uc7a5\uc18c\uba85",
+                        "example": "\uc2e4\uacfc \ubc14\ub298"
+                    },
+                    "region": {
+                        "type": "string",
+                        "description": "\uc9c0\uc5ed",
+                        "example": "\uc11c\uc6b8"
+                    },
+                    "district": {
+                        "type": "string",
+                        "description": "\ub3d9\ub124",
+                        "example": "\uc131\uc218"
+                    },
+                    "address": {
+                        "type": "string",
+                        "description": "\uc8fc\uc18c",
+                        "example": "\uc11c\uc6b8 \uc131\ub3d9\uad6c \uc5f0\ubb34\uc7a5\uae38 1"
+                    },
+                    "lat": {
+                        "type": "number",
+                        "description": "\uc704\ub3c4"
+                    },
+                    "lng": {
+                        "type": "number",
+                        "description": "\uacbd\ub3c4"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "\uc6b4\uc601 \uc0c1\ud0dc",
+                        "example": "OPEN"
+                    },
+                    "categories": {
+                        "type": "array",
+                        "description": "\uce74\ud14c\uace0\ub9ac \ubaa9\ub85d",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryDto"
+                        }
+                    },
+                    "tags": {
+                        "type": "array",
+                        "description": "\ud0dc\uadf8 \ubaa9\ub85d",
+                        "items": {
+                            "$ref": "#/components/schemas/TagDto"
+                        }
+                    },
+                    "brands": {
+                        "type": "array",
+                        "description": "\ube0c\ub79c\ub4dc \ubaa9\ub85d",
+                        "items": {
+                            "$ref": "#/components/schemas/BrandDto"
+                        }
+                    },
+                    "instagramUrl": {
+                        "type": "string",
+                        "description": "\uc778\uc2a4\ud0c0\uadf8\ub7a8 URL"
+                    },
+                    "naverMapUrl": {
+                        "type": "string",
+                        "description": "\ub124\uc774\ubc84 \uc9c0\ub3c4 URL"
+                    }
+                },
+                "required": [
+                    "address",
+                    "brands",
+                    "categories",
+                    "district",
+                    "id",
+                    "name",
+                    "region",
+                    "status",
+                    "tags"
+                ]
+            },
+            "TagDto": {
+                "type": "object",
+                "description": "\ud0dc\uadf8 \uc694\uc57d \uc815\ubcf4",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\ud0dc\uadf8 ID",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "\ud0dc\uadf8\uba85",
+                        "example": "\ucd08\ubcf4\ud658\uc601"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ]
+            },
+            "ApiResponsePlaceDetailResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/PlaceDetailResponse"
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            },
+            "PlaceDetailResponse": {
+                "type": "object",
+                "description": "\uc7a5\uc18c \uc0c1\uc138 \uc751\ub2f5",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\uc7a5\uc18c ID",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "\uc7a5\uc18c\uba85",
+                        "example": "\uc2e4\uacfc \ubc14\ub298"
+                    },
+                    "region": {
+                        "type": "string",
+                        "description": "\uc9c0\uc5ed",
+                        "example": "\uc11c\uc6b8"
+                    },
+                    "district": {
+                        "type": "string",
+                        "description": "\ub3d9\ub124",
+                        "example": "\uc131\uc218"
+                    },
+                    "address": {
+                        "type": "string",
+                        "description": "\uc8fc\uc18c",
+                        "example": "\uc11c\uc6b8 \uc131\ub3d9\uad6c \uc5f0\ubb34\uc7a5\uae38 1"
+                    },
+                    "lat": {
+                        "type": "number",
+                        "description": "\uc704\ub3c4"
+                    },
+                    "lng": {
+                        "type": "number",
+                        "description": "\uacbd\ub3c4"
+                    },
+                    "hoursText": {
+                        "type": "string",
+                        "description": "\uc601\uc5c5\uc2dc\uac04 \ud14d\uc2a4\ud2b8",
+                        "example": "\ud654~\uae08 10:00-19:00"
+                    },
+                    "closedDays": {
+                        "type": "string",
+                        "description": "\ud734\ubb34\uc77c",
+                        "example": "\uc6d4\uc694\uc77c"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "\uc7a5\uc18c \uc124\uba85"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "\uc6b4\uc601 \uc0c1\ud0dc",
+                        "example": "OPEN"
+                    },
+                    "categories": {
+                        "type": "array",
+                        "description": "\uce74\ud14c\uace0\ub9ac \ubaa9\ub85d",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryDto"
+                        }
+                    },
+                    "tags": {
+                        "type": "array",
+                        "description": "\ud0dc\uadf8 \ubaa9\ub85d",
+                        "items": {
+                            "$ref": "#/components/schemas/TagDto"
+                        }
+                    },
+                    "brands": {
+                        "type": "array",
+                        "description": "\ube0c\ub79c\ub4dc \ubaa9\ub85d",
+                        "items": {
+                            "$ref": "#/components/schemas/BrandDto"
+                        }
+                    },
+                    "instagramUrl": {
+                        "type": "string",
+                        "description": "\uc778\uc2a4\ud0c0\uadf8\ub7a8 URL"
+                    },
+                    "websiteUrl": {
+                        "type": "string",
+                        "description": "\uc6f9\uc0ac\uc774\ud2b8 URL"
+                    },
+                    "naverMapUrl": {
+                        "type": "string",
+                        "description": "\ub124\uc774\ubc84 \uc9c0\ub3c4 URL"
+                    },
+                    "events": {
+                        "type": "array",
+                        "description": "\ud65c\uc131 \uc774\ubca4\ud2b8 \ubaa9\ub85d",
+                        "items": {
+                            "$ref": "#/components/schemas/PlaceEventDto"
+                        }
+                    }
+                },
+                "required": [
+                    "address",
+                    "brands",
+                    "categories",
+                    "district",
+                    "events",
+                    "id",
+                    "name",
+                    "region",
+                    "status",
+                    "tags"
+                ]
+            },
+            "PlaceEventDto": {
+                "type": "object",
+                "description": "\uc7a5\uc18c\uc5d0 \uc5f0\uacb0\ub41c \uc774\ubca4\ud2b8 \uc694\uc57d \uc815\ubcf4",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\uc774\ubca4\ud2b8 ID",
+                        "example": 10
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "\uc774\ubca4\ud2b8 \uc81c\ubaa9",
+                        "example": "\ubd04 \uc2dc\uc98c \ud074\ub798\uc2a4 \ubaa8\uc9d1"
+                    },
+                    "eventType": {
+                        "type": "string",
+                        "description": "\uc774\ubca4\ud2b8 \uc720\ud615",
+                        "example": "TESTER_RECRUIT"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "\uc2dc\uc791\uc77c",
+                        "example": "2026-04-15"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "\uc885\ub8cc\uc77c",
+                        "example": "2026-05-10"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "description": "\ud65c\uc131 \uc5ec\ubd80",
+                        "example": true
+                    },
+                    "links": {
+                        "type": "string",
+                        "description": "\uad00\ub828 \ub9c1\ud06c"
+                    }
+                },
+                "required": [
+                    "active",
+                    "eventType",
+                    "id",
+                    "startDate",
+                    "title"
+                ]
+            },
+            "ApiResponseListEventListResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EventListResponse"
+                        }
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            },
+            "EventListResponse": {
+                "type": "object",
+                "description": "\uc774\ubca4\ud2b8 \ubaa9\ub85d \uc751\ub2f5",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\uc774\ubca4\ud2b8 ID",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "\uc774\ubca4\ud2b8 \uc81c\ubaa9",
+                        "example": "\ubd04\ub9de\uc774 \ub728\uac1c \ub9c8\ucf13"
+                    },
+                    "eventType": {
+                        "type": "string",
+                        "description": "\uc774\ubca4\ud2b8 \uc720\ud615",
+                        "example": "POPUP"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "\uc2dc\uc791\uc77c"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "\uc885\ub8cc\uc77c"
+                    },
+                    "locationText": {
+                        "type": "string",
+                        "description": "\uc7a5\uc18c \ud14d\uc2a4\ud2b8"
+                    },
+                    "lat": {
+                        "type": "number",
+                        "description": "\uc704\ub3c4"
+                    },
+                    "lng": {
+                        "type": "number",
+                        "description": "\uacbd\ub3c4"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "description": "\ud65c\uc131 \uc5ec\ubd80"
+                    },
+                    "links": {
+                        "type": "string",
+                        "description": "\uad00\ub828 \ub9c1\ud06c"
+                    }
+                },
+                "required": [
+                    "active",
+                    "eventType",
+                    "id",
+                    "startDate",
+                    "title"
+                ]
+            },
+            "ApiResponseEventDetailResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/EventDetailResponse"
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            },
+            "EventDetailResponse": {
+                "type": "object",
+                "description": "\uc774\ubca4\ud2b8 \uc0c1\uc138 \uc751\ub2f5",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\uc774\ubca4\ud2b8 ID",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "\uc774\ubca4\ud2b8 \uc81c\ubaa9",
+                        "example": "\ubd04\ub9de\uc774 \ub728\uac1c \ub9c8\ucf13"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "\uc774\ubca4\ud2b8 \uc124\uba85"
+                    },
+                    "eventType": {
+                        "type": "string",
+                        "description": "\uc774\ubca4\ud2b8 \uc720\ud615",
+                        "example": "POPUP"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "\uc2dc\uc791\uc77c"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "\uc885\ub8cc\uc77c"
+                    },
+                    "placeId": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\uc5f0\uacb0\ub41c \uc7a5\uc18c ID"
+                    },
+                    "locationText": {
+                        "type": "string",
+                        "description": "\uc7a5\uc18c \ud14d\uc2a4\ud2b8"
+                    },
+                    "lat": {
+                        "type": "number",
+                        "description": "\uc704\ub3c4"
+                    },
+                    "lng": {
+                        "type": "number",
+                        "description": "\uacbd\ub3c4"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "description": "\ud65c\uc131 \uc5ec\ubd80"
+                    },
+                    "links": {
+                        "type": "string",
+                        "description": "\uad00\ub828 \ub9c1\ud06c"
+                    }
+                },
+                "required": [
+                    "active",
+                    "eventType",
+                    "id",
+                    "startDate",
+                    "title"
+                ]
+            },
+            "ApiResponseListCategoryResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryResponse"
+                        }
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            },
+            "CategoryResponse": {
+                "type": "object",
+                "description": "\uce74\ud14c\uace0\ub9ac \uc751\ub2f5",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\uce74\ud14c\uace0\ub9ac ID",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "\uce74\ud14c\uace0\ub9ac\uba85",
+                        "example": "\ub728\uac1c\uce74\ud398"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ]
+            },
+            "ApiResponseListBrandTypeGroup": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BrandTypeGroup"
+                        }
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            },
+            "BrandItem": {
+                "type": "object",
+                "description": "\ube0c\ub79c\ub4dc \ud56d\ubaa9",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "\ube0c\ub79c\ub4dc ID",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "\ube0c\ub79c\ub4dc\uba85",
+                        "example": "\uc0b0\ub124\uc2a4\uac04"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ]
+            },
+            "BrandTypeGroup": {
+                "type": "object",
+                "description": "\ube0c\ub79c\ub4dc \ud0c0\uc785 \uadf8\ub8f9",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "\ube0c\ub79c\ub4dc \ud0c0\uc785",
+                        "example": "YARN"
+                    },
+                    "brands": {
+                        "type": "array",
+                        "description": "\ube0c\ub79c\ub4dc \ubaa9\ub85d",
+                        "items": {
+                            "$ref": "#/components/schemas/BrandItem"
+                        }
+                    }
+                },
+                "required": [
+                    "brands",
+                    "type"
+                ]
             }
-          }
         }
-      }
-    },
-    "/api/places/{id}": {
-      "get": {
-        "tags": ["장소"],
-        "summary": "장소 상세 조회",
-        "operationId": "getPlace",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "장소 ID",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "조회 성공",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiResponsePlaceDetailResponse" }
-              }
-            }
-          },
-          "404": {
-            "description": "존재하지 않는 장소",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiResponsePlaceDetailResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/events": {
-      "get": {
-        "tags": ["이벤트"],
-        "summary": "이벤트 목록 조회",
-        "operationId": "getEvents",
-        "parameters": [
-          {
-            "name": "eventType",
-            "in": "query",
-            "description": "이벤트 타입 (TESTER_RECRUIT, SALE, EVENT_POPUP)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["TESTER_RECRUIT", "SALE", "EVENT_POPUP"]
-            }
-          },
-          {
-            "name": "active",
-            "in": "query",
-            "description": "활성 여부 (기본값: true)",
-            "required": false,
-            "schema": { "type": "boolean" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "조회 성공",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiResponseListEventListResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/events/{id}": {
-      "get": {
-        "tags": ["이벤트"],
-        "summary": "이벤트 상세 조회",
-        "operationId": "getEvent",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "이벤트 ID",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "조회 성공",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiResponseEventDetailResponse" }
-              }
-            }
-          },
-          "404": {
-            "description": "존재하지 않는 이벤트",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiResponseEventDetailResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/categories": {
-      "get": {
-        "tags": ["장소"],
-        "summary": "카테고리 목록 조회",
-        "operationId": "getCategories",
-        "responses": {
-          "200": {
-            "description": "조회 성공",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiResponseListCategoryResponse" }
-              }
-            }
-          }
-        }
-      }
     }
-  },
-  "components": {
-    "schemas": {
-      "CategoryResponse": {
-        "type": "object",
-        "required": ["id", "name"],
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" }
-        }
-      },
-      "ApiResponseListCategoryResponse": {
-        "type": "object",
-        "required": ["data"],
-        "properties": {
-          "data": { "type": "array", "items": { "$ref": "#/components/schemas/CategoryResponse" } }
-        }
-      },
-      "PlaceRequestInput": {
-        "type": "object",
-        "required": ["requestType"],
-        "properties": {
-          "requestType": { "type": "string", "enum": ["NEW", "UPDATE"] },
-          "placeId": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" },
-          "address": { "type": "string" },
-          "addressDetail": { "type": "string" },
-          "lat": { "type": "number" },
-          "lng": { "type": "number" },
-          "categoryIds": { "type": "array", "items": { "type": "integer", "format": "int64" } },
-          "hoursText": { "type": "string" },
-          "closedDays": { "type": "string" },
-          "brandsYarn": { "type": "string" },
-          "brandsNeedle": { "type": "string" },
-          "brandsNotions": { "type": "string" },
-          "instagramUrl": { "type": "string" },
-          "websiteUrl": { "type": "string" },
-          "naverMapUrl": { "type": "string" },
-          "tags": { "type": "string" },
-          "note": { "type": "string" }
-        }
-      },
-      "EventRequestInput": {
-        "type": "object",
-        "required": ["title", "eventType", "startDate"],
-        "properties": {
-          "title": { "type": "string", "minLength": 1 },
-          "eventType": { "type": "string", "enum": ["TESTER_RECRUIT", "SALE", "EVENT_POPUP"] },
-          "startDate": { "type": "string", "format": "date" },
-          "endDate": { "type": "string", "format": "date" },
-          "locationText": { "type": "string" },
-          "description": { "type": "string" }
-        }
-      },
-      "RequestResponse": {
-        "type": "object",
-        "required": ["id"],
-        "description": "등록 요청 응답",
-        "properties": {
-          "id": { "type": "integer", "format": "int64", "description": "생성된 요청 ID", "example": 1 }
-        }
-      },
-      "ApiResponseRequestResponse": {
-        "type": "object",
-        "required": ["data"],
-        "properties": {
-          "data": { "$ref": "#/components/schemas/RequestResponse" }
-        }
-      },
-      "CategoryInfo": {
-        "type": "object",
-        "required": ["id", "name"],
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" }
-        }
-      },
-      "TagInfo": {
-        "type": "object",
-        "required": ["id", "name"],
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" }
-        }
-      },
-      "BrandInfo": {
-        "type": "object",
-        "required": ["id", "name", "type"],
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" },
-          "type": { "type": "string" }
-        }
-      },
-      "PlaceListResponse": {
-        "type": "object",
-        "required": ["id", "name", "region", "district", "address", "status", "categories", "tags"],
-        "description": "장소 목록 응답",
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" },
-          "region": { "type": "string" },
-          "district": { "type": "string" },
-          "address": { "type": "string" },
-          "lat": { "type": "number" },
-          "lng": { "type": "number" },
-          "status": { "type": "string" },
-          "categories": { "type": "array", "items": { "$ref": "#/components/schemas/CategoryInfo" } },
-          "tags": { "type": "array", "items": { "$ref": "#/components/schemas/TagInfo" } },
-          "instagramUrl": { "type": "string" },
-          "naverMapUrl": { "type": "string" }
-        }
-      },
-      "ApiResponseListPlaceListResponse": {
-        "type": "object",
-        "required": ["data"],
-        "properties": {
-          "data": { "type": "array", "items": { "$ref": "#/components/schemas/PlaceListResponse" } }
-        }
-      },
-      "PlaceDetailResponse": {
-        "type": "object",
-        "required": ["id", "name", "region", "district", "address", "status", "categories", "tags", "brands"],
-        "description": "장소 상세 응답",
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" },
-          "region": { "type": "string" },
-          "district": { "type": "string" },
-          "address": { "type": "string" },
-          "lat": { "type": "number" },
-          "lng": { "type": "number" },
-          "hoursText": { "type": "string" },
-          "closedDays": { "type": "string" },
-          "description": { "type": "string" },
-          "status": { "type": "string" },
-          "categories": { "type": "array", "items": { "$ref": "#/components/schemas/CategoryInfo" } },
-          "tags": { "type": "array", "items": { "$ref": "#/components/schemas/TagInfo" } },
-          "brands": { "type": "array", "items": { "$ref": "#/components/schemas/BrandInfo" } },
-          "instagramUrl": { "type": "string" },
-          "websiteUrl": { "type": "string" },
-          "naverMapUrl": { "type": "string" }
-        }
-      },
-      "ApiResponsePlaceDetailResponse": {
-        "type": "object",
-        "required": ["data"],
-        "properties": {
-          "data": { "$ref": "#/components/schemas/PlaceDetailResponse" }
-        }
-      },
-      "EventListResponse": {
-        "type": "object",
-        "required": ["id", "title", "eventType", "startDate", "active"],
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "title": { "type": "string" },
-          "eventType": { "type": "string" },
-          "startDate": { "type": "string", "format": "date" },
-          "endDate": { "type": "string", "format": "date" },
-          "locationText": { "type": "string" },
-          "lat": { "type": "number" },
-          "lng": { "type": "number" },
-          "active": { "type": "boolean" },
-          "links": { "type": "string" }
-        }
-      },
-      "ApiResponseListEventListResponse": {
-        "type": "object",
-        "required": ["data"],
-        "properties": {
-          "data": { "type": "array", "items": { "$ref": "#/components/schemas/EventListResponse" } }
-        }
-      },
-      "EventDetailResponse": {
-        "type": "object",
-        "required": ["id", "title", "eventType", "startDate", "active"],
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "title": { "type": "string" },
-          "description": { "type": "string" },
-          "eventType": { "type": "string" },
-          "startDate": { "type": "string", "format": "date" },
-          "endDate": { "type": "string", "format": "date" },
-          "placeId": { "type": "integer", "format": "int64" },
-          "locationText": { "type": "string" },
-          "lat": { "type": "number" },
-          "lng": { "type": "number" },
-          "active": { "type": "boolean" },
-          "links": { "type": "string" }
-        }
-      },
-      "ApiResponseEventDetailResponse": {
-        "type": "object",
-        "required": ["data"],
-        "properties": {
-          "data": { "$ref": "#/components/schemas/EventDetailResponse" }
-        }
-      }
-    }
-  }
 }
