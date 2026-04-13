@@ -14,6 +14,7 @@ import {
   PenTool,
   Scissors,
   Volleyball,
+  BookOpen,
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -41,6 +42,12 @@ const BRAND_TYPE_CONFIG: Record<
     Icon: Scissors,
     iconClass: "w-4 h-4 text-warmyellow-container",
     bg: "bg-warmyellow",
+  },
+  PATTERNBOOK: {
+    label: "도서",
+    Icon: BookOpen,
+    iconClass: "w-4 h-4 text-on-surface-variant",
+    bg: "bg-surface-container-high",
   },
 };
 
@@ -203,7 +210,7 @@ export default function PlaceDetailView({ place, detail }: Props) {
                     acc[b.type].push(b);
                     return acc;
                   }, {});
-                  const orderedTypes = ["YARN", "NEEDLE", "NOTIONS"].filter(
+                  const orderedTypes = ["YARN", "NEEDLE", "NOTIONS", "PATTERNBOOK"].filter(
                     (t) => grouped[t],
                   );
                   // 혹시 알 수 없는 타입이 있으면 뒤에 추가
