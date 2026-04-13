@@ -5,6 +5,7 @@ import type {
   PlaceRequestInput,
   RequestResponse,
   CategoryResponse,
+  BrandTypeGroup,
 } from "@/shared/api/client"
 import type { operations } from "@/shared/api/types"
 
@@ -28,6 +29,13 @@ export const getPlace = async (id: number) => {
 export const getCategories = async () => {
   const { data } = await apiClient.get<{ data: CategoryResponse[] }>(
     "/api/categories"
+  )
+  return data.data
+}
+
+export const getBrands = async () => {
+  const { data } = await apiClient.get<{ data: BrandTypeGroup[] }>(
+    "/api/brands"
   )
   return data.data
 }
