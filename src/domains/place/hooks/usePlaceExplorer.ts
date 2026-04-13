@@ -114,6 +114,7 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
           place.address,
           place.district,
           ...place.tags.map((t) => t.name),
+          ...place.brands.map((b) => b.name),
         ]
           .join(" ")
           .toLowerCase();
