@@ -23,9 +23,11 @@ import type {
   EventSubmissionData,
   PlaceUpdateData,
 } from "@/shared/schemas/submitForm";
-import { requestPlace, getCategories } from "@/domains/place/queries/placeApi";
+import { requestPlace, getCategories, getBrands } from "@/domains/place/queries/placeApi";
 import { requestEvent } from "@/domains/event/queries/eventApi";
 import { getPlaces } from "@/domains/place/queries/placeApi";
+import type { BrandTypeGroup } from "@/shared/api/client";
+import BrandMultiSelect from "@/shared/components/ui/BrandMultiSelect";
 import { toast } from "@/shared/components/ui/toast";
 import FormInput from "@/shared/components/ui/FormInput";
 import FormChipGroup from "@/shared/components/ui/FormChipGroup";
@@ -105,15 +107,38 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
 // 공통 장소 필드 (선택 항목)
 // ---------------------------------------------------------------------------
 
+interface BrandSelectState {
+  yarnIds: number[];
+  needleIds: number[];
+  notionsIds: number[];
+  patternbookIds: number[];
+}
+
+const BRAND_FIELD_CONFIG = [
+  { type: "YARN", key: "yarnIds" as const, label: "실 브랜드", fallbackField: "brandsYarn", placeholder: "이사거, 산네스간, 오팔" },
+  { type: "NEEDLE", key: "needleIds" as const, label: "바늘 브랜드", fallbackField: "brandsNeedle", placeholder: "히야히야, 아디, 튤립" },
+  { type: "NOTIONS", key: "notionsIds" as const, label: "부자재 브랜드", fallbackField: "brandsNotions", placeholder: "코코닛츠, 크로바" },
+  { type: "PATTERNBOOK", key: "patternbookIds" as const, label: "도서 브랜드", fallbackField: "brandsPatternbook", placeholder: "한올, 코바늘 뜨개" },
+] as const;
+
 function PlaceDetailFields({
   register,
   errors,
+  brandGroups,
+  brandSelectState,
+  onBrandIdsChange,
 }: {
   register: (
     name: string,
   ) => ReturnType<ReturnType<typeof useForm>["register"]>;
   errors: Record<string, { message?: string } | undefined>;
+  brandGroups: BrandTypeGroup[];
+  brandSelectState: BrandSelectState;
+  onBrandIdsChange: (key: keyof BrandSelectState, ids: number[]) => void;
 }) {
+  const brandsByType = (type: string) =>
+    brandGroups.find((g) => g.type === type)?.brands ?? [];
+
   return (
     <>
       <fieldset className="space-y-3">
@@ -133,28 +158,21 @@ function PlaceDetailFields({
           error={errors.closedDays?.message}
         />
       </fieldset>
-      <fieldset className="space-y-3">
+      <fieldset className="space-y-4">
         <legend className="text-label-md font-bold text-on-surface mb-1">
           취급 브랜드
         </legend>
-        <FormInput
-          label="실 브랜드"
-          placeholder="이사거, 산네스간, 오팔"
-          registration={register("brandsYarn")}
-          error={errors.brandsYarn?.message}
-        />
-        <FormInput
-          label="바늘 브랜드"
-          placeholder="히야히야, 아디, 튤립"
-          registration={register("brandsNeedle")}
-          error={errors.brandsNeedle?.message}
-        />
-        <FormInput
-          label="부자재 브랜드"
-          placeholder="코코닛츠, 크로바"
-          registration={register("brandsNotions")}
-          error={errors.brandsNotions?.message}
-        />
+        {BRAND_FIELD_CONFIG.map((cfg) => (
+          <BrandMultiSelect
+            key={cfg.type}
+            label={cfg.label}
+            brands={brandsByType(cfg.type)}
+            selectedIds={brandSelectState[cfg.key]}
+            onChangeIds={(ids) => onBrandIdsChange(cfg.key, ids)}
+            fallbackRegistration={register(cfg.fallbackField)}
+            placeholder={cfg.placeholder}
+          />
+        ))}
       </fieldset>
       <fieldset className="space-y-3">
         <legend className="text-label-md font-bold text-on-surface mb-1">
@@ -216,6 +234,19 @@ export default function SubmitForm({ onClose }: Props) {
   const [categoryIdMap, setCategoryIdMap] = useState<Record<string, number>>({});
   const [customCategory, setCustomCategory] = useState("");
 
+  // 브랜드 목록 (API에서 가져옴)
+  const [brandGroups, setBrandGroups] = useState<BrandTypeGroup[]>([]);
+  const [brandSelectState, setBrandSelectState] = useState<BrandSelectState>({
+    yarnIds: [],
+    needleIds: [],
+    notionsIds: [],
+    patternbookIds: [],
+  });
+
+  const handleBrandIdsChange = (key: keyof BrandSelectState, ids: number[]) => {
+    setBrandSelectState((prev) => ({ ...prev, [key]: ids }));
+  };
+
   // Place options for update dropdown
   const [placeOptions, setPlaceOptions] = useState<
     { value: string; label: string; sub?: string }[]
@@ -239,6 +270,11 @@ export default function SubmitForm({ onClose }: Props) {
         }
         setCategoryIdMap(idMap);
       })
+      .catch(() => {});
+
+    // 브랜드 API 호출
+    getBrands()
+      .then((groups) => setBrandGroups(groups))
       .catch(() => {});
 
     // 장소 목록 (업데이트 드롭다운용)
@@ -419,19 +455,22 @@ export default function SubmitForm({ onClose }: Props) {
         lat: coords?.lat,
         lng: coords?.lng,
         categoryIds,
+        categoryText: customCategory || undefined,
         hoursText: data.hours || undefined,
         closedDays: data.closedDays || undefined,
+        brandYarnIds: brandSelectState.yarnIds.length > 0 ? brandSelectState.yarnIds : undefined,
         brandsYarn: data.brandsYarn || undefined,
+        brandNeedleIds: brandSelectState.needleIds.length > 0 ? brandSelectState.needleIds : undefined,
         brandsNeedle: data.brandsNeedle || undefined,
+        brandNotionsIds: brandSelectState.notionsIds.length > 0 ? brandSelectState.notionsIds : undefined,
         brandsNotions: data.brandsNotions || undefined,
+        brandPatternbookIds: brandSelectState.patternbookIds.length > 0 ? brandSelectState.patternbookIds : undefined,
+        brandsPatternbook: data.brandsPatternbook || undefined,
         instagramUrl: data.linkInstagram || undefined,
         websiteUrl: data.linkWebsite || undefined,
         naverMapUrl: data.linkNaverMap || undefined,
         tags: data.tags || undefined,
-        note: [
-          data.note,
-          customCategory ? `[카테고리 제안: ${customCategory}]` : "",
-        ].filter(Boolean).join(" ") || undefined,
+        note: data.note || undefined,
       });
       toast.success("제보가 등록되었습니다");
       onClose();
@@ -450,9 +489,14 @@ export default function SubmitForm({ onClose }: Props) {
         placeId: Number(selectedPlaceId),
         hoursText: data.hours || undefined,
         closedDays: data.closedDays || undefined,
+        brandYarnIds: brandSelectState.yarnIds.length > 0 ? brandSelectState.yarnIds : undefined,
         brandsYarn: data.brandsYarn || undefined,
+        brandNeedleIds: brandSelectState.needleIds.length > 0 ? brandSelectState.needleIds : undefined,
         brandsNeedle: data.brandsNeedle || undefined,
+        brandNotionsIds: brandSelectState.notionsIds.length > 0 ? brandSelectState.notionsIds : undefined,
         brandsNotions: data.brandsNotions || undefined,
+        brandPatternbookIds: brandSelectState.patternbookIds.length > 0 ? brandSelectState.patternbookIds : undefined,
+        brandsPatternbook: data.brandsPatternbook || undefined,
         instagramUrl: data.linkInstagram || undefined,
         websiteUrl: data.linkWebsite || undefined,
         naverMapUrl: data.linkNaverMap || undefined,
@@ -637,6 +681,9 @@ export default function SubmitForm({ onClose }: Props) {
                   { message?: string } | undefined
                 >
               }
+              brandGroups={brandGroups}
+              brandSelectState={brandSelectState}
+              onBrandIdsChange={handleBrandIdsChange}
             />
           </div>
         );
@@ -683,6 +730,9 @@ export default function SubmitForm({ onClose }: Props) {
                   { message?: string } | undefined
                 >
               }
+              brandGroups={brandGroups}
+              brandSelectState={brandSelectState}
+              onBrandIdsChange={handleBrandIdsChange}
             />
           </div>
         );
