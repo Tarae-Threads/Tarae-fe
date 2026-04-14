@@ -50,3 +50,6 @@ export type RequestResponse = components["schemas"]["RequestResponse"];
 export type CategoryResponse = components["schemas"]["CategoryResponse"];
 export type BrandTypeGroup = components["schemas"]["BrandTypeGroup"];
 export type BrandItem = components["schemas"]["BrandItem"];
+export type ReviewResponse = components["schemas"]["ReviewResponse"];
+export type ReviewCreateRequest = components["schemas"]["ReviewCreateRequest"];
+export type ReviewDeleteRequest = components["schemas"]["ReviewDeleteRequest"];

@@ -38,6 +38,42 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/places/{placeId}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 장소 리뷰 목�� 조회 */
+        get: operations["getPlaceReviews"];
+        put?: never;
+        /** 장소 리뷰 작성 */
+        post: operations["createPlaceReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events/{eventId}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 이벤트 리뷰 목록 조회 */
+        get: operations["getEventReviews"];
+        put?: never;
+        /** 이벤트 리뷰 작성 */
+        post: operations["createEventReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/places": {
         parameters: {
             query?: never;
@@ -140,6 +176,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/reviews/{reviewId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** 리뷰 삭제 (비밀번호 검증) */
+        delete: operations["deleteReview"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -194,6 +247,53 @@ export interface components {
             endDate?: string;
             locationText?: string;
             description?: string;
+        };
+        /** @description 리뷰 작성 요청 */
+        ReviewCreateRequest: {
+            /**
+             * @description 닉네임
+             * @example 뜨개하는고양이
+             */
+            nickname: string;
+            /**
+             * @description 이메일
+             * @example cat@example.com
+             */
+            email: string;
+            /**
+             * @description 비밀번호 (삭제 시 사용, 4~20자)
+             * @example 1234
+             */
+            password: string;
+            /**
+             * @description 리뷰 내용
+             * @example 실 종류가 다양하고 사장님이 친절해요!
+             */
+            content: string;
+        };
+        ApiResponseReviewResponse: {
+            data: components["schemas"]["ReviewResponse"];
+        };
+        /** @description 리뷰 응답 */
+        ReviewResponse: {
+            /**
+             * Format: int64
+             * @description 리뷰 ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description 닉네임
+             * @example 뜨개하는고양이
+             */
+            nickname: string;
+            /** @description 리뷰 내용 */
+            content: string;
+            /**
+             * Format: date-time
+             * @description 작성일시
+             */
+            createdAt: string;
         };
         ApiResponseListPlaceListResponse: {
             data: components["schemas"]["PlaceListResponse"][];
@@ -292,6 +392,9 @@ export interface components {
              * @example 초보환영
              */
             name: string;
+        };
+        ApiResponseListReviewResponse: {
+            data: components["schemas"]["ReviewResponse"][];
         };
         ApiResponsePlaceDetailResponse: {
             data: components["schemas"]["PlaceDetailResponse"];
@@ -533,6 +636,17 @@ export interface components {
             /** @description 브랜드 목록 */
             brands: components["schemas"]["BrandItem"][];
         };
+        /** @description 리뷰 삭제 요청 */
+        ReviewDeleteRequest: {
+            /**
+             * @description 비밀번호
+             * @example 1234
+             */
+            password: string;
+        };
+        ApiResponse: {
+            data: unknown;
+        };
     };
     responses: never;
     parameters: never;
@@ -604,6 +718,124 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseRequestResponse"];
+                };
+            };
+        };
+    };
+    getPlaceReviews: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 장소 ID */
+                placeId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListReviewResponse"];
+                };
+            };
+        };
+    };
+    createPlaceReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 장소 ID */
+                placeId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description 작성 성공 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseReviewResponse"];
+                };
+            };
+            /** @description 존재하지 않는 장소 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseReviewResponse"];
+                };
+            };
+        };
+    };
+    getEventReviews: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 이벤트 ID */
+                eventId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListReviewResponse"];
+                };
+            };
+        };
+    };
+    createEventReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 이벤트 ID */
+                eventId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description 작성 성공 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseReviewResponse"];
+                };
+            };
+            /** @description 존재하지 않는 이벤트 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseReviewResponse"];
                 };
             };
         };
@@ -762,6 +994,51 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseListBrandTypeGroup"];
+                };
+            };
+        };
+    };
+    deleteReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ���뷰 ID */
+                reviewId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewDeleteRequest"];
+            };
+        };
+        responses: {
+            /** @description 삭제 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description 비밀번호 불일치 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description 존재하지 ��는 리뷰 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
                 };
             };
         };
