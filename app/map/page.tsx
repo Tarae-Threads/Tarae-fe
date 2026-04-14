@@ -1,0 +1,419 @@
+"use client";
+
+import {
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  Suspense,
+} from "react";
+import { useSearchParams } from "next/navigation";
+import dynamic from "next/dynamic";
+import type { NaverMapHandle } from "@/domains/place/components/NaverMap";
+import { usePlaceExplorer } from "@/domains/place/hooks/usePlaceExplorer";
+import { getEvents, getEvent } from "@/domains/event/queries/eventApi";
+import { getPlace } from "@/domains/place/queries/placeApi";
+import type { Event, EventDetail } from "@/domains/event/types";
+import type { PlaceDetail } from "@/domains/place/types";
+import MobileBottomSheet from "@/domains/place/components/MobileBottomSheet";
+import PlacePanel from "@/domains/place/components/PlacePanel";
+import MapControls from "@/domains/place/components/MapControls";
+import PlaceSearchBar from "@/domains/place/components/PlaceSearchBar";
+import NavBar from "@/shared/components/layout/NavBar";
+import type { NavTab } from "@/shared/components/layout/NavBar";
+import BasePanel from "@/shared/components/layout/BasePanel";
+import DetailPanel from "@/shared/components/layout/DetailPanel";
+import BottomNav from "@/shared/components/layout/BottomNav";
+import SubmitForm from "@/shared/components/layout/SubmitForm";
+import { useModal } from "@/shared/hooks/useModal";
+import { REGION_CENTER } from "@/domains/place/constants";
+
+const NaverMap = dynamic(() => import("@/domains/place/components/NaverMap"), {
+  ssr: false,
+});
+
+const BOTTOM_NAV_HEIGHT = 48
+
+function HomeContent() {
+  const searchParams = useSearchParams();
+  const initialPlaceId = searchParams.get("placeId");
+  const initialEventId = searchParams.get("eventId");
+  const mapRef = useRef<NaverMapHandle>(null);
+  const { openModal } = useModal();
+  const [activeTab, setActiveTab] = useState<NavTab>("places");
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedEventDetail, setSelectedEventDetail] = useState<EventDetail | null>(null);
+  const [selectedPlaceDetail, setSelectedPlaceDetail] = useState<PlaceDetail | null>(null);
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [mobileSheetHeight, setMobileSheetHeight] = useState(0);
+  const [mobileSheetSnap, setMobileSheetSnap] = useState<"closed" | "peek" | "full">("peek");
+  const [detailSnap, setDetailSnap] = useState<"peek" | "full">("peek");
+
+  const {
+    filteredPlaces,
+    displayPlaces,
+    selectedPlace,
+    loading: placesLoading,
+    selectedCategories,
+    toggleCategory,
+    clearCategories,
+    selectedRegion,
+    setSelectedRegion,
+    searchQuery,
+    setSearchQuery,
+    viewportFilterActive,
+    activateViewportFilter,
+    clearViewportFilter,
+    panelOpen,
+    filterOpen,
+    handlePlaceSelect,
+    handlePanelClose,
+    toggleFilter,
+    sortBy,
+    setSortBy,
+    userLocation,
+    getDistance,
+  } = usePlaceExplorer(initialPlaceId);
+
+  // 위치 허용 시 지도 내 위치로 이동
+  useEffect(() => {
+    if (userLocation && mapRef.current) {
+      mapRef.current.panTo(userLocation.lat, userLocation.lng, 13);
+    }
+  }, [userLocation]);
+
+  // initialPlaceId로 진입 시 상세 조회
+  useEffect(() => {
+    if (initialPlaceId && selectedPlace && selectedPlace.id === Number(initialPlaceId)) {
+      fetchPlaceDetail(selectedPlace.id);
+    }
+  }, [initialPlaceId, selectedPlace]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Map resize on detail panel toggle
+  useEffect(() => {
+    const t1 = setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
+    const t2 = setTimeout(() => window.dispatchEvent(new Event("resize")), 150);
+    const t3 = setTimeout(() => window.dispatchEvent(new Event("resize")), 320);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
+  }, [panelOpen]);
+
+  // Fetch events from API + initialEventId 처리
+  useEffect(() => {
+    getEvents()
+      .then((events) => {
+        setAllEvents(events);
+        if (initialEventId) {
+          const found = events.find((e) => String(e.id) === initialEventId);
+          if (found) {
+            setActiveTab("events");
+            setSelectedEvent(found);
+            getEvent(found.id)
+              .then((detail) => setSelectedEventDetail(detail))
+              .catch(() => {});
+          }
+        }
+      })
+      .catch(() => {});
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const eventPlaceIds = useMemo(() => {
+    // BE EventListResponse에 placeId 미포함 — 추후 추가 시 활성화
+    return new Set<number>();
+  }, [allEvents]);
+
+  const eventMarkers = useMemo(() => {
+    return allEvents
+      .filter((e) => e.lat != null && e.lng != null)
+      .map((e) => ({
+        id: String(e.id),
+        title: e.title,
+        lat: e.lat!,
+        lng: e.lng!,
+      }));
+  }, [allEvents]);
+
+  useEffect(() => {
+    if (selectedRegion === "all") return;
+    const center = REGION_CENTER[selectedRegion];
+    if (center) mapRef.current?.panTo(center.lat, center.lng, center.zoom);
+  }, [selectedRegion]);
+
+  const smartPanTo = useCallback(
+    (lat: number, lng: number, minZoom: number) => {
+      const currentZoom = mapRef.current?.getZoom() ?? 10;
+      if (currentZoom <= 12) mapRef.current?.panTo(lat, lng, minZoom);
+      else mapRef.current?.panTo(lat, lng);
+    },
+    [],
+  );
+
+  const fetchPlaceDetail = useCallback(
+    (placeId: number) => {
+      setSelectedPlaceDetail(null);
+      getPlace(placeId)
+        .then((detail) => setSelectedPlaceDetail(detail))
+        .catch(() => {});
+    },
+    [],
+  );
+
+  const handleMarkerSelect = useCallback(
+    (place: Parameters<typeof handlePlaceSelect>[0]) => {
+      setActiveTab("places");
+      setSelectedEvent(null);
+      setSelectedEventDetail(null);
+      handlePlaceSelect(place);
+      fetchPlaceDetail(place.id);
+      window.history.replaceState(null, "", `/?placeId=${place.id}`);
+      if (typeof place.lat === "number" && typeof place.lng === "number") {
+        smartPanTo(place.lat, place.lng, 13);
+      }
+    },
+    [handlePlaceSelect, smartPanTo, fetchPlaceDetail],
+  );
+
+  const handleListSelect = useCallback(
+    (place: Parameters<typeof handlePlaceSelect>[0]) => {
+      setActiveTab("places");
+      setSelectedEvent(null);
+      setSelectedEventDetail(null);
+      handlePlaceSelect(place);
+      fetchPlaceDetail(place.id);
+      window.history.replaceState(null, "", `/?placeId=${place.id}`);
+      if (typeof place.lat === "number" && typeof place.lng === "number") {
+        mapRef.current?.panTo(place.lat, place.lng, 14);
+      }
+    },
+    [handlePlaceSelect, fetchPlaceDetail],
+  );
+
+  const handleEventSelect = useCallback(
+    (eventId: number) => {
+      setSelectedPlaceDetail(null);
+      setSelectedEventDetail(null);
+
+      const fromList = allEvents.find((e) => e.id === eventId);
+      if (fromList) {
+        setActiveTab("events");
+        handlePanelClose();
+        setSelectedEvent(fromList);
+      }
+
+      window.history.replaceState(null, "", `/?eventId=${eventId}`);
+
+      // 항상 상세 API 호출 (description 등 추가 정보)
+      getEvent(eventId)
+        .then((detail) => {
+          setSelectedEventDetail(detail);
+          if (!fromList) {
+            setActiveTab("events");
+            handlePanelClose();
+            setSelectedEvent({
+              id: detail.id,
+              title: detail.title,
+              eventType: detail.eventType,
+              startDate: detail.startDate,
+              endDate: detail.endDate,
+              locationText: detail.locationText,
+              active: detail.active,
+              links: detail.links,
+            });
+          }
+          if (typeof detail.lat === "number" && typeof detail.lng === "number") {
+            smartPanTo(detail.lat, detail.lng, 13);
+          }
+        })
+        .catch(() => {});
+    },
+    [allEvents, smartPanTo, handlePanelClose],
+  );
+
+  const handleDetailClose = useCallback(() => {
+    handlePanelClose();
+    setSelectedEvent(null);
+    window.history.replaceState(null, "", "/");
+  }, [handlePanelClose]);
+
+  // Mobile detail data
+  const mobileDetailOpen = panelOpen || !!selectedEvent;
+  const mobileDetailData =
+    selectedPlace && panelOpen
+      ? { type: "place" as const, place: selectedPlace, placeDetail: selectedPlaceDetail }
+      : selectedEvent
+        ? { type: "event" as const, event: selectedEvent, eventDetail: selectedEventDetail }
+        : null;
+
+  return (
+    <main className="h-screen w-full overflow-hidden bg-surface-container-lowest flex">
+      {/* Desktop: NavBar + BasePanel + DetailPanel */}
+      <NavBar
+        activeTab={activeTab}
+        onTabChange={(tab) => {
+          setActiveTab(tab);
+          handleDetailClose();
+        }}
+        onSubmit={() => openModal(SubmitForm, {}, { title: "제보하기", size: "md" })}
+      />
+
+      <BasePanel
+        activeTab={activeTab}
+        places={displayPlaces}
+        loading={placesLoading}
+        selectedCategories={selectedCategories}
+        selectedRegion={selectedRegion}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onPlaceSelect={handleListSelect}
+        onToggleCategory={toggleCategory}
+        onClearCategories={clearCategories}
+        onRegionChange={setSelectedRegion}
+        onEventSelect={handleEventSelect}
+        selectedPlaceId={panelOpen && selectedPlace ? selectedPlace.id : null}
+        selectedEventId={selectedEvent?.id ?? null}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        viewportFilterActive={viewportFilterActive}
+        onClearViewportFilter={clearViewportFilter}
+        getDistance={getDistance}
+      />
+
+      {/* Desktop Detail Panel */}
+      {(() => {
+        const detailData =
+          selectedPlace && panelOpen
+            ? { type: "place" as const, place: selectedPlace, placeDetail: selectedPlaceDetail }
+            : selectedEvent
+              ? { type: "event" as const, event: selectedEvent, eventDetail: selectedEventDetail }
+              : null;
+        return (
+          <div
+            className={`hidden md:block shrink-0 transition-all duration-300 ease-in-out overflow-hidden ${
+              detailData ? "w-[380px]" : "w-0"
+            }`}
+          >
+            {detailData && (
+              <DetailPanel data={detailData} onClose={handleDetailClose} />
+            )}
+          </div>
+        );
+      })()}
+
+      {/* Map Area */}
+      <div className="flex-1 relative h-full">
+        <NaverMap
+          ref={mapRef}
+          places={filteredPlaces}
+          onPlaceSelect={handleMarkerSelect}
+          selectedPlaceId={initialPlaceId}
+          eventPlaceIds={eventPlaceIds}
+          eventMarkers={eventMarkers}
+          onEventMarkerSelect={(eventId: string) => handleEventSelect(Number(eventId))}
+        />
+        <MapControls
+          onZoomIn={() => mapRef.current?.zoomIn()}
+          onZoomOut={() => mapRef.current?.zoomOut()}
+          onLocate={() => mapRef.current?.locate()}
+          mobileBottomOffset={mobileSheetHeight + BOTTOM_NAV_HEIGHT}
+        />
+
+        {activeTab === "places" && !viewportFilterActive && (
+          <>
+            {/* 모바일: 패널 위 동적 위치 */}
+            <button
+              onClick={() => {
+                const bounds = mapRef.current?.getBounds();
+                if (bounds) activateViewportFilter(bounds);
+              }}
+              className="absolute left-1/2 -translate-x-1/2 z-20 bg-surface/90 backdrop-blur-md text-on-surface font-bold text-label-lg px-5 py-2.5 rounded-full shadow-lg border border-border hover:bg-surface transition-colors active:scale-95 md:hidden"
+              style={{ bottom: `${mobileSheetHeight + BOTTOM_NAV_HEIGHT + 16}px` }}
+            >
+              현재 지역만 보기
+            </button>
+            {/* PC: 하단 중앙 고정 */}
+            <button
+              onClick={() => {
+                const bounds = mapRef.current?.getBounds();
+                if (bounds) activateViewportFilter(bounds);
+              }}
+              className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 bg-surface/90 backdrop-blur-md text-on-surface font-bold text-label-lg px-5 py-2.5 rounded-full shadow-lg border border-border hover:bg-surface transition-colors active:scale-95 hidden md:block"
+            >
+              현재 지역만 보기
+            </button>
+          </>
+        )}
+
+        {/* Mobile UI */}
+        <div className="md:hidden">
+          <div className={`absolute top-0 left-0 right-0 z-50 px-4 pt-4 pb-2 transition-colors duration-300 ${
+            mobileSheetSnap === "full" || (mobileDetailOpen && detailSnap === "peek") ? "bg-surface-container-low" : ""
+          } ${mobileDetailOpen && detailSnap === "full" ? "hidden" : ""}`}>
+            <PlaceSearchBar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              filterOpen={filterOpen}
+              onToggleFilter={toggleFilter}
+              selectedCategories={selectedCategories}
+              selectedRegion={selectedRegion}
+              onToggleCategory={toggleCategory}
+              onClearCategories={clearCategories}
+              onRegionChange={setSelectedRegion}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              resultCount={displayPlaces.length}
+            />
+          </div>
+
+          {!mobileDetailOpen && (
+            <MobileBottomSheet
+              activeTab={activeTab}
+              places={displayPlaces}
+              loading={placesLoading}
+              onPlaceSelect={handleListSelect}
+              onEventSelect={handleEventSelect}
+              viewportFilterActive={viewportFilterActive}
+              onClearViewportFilter={clearViewportFilter}
+              hasActiveFilters={searchQuery !== '' || selectedCategories.size > 0 || selectedRegion !== 'all'}
+              onClearFilters={() => { setSearchQuery(''); clearCategories(); setSelectedRegion('all'); }}
+              getDistance={getDistance}
+              onHeightChange={setMobileSheetHeight}
+              onSnapChange={setMobileSheetSnap}
+            />
+          )}
+
+          <PlacePanel
+            data={mobileDetailData}
+            open={mobileDetailOpen}
+            onClose={handleDetailClose}
+            onSnapChange={setDetailSnap}
+          />
+        </div>
+      </div>
+
+      {/* Mobile BottomNav */}
+      <div className="md:hidden">
+        <BottomNav
+          activeTab={activeTab}
+          onTabChange={(tab) => {
+            setActiveTab(tab);
+            handleDetailClose();
+          }}
+          onSubmit={() => openModal(SubmitForm, {}, { title: "제보하기", size: "md" })}
+        />
+      </div>
+
+    </main>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense>
+      <HomeContent />
+    </Suspense>
+  );
+}
