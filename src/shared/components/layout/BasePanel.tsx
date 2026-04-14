@@ -7,6 +7,7 @@ import CategoryBadge from '@/domains/place/components/CategoryBadge'
 import StatusBadge from '@/domains/place/components/StatusBadge'
 import PlaceFilter from '@/domains/place/components/PlaceFilter'
 import type { SortBy } from '@/domains/place/components/PlaceFilter'
+import PlaceCategoryTabs from '@/domains/place/components/PlaceCategoryTabs'
 import EventSidePanelContent from '@/domains/event/components/EventSidePanelContent'
 import EmptyState from '@/shared/components/ui/EmptyState'
 import { PlaceCardSkeleton } from '@/shared/components/ui/Skeleton'
@@ -104,9 +105,9 @@ export default function BasePanel({
                 }`}
               >
                 {filterOpen ? <X className="w-4 h-4" /> : <SlidersHorizontal className="w-4 h-4" />}
-                {!filterOpen && (selectedCategories.size + (selectedRegion !== 'all' ? 1 : 0)) > 0 && (
+                {!filterOpen && selectedRegion !== 'all' && (
                   <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">
-                    {selectedCategories.size + (selectedRegion !== 'all' ? 1 : 0)}
+                    1
                   </span>
                 )}
               </button>
@@ -114,16 +115,20 @@ export default function BasePanel({
             {filterOpen && (
               <div className="mt-2 bg-surface-container rounded-xl p-4">
                 <PlaceFilter
-                  selectedCategories={selectedCategories}
                   selectedRegion={selectedRegion}
-                  onToggleCategory={onToggleCategory}
-                  onClearCategories={onClearCategories}
                   onRegionChange={onRegionChange}
                   sortBy={sortBy}
                   onSortChange={onSortChange}
                 />
               </div>
             )}
+            <div className="mt-3">
+              <PlaceCategoryTabs
+                selectedCategories={selectedCategories}
+                onToggleCategory={onToggleCategory}
+                onClearCategories={onClearCategories}
+              />
+            </div>
           </div>
 
           {viewportFilterActive && (

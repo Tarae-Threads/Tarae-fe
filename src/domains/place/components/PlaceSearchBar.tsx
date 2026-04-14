@@ -2,6 +2,7 @@
 
 import PlaceFilter from "./PlaceFilter";
 import type { SortBy } from "./PlaceFilter";
+import PlaceCategoryTabs from "./PlaceCategoryTabs";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 
 interface PlaceSearchBarProps {
@@ -33,8 +34,7 @@ export default function PlaceSearchBar({
   onSortChange,
   resultCount,
 }: PlaceSearchBarProps) {
-  const activeFilterCount =
-    selectedCategories.size + (selectedRegion !== "all" ? 1 : 0);
+  const activeFilterCount = selectedRegion !== "all" ? 1 : 0;
   return (
     <div className="relative">
       <div className="bg-surface/80 editorial-shadow flex h-14 items-center rounded-2xl backdrop-blur-2xl">
@@ -85,16 +85,21 @@ export default function PlaceSearchBar({
       {filterOpen && (
         <div className="bg-surface-container-low editorial-shadow mt-3 rounded-2xl p-4 backdrop-blur-2xl">
           <PlaceFilter
-            selectedCategories={selectedCategories}
             selectedRegion={selectedRegion}
-            onToggleCategory={onToggleCategory}
-            onClearCategories={onClearCategories}
             onRegionChange={onRegionChange}
             sortBy={sortBy}
             onSortChange={onSortChange}
           />
         </div>
       )}
+
+      <div className="mt-3">
+        <PlaceCategoryTabs
+          selectedCategories={selectedCategories}
+          onToggleCategory={onToggleCategory}
+          onClearCategories={onClearCategories}
+        />
+      </div>
     </div>
   );
 }
