@@ -1,16 +1,10 @@
 "use client"
 
 import type { Place, PlaceDetail } from "@/domains/place/types"
-import type { Event, EventDetail, EventType } from "@/domains/event/types"
-import PlaceDetailView from "@/domains/place/components/PlaceDetailView"
-import EventTypeBadge from "@/domains/event/components/EventTypeBadge"
-import {
-  X,
-  MapPin,
-  ExternalLink,
-  Calendar,
-  Share2,
-} from "lucide-react"
+import type { Event, EventDetail } from "@/domains/event/types"
+import PlaceDetailTabs from "@/domains/place/components/PlaceDetailTabs"
+import EventDetailTabs from "@/domains/event/components/EventDetailTabs"
+import { X, Share2 } from "lucide-react"
 import { shareOrCopy } from "@/shared/lib/share"
 
 type DetailData =
@@ -50,68 +44,11 @@ export default function DetailPanel({ data, onClose }: Props) {
       {/* Content */}
       <div className="flex-1 overflow-y-auto hide-scrollbar px-5 pb-6">
         {data.type === "place" ? (
-          <PlaceDetailView place={data.place} detail={data.placeDetail} />
+          <PlaceDetailTabs place={data.place} detail={data.placeDetail} />
         ) : (
-          <EventDetailContent event={data.event} detail={data.eventDetail} />
+          <EventDetailTabs event={data.event} detail={data.eventDetail} />
         )}
       </div>
-    </div>
-  )
-}
-
-/* ---- Event Detail ---- */
-function EventDetailContent({ event, detail }: { event: Event; detail?: EventDetail | null }) {
-  const description = detail?.description
-  const locationText = detail?.locationText ?? event.locationText
-  const links = detail?.links ?? event.links
-
-  return (
-    <div className="space-y-5">
-      <div>
-        <div className="flex items-center gap-2 mb-2">
-          <EventTypeBadge type={event.eventType as EventType} size="md" />
-        </div>
-
-        <h2 className="font-display font-extrabold text-headline-sm tracking-editorial text-on-surface mb-1.5">
-          {event.title}
-        </h2>
-      </div>
-
-      {/* Info */}
-      <div className="bg-surface-container rounded-2xl p-4 space-y-3">
-        <div className="flex items-center gap-3 text-body-sm">
-          <Calendar className="w-4 h-4 text-outline" />
-          <span className="text-on-surface">
-            {event.startDate}
-            {event.endDate && ` — ${event.endDate}`}
-          </span>
-        </div>
-        {locationText && (
-          <div className="flex items-center gap-3 text-body-sm">
-            <MapPin className="w-4 h-4 text-outline" />
-            <span className="text-on-surface">{locationText}</span>
-          </div>
-        )}
-      </div>
-
-      {description && (
-        <p className="text-body-sm text-on-surface-variant leading-relaxed whitespace-pre-line">
-          {description}
-        </p>
-      )}
-
-      {links && (
-        <a
-          href={links}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors group"
-        >
-          <ExternalLink className="w-4 h-4 text-primary" />
-          <span className="flex-1 text-label-lg font-medium text-on-surface">자세히 보기</span>
-          <span className="w-4 h-4 text-outline group-hover:text-on-surface-variant transition-colors">→</span>
-        </a>
-      )}
     </div>
   )
 }

@@ -8,16 +8,10 @@ import {
   useSyncExternalStore,
 } from "react";
 import type { Place, PlaceDetail } from "../types";
-import type { Event, EventDetail, EventType } from "@/domains/event/types";
-import PlaceDetailView from "./PlaceDetailView";
-import EventTypeBadge from "@/domains/event/components/EventTypeBadge";
-import {
-  ChevronLeft,
-  MapPin,
-  ExternalLink,
-  Calendar,
-  Share2,
-} from "lucide-react";
+import type { Event, EventDetail } from "@/domains/event/types";
+import PlaceDetailTabs from "./PlaceDetailTabs";
+import EventDetailTabs from "@/domains/event/components/EventDetailTabs";
+import { ChevronLeft, Share2 } from "lucide-react";
 import { shareOrCopy } from "@/shared/lib/share";
 
 // ---------------------------------------------------------------------------
@@ -309,74 +303,11 @@ export default function PlacePanel({
           }}
         >
           {data.type === "place" ? (
-            <PlaceDetailView place={data.place} detail={data.placeDetail} />
+            <PlaceDetailTabs place={data.place} detail={data.placeDetail} />
           ) : (
-            <EventContent event={data.event} detail={data.eventDetail} />
+            <EventDetailTabs event={data.event} detail={data.eventDetail} />
           )}
         </div>
-      )}
-    </div>
-  );
-}
-
-/* ---- Event Content ---- */
-function EventContent({
-  event,
-  detail,
-}: {
-  event: Event;
-  detail?: EventDetail | null;
-}) {
-  const description = detail?.description;
-  const locationText = detail?.locationText ?? event.locationText;
-  const links = detail?.links ?? event.links;
-
-  return (
-    <div className="space-y-5">
-      <div>
-        <div className="mb-2 flex items-center gap-2">
-          <EventTypeBadge type={event.eventType as EventType} size="md" />
-        </div>
-        <h2 className="font-display text-headline-sm tracking-editorial text-on-surface mb-1.5 font-extrabold">
-          {event.title}
-        </h2>
-      </div>
-
-      <div className="bg-surface-container space-y-3 rounded-2xl p-4">
-        <div className="text-body-sm flex items-center gap-3">
-          <Calendar className="text-outline h-4 w-4" />
-          <span className="text-on-surface">
-            {event.startDate}
-            {event.endDate ? ` — ${event.endDate}` : ""}
-          </span>
-        </div>
-        {locationText && (
-          <div className="text-body-sm flex items-center gap-3">
-            <MapPin className="text-outline h-4 w-4" />
-            <span className="text-on-surface">{locationText}</span>
-          </div>
-        )}
-      </div>
-
-      {description && (
-        <p className="text-body-sm text-on-surface-variant leading-relaxed whitespace-pre-line">
-          {description}
-        </p>
-      )}
-
-      {links && (
-        <a
-          href={links}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-surface-container hover:bg-surface-container-high flex items-center gap-3 rounded-xl px-4 py-3 transition-colors"
-        >
-          <ExternalLink className="text-primary h-4 w-4" />
-          <span className="text-label-lg text-on-surface flex-1 font-medium">
-            자세히 보기
-          </span>
-          <span className="text-outline">→</span>
-        </a>
       )}
     </div>
   );
