@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Send } from "lucide-react";
+import { Send, Shuffle } from "lucide-react";
 import { toast } from "@/shared/components/ui/toast";
 import { reviewCreateSchema, type ReviewCreateFormData } from "../schemas/reviewForm";
 import {
@@ -11,6 +11,7 @@ import {
   createEventReview,
 } from "../queries/reviewApi";
 import { STORAGE_KEYS, type ReviewTargetType, type ReviewPrefill } from "../constants";
+import { generateRandomNickname } from "../utils/nickname";
 import type { ReviewResponse } from "@/shared/api/client";
 
 interface Props {
@@ -40,17 +41,25 @@ export default function ReviewForm({ onClose, type, targetId }: Props) {
     },
   });
 
-  // localStorage prefill 로드
+  // localStorage prefill 로드 — 닉네임이 없으면 랜덤 추천
   useEffect(() => {
     if (typeof window === "undefined") return;
+    let hasNickname = false;
     try {
       const raw = localStorage.getItem(STORAGE_KEYS.REVIEW_PREFILL);
-      if (!raw) return;
-      const prefill = JSON.parse(raw) as ReviewPrefill;
-      if (prefill.nickname) setValue("nickname", prefill.nickname);
-      if (prefill.email) setValue("email", prefill.email);
+      if (raw) {
+        const prefill = JSON.parse(raw) as ReviewPrefill;
+        if (prefill.nickname) {
+          setValue("nickname", prefill.nickname);
+          hasNickname = true;
+        }
+        if (prefill.email) setValue("email", prefill.email);
+      }
     } catch {
       // ignore
+    }
+    if (!hasNickname) {
+      setValue("nickname", generateRandomNickname());
     }
   }, [setValue]);
 
@@ -96,13 +105,23 @@ export default function ReviewForm({ onClose, type, targetId }: Props) {
         <label className="text-label-md font-bold text-on-surface-variant mb-1 block">
           닉네임 *
         </label>
-        <input
-          type="text"
-          placeholder="뜨개하는고양이"
-          maxLength={50}
-          {...register("nickname")}
-          className={`${inputClass} ${errors.nickname ? "ring-2 ring-destructive/30" : ""}`}
-        />
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="뜨개하는고양이"
+            maxLength={50}
+            {...register("nickname")}
+            className={`${inputClass} ${errors.nickname ? "ring-2 ring-destructive/30" : ""}`}
+          />
+          <button
+            type="button"
+            onClick={() => setValue("nickname", generateRandomNickname())}
+            className="shrink-0 size-11 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-95 transition-all"
+            aria-label="랜덤 닉네임"
+          >
+            <Shuffle className="w-4 h-4" />
+          </button>
+        </div>
         {errors.nickname && (
           <p className="text-destructive text-label-xs mt-1">
             {errors.nickname.message}
