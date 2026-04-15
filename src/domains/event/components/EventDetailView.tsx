@@ -3,6 +3,7 @@
 import type { Event, EventDetail, EventType } from "../types";
 import EventTypeBadge from "./EventTypeBadge";
 import { MapPin, ExternalLink, Calendar } from "lucide-react";
+import { safeHref } from "@/shared/lib/safeHref";
 
 interface Props {
   event: Event;
@@ -12,7 +13,7 @@ interface Props {
 export default function EventDetailView({ event, detail }: Props) {
   const description = detail?.description;
   const locationText = detail?.locationText ?? event.locationText;
-  const links = detail?.links ?? event.links;
+  const links = safeHref(detail?.links ?? event.links);
 
   return (
     <div className="space-y-5">

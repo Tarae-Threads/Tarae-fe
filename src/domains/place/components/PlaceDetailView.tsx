@@ -5,6 +5,7 @@ import CategoryBadge from "./CategoryBadge";
 import StatusBadge from "./StatusBadge";
 import TagChip from "@/shared/components/ui/TagChip";
 import Skeleton from "@/shared/components/ui/Skeleton";
+import { safeHref } from "@/shared/lib/safeHref";
 import {
   MapPin,
   Clock,
@@ -116,9 +117,9 @@ interface Props {
 export default function PlaceDetailView({ place, detail }: Props) {
   const categories = detail?.categories ?? place.categories;
   const tags = detail?.tags ?? place.tags;
-  const instagramUrl = detail?.instagramUrl ?? place.instagramUrl;
-  const websiteUrl = detail?.websiteUrl;
-  const naverMapUrl = detail?.naverMapUrl ?? place.naverMapUrl;
+  const instagramUrl = safeHref(detail?.instagramUrl ?? place.instagramUrl);
+  const websiteUrl = safeHref(detail?.websiteUrl);
+  const naverMapUrl = safeHref(detail?.naverMapUrl ?? place.naverMapUrl);
   const hasLinks = instagramUrl || websiteUrl || naverMapUrl;
   const isLoading = !detail;
 
