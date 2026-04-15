@@ -328,7 +328,8 @@ export const CATEGORY_LABEL: Record<PlaceCategory, string> = {
 
 // localStorage 키: 상수로 관리
 export const STORAGE_KEYS = {
-  TESTER_APPLICATIONS: 'tarae_tester_applications',
+  OWNED_REVIEWS: 'tarae_owned_reviews',
+  REVIEW_PREFILL: 'tarae_review_prefill',
 } as const
 ```
 

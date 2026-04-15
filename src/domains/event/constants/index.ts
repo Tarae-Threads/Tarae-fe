@@ -19,7 +19,3 @@ export const EVENT_TYPE_BG: Record<EventType, string> = {
 };
 
 export const WEEKDAY_NAMES = ["일", "월", "화", "수", "목", "금", "토"];
-
-export const STORAGE_KEYS = {
-  TESTER_APPLICATIONS: "tarae_tester_applications",
-} as const;
