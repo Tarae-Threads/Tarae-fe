@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { fetchEventsForLanding } from "../queries/landingApi";
+import TrackedLink from "@/shared/components/analytics/TrackedLink";
 
 const EVENT_TYPE_CONFIG: Record<
   string,
@@ -57,9 +58,11 @@ export default async function ActiveEventsSection() {
               color: "#7a6840",
             };
             return (
-              <Link
+              <TrackedLink
                 key={event.id}
                 href={`/map?eventId=${event.id}`}
+                event="event_select"
+                params={{ event_id: event.id, source: "landing_active" }}
                 className="bg-surface rounded-2xl p-5 md:p-6 transition-all hover:shadow-xl active:scale-[0.98]"
               >
                 <span
@@ -85,7 +88,7 @@ export default async function ActiveEventsSection() {
                     </p>
                   )}
                 </div>
-              </Link>
+              </TrackedLink>
             );
           })}
         </div>

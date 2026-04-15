@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { fetchPlacesForLanding } from "../queries/landingApi";
+import TrackedLink from "@/shared/components/analytics/TrackedLink";
 
 const REGIONS = ["서울", "경기", "인천", "강원", "충청", "경상", "전라", "제주"];
 
@@ -26,9 +26,11 @@ export default async function RegionShortcutSection() {
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
           {REGIONS.map((region) => (
-            <Link
+            <TrackedLink
               key={region}
               href="/map"
+              event="region_shortcut_click"
+              params={{ region }}
               className="bg-surface rounded-2xl p-4 md:p-5 transition-all hover:shadow-md active:scale-[0.97] flex items-center justify-between"
             >
               <span className="inline-flex items-center gap-2">
@@ -40,7 +42,7 @@ export default async function RegionShortcutSection() {
               <span className="text-label-md font-bold text-outline">
                 {counts[region] ?? 0}
               </span>
-            </Link>
+            </TrackedLink>
           ))}
         </div>
       </div>

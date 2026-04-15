@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Map } from "lucide-react";
+import { track } from "@/shared/lib/analytics";
 
 export default function Header() {
   return (
@@ -25,6 +28,7 @@ export default function Header() {
         </Link>
         <Link
           href="/map"
+          onClick={() => track("landing_cta_click", { cta: "header_map" })}
           className="inline-flex items-center gap-1.5 bg-primary text-white font-bold text-label-md px-4 py-2 rounded-full transition-transform active:scale-95"
         >
           <Map className="w-4 h-4" />

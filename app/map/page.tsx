@@ -28,6 +28,7 @@ import BottomNav from "@/shared/components/layout/BottomNav";
 import SubmitForm from "@/shared/components/layout/SubmitForm";
 import { useModal } from "@/shared/hooks/useModal";
 import { REGION_CENTER } from "@/domains/place/constants";
+import { track } from "@/shared/lib/analytics";
 
 const NaverMap = dynamic(() => import("@/domains/place/components/NaverMap"), {
   ssr: false,
@@ -169,6 +170,7 @@ function HomeContent() {
       setSelectedEventDetail(null);
       handlePlaceSelect(place);
       fetchPlaceDetail(place.id);
+      track("place_select", { place_id: place.id, source: "map" });
       window.history.replaceState(null, "", `/?placeId=${place.id}`);
       if (typeof place.lat === "number" && typeof place.lng === "number") {
         smartPanTo(place.lat, place.lng, 13);
@@ -184,6 +186,7 @@ function HomeContent() {
       setSelectedEventDetail(null);
       handlePlaceSelect(place);
       fetchPlaceDetail(place.id);
+      track("place_select", { place_id: place.id, source: "list" });
       window.history.replaceState(null, "", `/?placeId=${place.id}`);
       if (typeof place.lat === "number" && typeof place.lng === "number") {
         mapRef.current?.panTo(place.lat, place.lng, 14);
@@ -196,6 +199,7 @@ function HomeContent() {
     (eventId: number) => {
       setSelectedPlaceDetail(null);
       setSelectedEventDetail(null);
+      track("event_select", { event_id: eventId });
 
       const fromList = allEvents.find((e) => e.id === eventId);
       if (fromList) {

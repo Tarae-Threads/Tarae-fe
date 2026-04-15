@@ -4,6 +4,7 @@ import type { Event, EventDetail, EventType } from "../types";
 import EventTypeBadge from "./EventTypeBadge";
 import { MapPin, ExternalLink, Calendar } from "lucide-react";
 import { safeHref } from "@/shared/lib/safeHref";
+import { track } from "@/shared/lib/analytics";
 
 interface Props {
   event: Event;
@@ -53,6 +54,7 @@ export default function EventDetailView({ event, detail }: Props) {
           href={links}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => track("external_link", { kind: "event_link" })}
           className="flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors group"
         >
           <ExternalLink className="w-4 h-4 text-primary" />

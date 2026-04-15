@@ -10,6 +10,7 @@ import {
   reviewDeleteSchema,
   type ReviewDeleteFormData,
 } from "../schemas/reviewForm";
+import { track } from "@/shared/lib/analytics";
 
 interface Props {
   onClose: (deleted?: boolean) => void;
@@ -62,6 +63,7 @@ export default function ReviewDeleteConfirm({ onClose, reviewId }: Props) {
     setSubmitting(true);
     try {
       await deleteReview(reviewId, { password: data.password });
+      track("review_delete", { review_id: reviewId });
       toast.success("리뷰가 삭제되었습니다");
       onClose(true);
     } catch {

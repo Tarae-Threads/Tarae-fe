@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { fetchPlacesForLanding } from "../queries/landingApi";
+import TrackedLink from "@/shared/components/analytics/TrackedLink";
 
 const CATEGORIES = [
   {
@@ -58,9 +58,11 @@ export default async function CategoryShortcutSection() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
           {CATEGORIES.map((cat) => (
-            <Link
+            <TrackedLink
               key={cat.name}
               href="/map"
+              event="category_shortcut_click"
+              params={{ category: cat.name }}
               className="group rounded-2xl p-5 md:p-6 transition-all hover:shadow-lg active:scale-[0.97]"
               style={{ background: cat.bg }}
             >
@@ -77,7 +79,7 @@ export default async function CategoryShortcutSection() {
               >
                 {counts[cat.name] ?? 0}곳
               </p>
-            </Link>
+            </TrackedLink>
           ))}
         </div>
       </div>

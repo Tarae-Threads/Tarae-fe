@@ -12,6 +12,7 @@ import {
 } from "../queries/reviewApi";
 import { STORAGE_KEYS, type ReviewTargetType, type ReviewPrefill } from "../constants";
 import { generateRandomNickname } from "../utils/nickname";
+import { track } from "@/shared/lib/analytics";
 import type { ReviewResponse } from "@/shared/api/client";
 
 interface Props {
@@ -87,6 +88,7 @@ export default function ReviewForm({ onClose, type, targetId }: Props) {
         // ignore storage errors
       }
 
+      track("review_submit", { target: type, target_id: targetId });
       toast.success("리뷰가 등록되었습니다");
       onClose(review);
     } catch {

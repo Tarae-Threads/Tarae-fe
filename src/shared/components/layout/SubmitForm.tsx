@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { track, now } from "@/shared/lib/analytics";
 import type { EventType } from "@/domains/event/types";
 import {
   CATEGORY_BG,
@@ -227,6 +228,10 @@ export default function SubmitForm({ onClose }: Props) {
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
+  // 퍼널 추적용 — 오픈 시간 + 성공 여부 플래그
+  const openedAtRef = useRef<number>(now());
+  const succeededRef = useRef(false);
+
   // 카테고리 목록 (API에서 가져옴)
   const [categoryOptions, setCategoryOptions] = useState<
     { value: string; label: string; bg: string; color: string; id: number }[]
@@ -358,6 +363,40 @@ export default function SubmitForm({ onClose }: Props) {
     setEventCoords(null);
   }, [tab]);
 
+  // 모달 오픈 이벤트 (최초 1회)
+  useEffect(() => {
+    track("submit_open", { tab });
+    openedAtRef.current = now();
+    // 언마운트 시 성공 플래그 없으면 이탈로 간주
+    return () => {
+      if (!succeededRef.current) {
+        track("submit_abandon", { flow: stepKey, last_step: step });
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 탭 변경 시에도 submit_open 재발송 (다른 플로우 시작)
+  useEffect(() => {
+    if (openedAtRef.current) {
+      // 초기 마운트 이후 탭 전환한 경우에만
+      track("submit_open", { tab });
+      openedAtRef.current = now();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab]);
+
+  // 스텝 진입 이벤트
+  useEffect(() => {
+    // placeSelect 모드에서는 카드 선택 화면 → step_view 의미 없음 (별도 이벤트 사용)
+    if (stepKey === "placeSelect") return;
+    track("submit_step_view", {
+      flow: stepKey,
+      step,
+      title: titles[step],
+    });
+  }, [stepKey, step, titles]);
+
   // ---------------------------------------------------------------------------
   // 핸들러
   // ---------------------------------------------------------------------------
@@ -407,14 +446,33 @@ export default function SubmitForm({ onClose }: Props) {
   // ---------------------------------------------------------------------------
 
   const validateAndNext = async () => {
+    const failedFields: string[] = [];
+
     if (stepKey === "placeNew") {
       if (step === 0) {
         const valid = await placeForm.trigger(["name", "address"]);
-        if (!valid) return;
+        if (!valid) {
+          const errs = placeForm.formState.errors;
+          if (errs.name) failedFields.push("name");
+          if (errs.address) failedFields.push("address");
+        }
+        if (!valid) {
+          track("submit_validation_error", {
+            flow: stepKey,
+            step,
+            fields: failedFields,
+          });
+          return;
+        }
       }
       if (step === 1) {
         if (selectedCategories.size === 0 && !customCategory.trim()) {
           setCategoryError("카테고리를 선택하거나 직접 입력해주세요");
+          track("submit_validation_error", {
+            flow: stepKey,
+            step,
+            fields: ["category"],
+          });
           return;
         }
       }
@@ -422,6 +480,11 @@ export default function SubmitForm({ onClose }: Props) {
     if (stepKey === "placeUpdate" && step === 0) {
       if (!selectedPlaceId) {
         setPlaceSelectError("장소를 선택해주세요");
+        track("submit_validation_error", {
+          flow: stepKey,
+          step,
+          fields: ["placeId"],
+        });
         return;
       }
     }
@@ -429,11 +492,24 @@ export default function SubmitForm({ onClose }: Props) {
       const titleValid = await eventForm.trigger("title");
       if (!selectedEventType) {
         setEventTypeError("유형을 선택해주세요");
+        track("submit_validation_error", {
+          flow: stepKey,
+          step,
+          fields: ["eventType"],
+        });
         return;
       }
-      if (!titleValid) return;
+      if (!titleValid) {
+        track("submit_validation_error", {
+          flow: stepKey,
+          step,
+          fields: ["title"],
+        });
+        return;
+      }
     }
 
+    track("submit_step_next", { flow: stepKey, step, valid: true });
     setStep((prev) => Math.min(prev + 1, totalSteps - 1));
   };
 
@@ -477,9 +553,17 @@ export default function SubmitForm({ onClose }: Props) {
         note: data.note || undefined,
       });
       toast.success("제보가 등록되었습니다");
+      succeededRef.current = true;
+      track("submit_success", {
+        flow: "placeNew",
+        requestType: "NEW",
+        durationMs: Math.round(now() - openedAtRef.current),
+      });
       onClose();
-    } catch {
-      // axios interceptor handles error toast
+    } catch (err) {
+      const status =
+        (err as { response?: { status?: number } })?.response?.status;
+      track("submit_error", { flow: "placeNew", status });
     } finally {
       setSubmitting(false);
     }
@@ -508,9 +592,17 @@ export default function SubmitForm({ onClose }: Props) {
         note: data.note || undefined,
       });
       toast.success("제보가 등록되었습니다");
+      succeededRef.current = true;
+      track("submit_success", {
+        flow: "placeUpdate",
+        requestType: "UPDATE",
+        durationMs: Math.round(now() - openedAtRef.current),
+      });
       onClose();
-    } catch {
-      // axios interceptor handles error toast
+    } catch (err) {
+      const status =
+        (err as { response?: { status?: number } })?.response?.status;
+      track("submit_error", { flow: "placeUpdate", status });
     } finally {
       setSubmitting(false);
     }
@@ -533,15 +625,23 @@ export default function SubmitForm({ onClose }: Props) {
         description: data.description || undefined,
       });
       toast.success("제보가 등록되었습니다");
+      succeededRef.current = true;
+      track("submit_success", {
+        flow: "event",
+        durationMs: Math.round(now() - openedAtRef.current),
+      });
       onClose();
-    } catch {
-      // axios interceptor handles error toast
+    } catch (err) {
+      const status =
+        (err as { response?: { status?: number } })?.response?.status;
+      track("submit_error", { flow: "event", status });
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleSkipSubmit = () => {
+    track("submit_skip_submit", { flow: stepKey });
     if (stepKey === "placeNew") placeForm.handleSubmit(onPlaceSubmit)();
     if (stepKey === "placeUpdate") updateForm.handleSubmit(onPlaceUpdate)();
     if (stepKey === "event") eventForm.handleSubmit(onEventSubmit)();
@@ -559,6 +659,7 @@ export default function SubmitForm({ onClose }: Props) {
         onClick={() => {
           setPlaceMode("new");
           setStep(0);
+          track("submit_mode_select", { mode: "new" });
         }}
         className="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-low transition-all hover:bg-surface-container active:scale-[0.98]"
       >
@@ -579,6 +680,7 @@ export default function SubmitForm({ onClose }: Props) {
         onClick={() => {
           setPlaceMode("update");
           setStep(0);
+          track("submit_mode_select", { mode: "update" });
         }}
         className="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-low transition-all hover:bg-surface-container active:scale-[0.98]"
       >
@@ -945,7 +1047,10 @@ export default function SubmitForm({ onClose }: Props) {
             {!isFirstStep ? (
               <button
                 type="button"
-                onClick={() => setStep((prev) => prev - 1)}
+                onClick={() => {
+                  track("submit_back", { flow: stepKey, from_step: step });
+                  setStep((prev) => prev - 1);
+                }}
                 className="flex items-center justify-center gap-1 px-4 py-3 rounded-xl bg-surface-container text-on-surface-variant font-bold text-label-md transition-all hover:bg-surface-container-high"
               >
                 <ChevronLeft className="w-4 h-4" /> 이전

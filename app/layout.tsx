@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Providers } from "./providers";
+import GoogleAnalyticsLoader from "@/shared/components/analytics/GoogleAnalyticsLoader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -59,6 +60,7 @@ export default function RootLayout({
           src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
           strategy="lazyOnload"
         />
+        <GoogleAnalyticsLoader />
       </body>
     </html>
   );

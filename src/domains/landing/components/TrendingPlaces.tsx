@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { fetchPlacesForLanding } from "../queries/landingApi";
+import TrackedLink from "@/shared/components/analytics/TrackedLink";
 
 export default async function TrendingPlaces() {
   const places = await fetchPlacesForLanding();
@@ -35,9 +36,11 @@ export default async function TrendingPlaces() {
       <div className="overflow-x-auto hide-scrollbar pl-4 md:pl-8">
         <div className="inline-flex gap-4 pr-4 md:pr-8">
           {trending.map((place, idx) => (
-            <Link
+            <TrackedLink
               key={place.id}
               href={`/map?placeId=${place.id}`}
+              event="place_select"
+              params={{ place_id: place.id, source: "landing_trending" }}
               className="group relative w-[240px] md:w-[280px] shrink-0 bg-surface-container-low rounded-2xl p-5 transition-all hover:shadow-xl active:scale-[0.98]"
             >
               <span className="absolute top-4 right-4 font-display font-extrabold text-display-sm text-primary/20 leading-none">
@@ -64,7 +67,7 @@ export default async function TrendingPlaces() {
                   </span>
                 ))}
               </div>
-            </Link>
+            </TrackedLink>
           ))}
         </div>
       </div>

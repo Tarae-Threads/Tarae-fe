@@ -5,6 +5,7 @@ import type { Event, EventDetail } from "../types";
 import EventDetailView from "./EventDetailView";
 import DetailTabs from "@/shared/components/ui/DetailTabs";
 import ReviewSection from "@/domains/review/components/ReviewSection";
+import { track } from "@/shared/lib/analytics";
 
 interface Props {
   event: Event;
@@ -24,7 +25,10 @@ export default function EventDetailTabs({ event, detail }: Props) {
           { id: "reviews", label: "리뷰" },
         ]}
         activeId={active}
-        onChange={(id) => setActive(id as TabId)}
+        onChange={(id) => {
+          setActive(id as TabId);
+          track("detail_tab_change", { target: "event", tab: id });
+        }}
       />
       <div className="pt-5">
         {active === "info" ? (

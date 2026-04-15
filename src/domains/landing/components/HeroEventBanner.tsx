@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MapPin, ArrowRight, Calendar } from "lucide-react";
 import { fetchEventsForLanding } from "../queries/landingApi";
+import TrackedLink from "@/shared/components/analytics/TrackedLink";
 
 const EVENT_TYPE_LABEL: Record<string, string> = {
   TESTER_RECRUIT: "테스터 모집",
@@ -31,8 +32,10 @@ export default async function HeroEventBanner() {
 
       <div className="relative container mx-auto px-4 md:px-8 py-10 md:py-16">
         {featured ? (
-          <Link
+          <TrackedLink
             href={`/map?eventId=${featured.id}`}
+            event="landing_cta_click"
+            params={{ cta: "hero_event", event_id: featured.id }}
             className="group block relative overflow-hidden rounded-3xl signature-gradient p-8 md:p-14 min-h-[280px] md:min-h-[360px] flex flex-col justify-end editorial-shadow"
           >
             <div
@@ -60,7 +63,7 @@ export default async function HeroEventBanner() {
                 자세히 보기 <ArrowRight className="w-4 h-4" />
               </span>
             </div>
-          </Link>
+          </TrackedLink>
         ) : (
           <div className="relative overflow-hidden rounded-3xl bg-surface-container-low p-8 md:p-14 min-h-[280px] md:min-h-[360px] flex flex-col justify-center editorial-shadow">
             <p className="text-label-md font-bold text-primary uppercase tracking-[0.3em] mb-4">
@@ -73,13 +76,15 @@ export default async function HeroEventBanner() {
             <p className="text-body-lg text-on-surface-variant mb-8 max-w-xl">
               실 가게·공방·뜨개카페부터 이벤트·세일까지 지도에서 한눈에.
             </p>
-            <Link
+            <TrackedLink
               href="/map"
+              event="landing_cta_click"
+              params={{ cta: "hero_map" }}
               className="inline-flex items-center justify-center gap-2 signature-gradient text-white font-bold text-label-lg px-7 py-4 rounded-2xl shadow-lg shadow-primary/25 active:scale-95 transition-transform w-fit"
             >
               <MapPin className="w-5 h-5" />
               지도 탐색하기
-            </Link>
+            </TrackedLink>
           </div>
         )}
       </div>

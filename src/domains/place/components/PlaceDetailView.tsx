@@ -6,6 +6,7 @@ import StatusBadge from "./StatusBadge";
 import TagChip from "@/shared/components/ui/TagChip";
 import Skeleton from "@/shared/components/ui/Skeleton";
 import { safeHref } from "@/shared/lib/safeHref";
+import { track } from "@/shared/lib/analytics";
 import {
   MapPin,
   Clock,
@@ -22,16 +23,19 @@ function LinkCard({
   href,
   label,
   icon,
+  kind,
 }: {
   href: string;
   label: string;
   icon: React.ReactNode;
+  kind: string;
 }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => track("external_link", { kind })}
       className="flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors group"
     >
       <span className="text-primary">{icon}</span>
@@ -177,6 +181,7 @@ export default function PlaceDetailView({ place, detail }: Props) {
             <LinkCard
               href={instagramUrl}
               label="Instagram"
+              kind="instagram"
               icon={<ExternalLink className="w-4 h-4" />}
             />
           )}
@@ -184,6 +189,7 @@ export default function PlaceDetailView({ place, detail }: Props) {
             <LinkCard
               href={websiteUrl}
               label="웹사이트"
+              kind="website"
               icon={<ExternalLink className="w-4 h-4" />}
             />
           )}
@@ -191,6 +197,7 @@ export default function PlaceDetailView({ place, detail }: Props) {
             <LinkCard
               href={naverMapUrl}
               label="네이버 지도"
+              kind="naver_map"
               icon={<MapPin className="w-4 h-4" />}
             />
           )}

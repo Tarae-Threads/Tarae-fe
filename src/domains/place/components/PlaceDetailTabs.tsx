@@ -6,6 +6,7 @@ import PlaceDetailView from "./PlaceDetailView";
 import PlaceBrandsView from "./PlaceBrandsView";
 import DetailTabs from "@/shared/components/ui/DetailTabs";
 import ReviewSection from "@/domains/review/components/ReviewSection";
+import { track } from "@/shared/lib/analytics";
 
 interface Props {
   place: Place;
@@ -27,7 +28,10 @@ export default function PlaceDetailTabs({ place, detail }: Props) {
           { id: "reviews", label: "리뷰" },
         ]}
         activeId={active}
-        onChange={(id) => setActive(id as TabId)}
+        onChange={(id) => {
+          setActive(id as TabId);
+          track("detail_tab_change", { target: "place", tab: id });
+        }}
       />
       <div className="pt-5">
         {active === "info" && <PlaceDetailView place={place} detail={detail} />}
