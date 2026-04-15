@@ -53,7 +53,7 @@ export default function NavBar({ activeTab, onTabChange, onSubmit }: Props) {
             key={id}
             onClick={() => onTabChange(id)}
             aria-label={label}
-            className={`relative flex flex-col items-center justify-center w-12 h-14 rounded-xl transition-all ${
+            className={`relative flex flex-col items-center justify-center w-12 h-14 rounded-xl cursor-pointer transition-all ${
               isActive
                 ? 'text-primary'
                 : 'text-outline hover:bg-surface-container hover:text-on-surface'
@@ -75,9 +75,10 @@ export default function NavBar({ activeTab, onTabChange, onSubmit }: Props) {
       <button
         onClick={onSubmit}
         aria-label="제보하기"
-        className="w-10 h-10 signature-gradient text-white rounded-xl flex items-center justify-center shadow-lg active:scale-95 transition-transform"
+        className="w-12 h-14 signature-gradient text-white rounded-xl flex flex-col items-center justify-center shadow-lg cursor-pointer active:scale-95 transition-transform"
       >
         <Plus className="w-5 h-5" />
+        <span className="text-label-2xs mt-1 font-bold">제보</span>
       </button>
     </nav>
   )

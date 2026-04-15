@@ -36,7 +36,7 @@ export default function BottomNav({ activeTab, onTabChange, onSubmit }: Props) {
           <button
             key={id}
             onClick={() => onTabChange(id)}
-            className={`relative flex flex-col items-center justify-center px-5 py-2 active:scale-90 transition-transform ${
+            className={`relative flex flex-col items-center justify-center px-5 py-2 cursor-pointer active:scale-90 transition-transform ${
               isActive ? 'text-primary' : 'text-outline'
             }`}
           >
@@ -50,7 +50,7 @@ export default function BottomNav({ activeTab, onTabChange, onSubmit }: Props) {
       })}
       <button
         onClick={onSubmit}
-        className="flex flex-col items-center justify-center px-5 py-2 text-outline active:scale-90 transition-transform"
+        className="flex flex-col items-center justify-center px-5 py-2 text-outline cursor-pointer active:scale-90 transition-transform"
       >
         <Plus className="w-5 h-5" aria-hidden="true" />
         <span className="text-label-2xs mt-1 font-bold">제보</span>
