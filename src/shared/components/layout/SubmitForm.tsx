@@ -413,8 +413,8 @@ export default function SubmitForm({ onClose }: Props) {
         if (!valid) return;
       }
       if (step === 1) {
-        if (selectedCategories.size === 0) {
-          setCategoryError("카테고리를 선택해주세요");
+        if (selectedCategories.size === 0 && !customCategory.trim()) {
+          setCategoryError("카테고리를 선택하거나 직접 입력해주세요");
           return;
         }
       }
@@ -442,8 +442,8 @@ export default function SubmitForm({ onClose }: Props) {
   // ---------------------------------------------------------------------------
 
   const onPlaceSubmit = async (data: PlaceSubmissionData) => {
-    if (selectedCategories.size === 0) {
-      setCategoryError("카테고리를 선택해주세요");
+    if (selectedCategories.size === 0 && !customCategory.trim()) {
+      setCategoryError("카테고리를 선택하거나 직접 입력해주세요");
       return;
     }
     setSubmitting(true);
