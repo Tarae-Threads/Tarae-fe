@@ -291,10 +291,13 @@ export default function SubmitForm({ onClose }: Props) {
       .catch(() => {});
   }, []);
 
-  // Geocoding 좌표
+  // Geocoding 좌표 (장소 / 이벤트 각각)
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
     null,
   );
+  const [eventCoords, setEventCoords] = useState<
+    { lat: number; lng: number } | null
+  >(null);
 
   // Place form (new)
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
@@ -352,6 +355,7 @@ export default function SubmitForm({ onClose }: Props) {
   useEffect(() => {
     setStep(0);
     setPlaceMode(null);
+    setEventCoords(null);
   }, [tab]);
 
   // ---------------------------------------------------------------------------
@@ -524,6 +528,8 @@ export default function SubmitForm({ onClose }: Props) {
         startDate: data.startDate,
         endDate: data.endDate || undefined,
         locationText,
+        lat: eventCoords?.lat,
+        lng: eventCoords?.lng,
         description: data.description || undefined,
       });
       toast.success("제보가 등록되었습니다");
@@ -748,6 +754,19 @@ export default function SubmitForm({ onClose }: Props) {
         const selected =
           data.userSelectedType === "R" ? data.roadAddress : data.jibunAddress;
         eventForm.setValue("address", selected, { shouldValidate: true });
+        try {
+          const res = await fetch("/api/geocode", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query: selected }),
+          });
+          if (res.ok) {
+            const { lat, lng } = await res.json();
+            setEventCoords({ lat, lng });
+          }
+        } catch {
+          // 좌표 변환 실패해도 주소 입력은 유지
+        }
       },
     }).open();
   };
@@ -801,6 +820,11 @@ export default function SubmitForm({ onClose }: Props) {
               placeholder="층, 호수 등 상세주소"
               registration={eventForm.register("addressDetail")}
             />
+            {eventCoords && (
+              <p className="text-label-xs text-outline">
+                좌표: {eventCoords.lat.toFixed(5)}, {eventCoords.lng.toFixed(5)}
+              </p>
+            )}
           </div>
         );
       case 1:

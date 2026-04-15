@@ -24,7 +24,15 @@ export const getEvent = async (id: number) => {
   return data.data
 }
 
-export const requestEvent = async (body: EventRequestInput) => {
+// BE EventRequestInput 스펙에는 lat/lng가 아직 노출되지 않았지만
+// 응답 스키마(EventListResponse 등)에 이미 lat/lng가 있어 FE에서 선제 전송.
+// BE 스펙이 추가되면 generate:api 재실행 시 EventRequestInput 타입으로 통합된다.
+export type EventRequestInputExt = EventRequestInput & {
+  lat?: number
+  lng?: number
+}
+
+export const requestEvent = async (body: EventRequestInputExt) => {
   const { data } = await apiClient.post<{ data: RequestResponse }>(
     "/api/requests/events",
     body
