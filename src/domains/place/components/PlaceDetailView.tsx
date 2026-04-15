@@ -1,6 +1,6 @@
 "use client";
 
-import type { Place, PlaceDetail, BrandInfo } from "../types";
+import type { Place, PlaceDetail } from "../types";
 import CategoryBadge from "./CategoryBadge";
 import StatusBadge from "./StatusBadge";
 import TagChip from "@/shared/components/ui/TagChip";
@@ -12,45 +12,7 @@ import {
   XCircle,
   ExternalLink,
   ChevronRight,
-  PenTool,
-  Scissors,
-  Volleyball,
-  BookOpen,
 } from "lucide-react";
-
-// ---------------------------------------------------------------------------
-// 브랜드 타입 라벨
-// ---------------------------------------------------------------------------
-
-const BRAND_TYPE_CONFIG: Record<
-  string,
-  { label: string; Icon: typeof Volleyball; iconClass: string; bg: string }
-> = {
-  YARN: {
-    label: "실",
-    Icon: Volleyball,
-    iconClass: "w-4 h-4 text-primary",
-    bg: "bg-primary-fixed",
-  },
-  NEEDLE: {
-    label: "바늘",
-    Icon: PenTool,
-    iconClass: "w-4 h-4 text-secondary",
-    bg: "bg-secondary-container",
-  },
-  NOTIONS: {
-    label: "부자재",
-    Icon: Scissors,
-    iconClass: "w-4 h-4 text-warmyellow-container",
-    bg: "bg-warmyellow",
-  },
-  PATTERNBOOK: {
-    label: "도서",
-    Icon: BookOpen,
-    iconClass: "w-4 h-4 text-on-surface-variant",
-    bg: "bg-surface-container-high",
-  },
-};
 
 // ---------------------------------------------------------------------------
 // 링크 카드
@@ -196,68 +158,6 @@ export default function PlaceDetailView({ place, detail }: Props) {
             </div>
           )}
 
-          {/* 브랜드 */}
-          {detail.brands.length > 0 && (
-            <div className="bg-surface-container rounded-2xl p-4">
-              <p className="text-label-sm font-bold text-on-surface-variant mb-3">
-                취급 브랜드
-              </p>
-              <div className="space-y-3">
-                {(() => {
-                  const grouped = detail.brands.reduce<
-                    Record<string, BrandInfo[]>
-                  >((acc, b) => {
-                    if (!acc[b.type]) acc[b.type] = [];
-                    acc[b.type].push(b);
-                    return acc;
-                  }, {});
-                  const orderedTypes = ["YARN", "NEEDLE", "NOTIONS", "PATTERNBOOK"].filter(
-                    (t) => grouped[t],
-                  );
-                  // 혹시 알 수 없는 타입이 있으면 뒤에 추가
-                  Object.keys(grouped).forEach((t) => {
-                    if (!orderedTypes.includes(t)) orderedTypes.push(t);
-                  });
-                  return orderedTypes.map((type, idx) => {
-                    const items = grouped[type];
-                    const config = BRAND_TYPE_CONFIG[type];
-                    const IconComp = config?.Icon;
-                    return (
-                      <div key={type}>
-                        <div className="flex items-start gap-3">
-                          <div
-                            className={`flex size-8 items-center justify-center rounded-lg ${config?.bg ?? "bg-surface-container-high"} shrink-0`}
-                          >
-                            {IconComp && (
-                              <IconComp className={config.iconClass} />
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-label-sm font-bold text-on-surface mb-1">
-                              {config?.label ?? type}
-                            </p>
-                            <div className="flex flex-wrap gap-1">
-                              {items.map((b) => (
-                                <span
-                                  key={b.id}
-                                  className="px-2.5 py-1 rounded-full bg-surface text-on-surface-variant text-label-xs font-medium"
-                                >
-                                  {b.name}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        {idx < orderedTypes.length - 1 && (
-                          <div className="border-t border-outline-variant/20 mt-3" />
-                        )}
-                      </div>
-                    );
-                  });
-                })()}
-              </div>
-            </div>
-          )}
         </>
       )}
 
