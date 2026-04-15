@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Map } from "lucide-react";
 
 export default function Header() {
@@ -7,10 +8,20 @@ export default function Header() {
       <div className="container mx-auto px-4 md:px-8 h-14 flex items-center justify-between">
         <Link
           href="/"
-          className="font-display font-extrabold text-title-md text-primary"
           aria-label="타래 홈"
+          className="inline-flex items-center gap-2"
         >
-          타래
+          <Image
+            src="/icon-192.png"
+            alt=""
+            width={28}
+            height={28}
+            className="rounded-full"
+            priority
+          />
+          <span className="font-display font-extrabold text-title-md text-primary">
+            타래
+          </span>
         </Link>
         <Link
           href="/map"

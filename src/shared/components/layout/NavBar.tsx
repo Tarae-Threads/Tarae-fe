@@ -1,7 +1,8 @@
 'use client'
 
 import Image from 'next/image'
-import { Map, Calendar, Plus } from 'lucide-react'
+import Link from 'next/link'
+import { Home, Map, Calendar, Plus } from 'lucide-react'
 
 export type NavTab = 'places' | 'events'
 
@@ -19,10 +20,30 @@ const tabs: { id: NavTab; icon: typeof Map; label: string }[] = [
 export default function NavBar({ activeTab, onTabChange, onSubmit }: Props) {
   return (
     <nav className="hidden md:flex flex-col items-center w-16 shrink-0 h-full bg-surface py-4 gap-1">
-      {/* Logo */}
-      <div className="mb-5 w-8 h-8 rounded-full overflow-hidden">
-        <Image src="/favicon.ico" alt="타래" width={32} height={32} className="object-cover" />
-      </div>
+      {/* Logo → Home */}
+      <Link
+        href="/"
+        aria-label="홈"
+        className="mb-5 w-8 h-8 rounded-full overflow-hidden"
+      >
+        <Image
+          src="/favicon.ico"
+          alt="타래"
+          width={32}
+          height={32}
+          className="object-cover"
+        />
+      </Link>
+
+      {/* Home */}
+      <Link
+        href="/"
+        aria-label="홈"
+        className="relative flex flex-col items-center justify-center w-12 h-14 rounded-xl text-outline hover:bg-surface-container hover:text-on-surface transition-all"
+      >
+        <Home className="w-5 h-5" />
+        <span className="text-label-2xs mt-1 font-bold">홈</span>
+      </Link>
 
       {/* Tabs */}
       {tabs.map(({ id, icon: Icon, label }) => {

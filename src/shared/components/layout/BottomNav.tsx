@@ -1,6 +1,7 @@
 'use client'
 
-import { Map, Calendar, Plus } from 'lucide-react'
+import Link from 'next/link'
+import { Home, Map, Calendar, Plus } from 'lucide-react'
 import type { NavTab } from './NavBar'
 
 interface Props {
@@ -16,7 +17,19 @@ const tabs: { id: NavTab; icon: typeof Map; label: string }[] = [
 
 export default function BottomNav({ activeTab, onTabChange, onSubmit }: Props) {
   return (
-    <nav aria-label="하단 내비게이션" className="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest z-50 shadow-[0_-4px_12px_rgba(29,27,22,0.04)]">
+    <nav
+      aria-label="하단 내비게이션"
+      className="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest z-50 shadow-[0_-4px_12px_rgba(29,27,22,0.04)]"
+    >
+      <Link
+        href="/"
+        aria-label="홈"
+        className="flex flex-col items-center justify-center px-5 py-2 text-outline active:scale-90 transition-transform"
+      >
+        <Home className="w-5 h-5" aria-hidden="true" />
+        <span className="text-label-2xs mt-1 font-bold">홈</span>
+      </Link>
+
       {tabs.map(({ id, icon: Icon, label }) => {
         const isActive = activeTab === id
         return (
