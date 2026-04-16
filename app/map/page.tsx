@@ -225,7 +225,9 @@ function HomeContent() {
               endDate: detail.endDate,
               locationText: detail.locationText,
               active: detail.active,
-              links: detail.links,
+              instagramUrl: detail.instagramUrl,
+              websiteUrl: detail.websiteUrl,
+              naverMapUrl: detail.naverMapUrl,
             });
           }
           if (typeof detail.lat === "number" && typeof detail.lng === "number") {

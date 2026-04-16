@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "Tarae API",
-        "description": "\ud0c0\ub798 \u2014 \ub728\uac1c \ucee4\ubba4\ub2c8\ud2f0 \uc11c\ube44\uc2a4 API",
+        "description": "타래 — 뜨개 커뮤니티 서비스 API",
         "version": "v1"
     },
     "servers": [
@@ -13,37 +13,37 @@
     ],
     "tags": [
         {
-            "name": "\ub9ac\ubdf0",
-            "description": "\uc7a5\uc18c/\uc774\ubca4\ud2b8 \ub9ac\ubdf0 API"
+            "name": "리뷰",
+            "description": "장소/이벤트 리뷰 API"
         },
         {
-            "name": "\uc7a5\uc18c",
-            "description": "\ub728\uac1c \uad00\ub828 \uc7a5\uc18c API"
+            "name": "장소",
+            "description": "뜨개 관련 장소 API"
         },
         {
-            "name": "\ub4f1\ub85d \uc694\uccad",
-            "description": "\uc7a5\uc18c/\uc774\ubca4\ud2b8 \ub4f1\ub85d \uc694\uccad API"
+            "name": "등록 요청",
+            "description": "장소/이벤트 등록 요청 API"
         },
         {
-            "name": "\uc774\ubca4\ud2b8",
-            "description": "\ub728\uac1c \uad00\ub828 \uc774\ubca4\ud2b8/\ud31d\uc5c5/\uc138\uc77c API"
+            "name": "이벤트",
+            "description": "뜨개 관련 이벤트/팝업/세일 API"
         },
         {
-            "name": "\uce74\ud14c\uace0\ub9ac",
-            "description": "\uce74\ud14c\uace0\ub9ac API"
+            "name": "카테고리",
+            "description": "카테고리 API"
         },
         {
-            "name": "\ube0c\ub79c\ub4dc",
-            "description": "\ube0c\ub79c\ub4dc API"
+            "name": "브랜드",
+            "description": "브랜드 API"
         }
     ],
     "paths": {
         "/api/requests/places": {
             "post": {
                 "tags": [
-                    "\ub4f1\ub85d \uc694\uccad"
+                    "등록 요청"
                 ],
-                "summary": "\uc7a5\uc18c \ub4f1\ub85d \uc694\uccad",
+                "summary": "장소 등록 요청",
                 "operationId": "requestPlace",
                 "requestBody": {
                     "content": {
@@ -57,7 +57,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "\uc694\uccad \ub4f1\ub85d \uc131\uacf5",
+                        "description": "요청 등록 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -67,7 +67,7 @@
                         }
                     },
                     "400": {
-                        "description": "\uc720\ud6a8\ud558\uc9c0 \uc54a\uc740 \uc694\uccad \uac12",
+                        "description": "유효하지 않은 요청 값",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -82,9 +82,9 @@
         "/api/requests/events": {
             "post": {
                 "tags": [
-                    "\ub4f1\ub85d \uc694\uccad"
+                    "등록 요청"
                 ],
-                "summary": "\uc774\ubca4\ud2b8 \ub4f1\ub85d \uc694\uccad",
+                "summary": "이벤트 등록 요청",
                 "operationId": "requestEvent",
                 "requestBody": {
                     "content": {
@@ -98,7 +98,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "\uc694\uccad \ub4f1\ub85d \uc131\uacf5",
+                        "description": "요청 등록 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -108,7 +108,7 @@
                         }
                     },
                     "400": {
-                        "description": "\uc720\ud6a8\ud558\uc9c0 \uc54a\uc740 \uc694\uccad \uac12",
+                        "description": "유효하지 않은 요청 값",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -123,15 +123,15 @@
         "/api/places/{placeId}/reviews": {
             "get": {
                 "tags": [
-                    "\ub9ac\ubdf0"
+                    "리뷰"
                 ],
-                "summary": "\uc7a5\uc18c \ub9ac\ubdf0 \ubaa9\ufffd\ufffd \uc870\ud68c",
+                "summary": "장소 리뷰 목록 조회",
                 "operationId": "getPlaceReviews",
                 "parameters": [
                     {
                         "name": "placeId",
                         "in": "path",
-                        "description": "\uc7a5\uc18c ID",
+                        "description": "장소 ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -141,7 +141,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "description": "조회 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -154,15 +154,15 @@
             },
             "post": {
                 "tags": [
-                    "\ub9ac\ubdf0"
+                    "리뷰"
                 ],
-                "summary": "\uc7a5\uc18c \ub9ac\ubdf0 \uc791\uc131",
+                "summary": "장소 리뷰 작성",
                 "operationId": "createPlaceReview",
                 "parameters": [
                     {
                         "name": "placeId",
                         "in": "path",
-                        "description": "\uc7a5\uc18c ID",
+                        "description": "장소 ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -182,7 +182,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "\uc791\uc131 \uc131\uacf5",
+                        "description": "작성 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -192,7 +192,7 @@
                         }
                     },
                     "404": {
-                        "description": "\uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc7a5\uc18c",
+                        "description": "존재하지 않는 장소",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -207,15 +207,15 @@
         "/api/events/{eventId}/reviews": {
             "get": {
                 "tags": [
-                    "\ub9ac\ubdf0"
+                    "리뷰"
                 ],
-                "summary": "\uc774\ubca4\ud2b8 \ub9ac\ubdf0 \ubaa9\ub85d \uc870\ud68c",
+                "summary": "이벤트 리뷰 목록 조회",
                 "operationId": "getEventReviews",
                 "parameters": [
                     {
                         "name": "eventId",
                         "in": "path",
-                        "description": "\uc774\ubca4\ud2b8 ID",
+                        "description": "이벤트 ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -225,7 +225,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "description": "조회 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -238,15 +238,15 @@
             },
             "post": {
                 "tags": [
-                    "\ub9ac\ubdf0"
+                    "리뷰"
                 ],
-                "summary": "\uc774\ubca4\ud2b8 \ub9ac\ubdf0 \uc791\uc131",
+                "summary": "이벤트 리뷰 작성",
                 "operationId": "createEventReview",
                 "parameters": [
                     {
                         "name": "eventId",
                         "in": "path",
-                        "description": "\uc774\ubca4\ud2b8 ID",
+                        "description": "이벤트 ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -266,7 +266,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "\uc791\uc131 \uc131\uacf5",
+                        "description": "작성 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -276,7 +276,7 @@
                         }
                     },
                     "404": {
-                        "description": "\uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc774\ubca4\ud2b8",
+                        "description": "존재하지 않는 이벤트",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -288,18 +288,122 @@
                 }
             }
         },
+        "/admin/api/tags": {
+            "post": {
+                "tags": [
+                    "admin-master-api-controller"
+                ],
+                "operationId": "createTag",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuickCreateResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/api/categories": {
+            "post": {
+                "tags": [
+                    "admin-master-api-controller"
+                ],
+                "operationId": "createCategory",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuickCreateResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/api/brands": {
+            "post": {
+                "tags": [
+                    "admin-master-api-controller"
+                ],
+                "operationId": "createBrand",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "YARN",
+                                "NEEDLE",
+                                "NOTIONS",
+                                "PATTERNBOOK"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuickCreateResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/places": {
             "get": {
                 "tags": [
-                    "\uc7a5\uc18c"
+                    "장소"
                 ],
-                "summary": "\uc7a5\uc18c \ubaa9\ub85d \uc870\ud68c",
+                "summary": "장소 목록 조회",
                 "operationId": "getPlaces",
                 "parameters": [
                     {
                         "name": "keyword",
                         "in": "query",
-                        "description": "\uac80\uc0c9\uc5b4 (\uc7a5\uc18c\uba85, \uc8fc\uc18c, \ud0dc\uadf8, \ube0c\ub79c\ub4dc \ud1b5\ud569 \uac80\uc0c9)",
+                        "description": "검색어 (장소명, 주소, 태그, 브랜드 통합 검색)",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -308,7 +412,7 @@
                     {
                         "name": "region",
                         "in": "query",
-                        "description": "\uc9c0\uc5ed \ud544\ud130 (\uc608: \uc11c\uc6b8, \uacbd\uae30)",
+                        "description": "지역 필터 (예: 서울, 경기)",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -317,7 +421,7 @@
                     {
                         "name": "categoryId",
                         "in": "query",
-                        "description": "\uce74\ud14c\uace0\ub9ac ID",
+                        "description": "카테고리 ID",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -327,7 +431,7 @@
                     {
                         "name": "tagId",
                         "in": "query",
-                        "description": "\ud0dc\uadf8 ID",
+                        "description": "태그 ID",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -337,7 +441,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "description": "조회 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -352,15 +456,15 @@
         "/api/places/{id}": {
             "get": {
                 "tags": [
-                    "\uc7a5\uc18c"
+                    "장소"
                 ],
-                "summary": "\uc7a5\uc18c \uc0c1\uc138 \uc870\ud68c",
+                "summary": "장소 상세 조회",
                 "operationId": "getPlace",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "\uc7a5\uc18c ID",
+                        "description": "장소 ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -370,7 +474,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "description": "조회 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -380,7 +484,7 @@
                         }
                     },
                     "404": {
-                        "description": "\uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc7a5\uc18c",
+                        "description": "존재하지 않는 장소",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -395,15 +499,15 @@
         "/api/events": {
             "get": {
                 "tags": [
-                    "\uc774\ubca4\ud2b8"
+                    "이벤트"
                 ],
-                "summary": "\uc774\ubca4\ud2b8 \ubaa9\ub85d \uc870\ud68c",
+                "summary": "이벤트 목록 조회",
                 "operationId": "getEvents",
                 "parameters": [
                     {
                         "name": "eventType",
                         "in": "query",
-                        "description": "\uc774\ubca4\ud2b8 \ud0c0\uc785 (TESTER_RECRUIT, SALE, EVENT_POPUP)",
+                        "description": "이벤트 타입 (TESTER_RECRUIT, SALE, EVENT_POPUP)",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -413,20 +517,11 @@
                                 "EVENT_POPUP"
                             ]
                         }
-                    },
-                    {
-                        "name": "active",
-                        "in": "query",
-                        "description": "\ud65c\uc131 \uc5ec\ubd80 (\uae30\ubcf8\uac12: true)",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean"
-                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "description": "조회 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -441,15 +536,15 @@
         "/api/events/{id}": {
             "get": {
                 "tags": [
-                    "\uc774\ubca4\ud2b8"
+                    "이벤트"
                 ],
-                "summary": "\uc774\ubca4\ud2b8 \uc0c1\uc138 \uc870\ud68c",
+                "summary": "이벤트 상세 조회",
                 "operationId": "getEvent",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "\uc774\ubca4\ud2b8 ID",
+                        "description": "이벤트 ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -459,7 +554,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "description": "조회 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -469,7 +564,7 @@
                         }
                     },
                     "404": {
-                        "description": "\uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc774\ubca4\ud2b8",
+                        "description": "존재하지 않는 이벤트",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -484,13 +579,13 @@
         "/api/categories": {
             "get": {
                 "tags": [
-                    "\uce74\ud14c\uace0\ub9ac"
+                    "카테고리"
                 ],
-                "summary": "\uce74\ud14c\uace0\ub9ac \ubaa9\ub85d \uc870\ud68c",
+                "summary": "카테고리 목록 조회",
                 "operationId": "getCategories",
                 "responses": {
                     "200": {
-                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "description": "조회 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -505,13 +600,13 @@
         "/api/brands": {
             "get": {
                 "tags": [
-                    "\ube0c\ub79c\ub4dc"
+                    "브랜드"
                 ],
-                "summary": "\ud0c0\uc785\ubcc4 \ube0c\ub79c\ub4dc \ubaa9\ub85d \uc870\ud68c",
+                "summary": "타입별 브랜드 목록 조회",
                 "operationId": "getBrands",
                 "responses": {
                     "200": {
-                        "description": "\uc870\ud68c \uc131\uacf5",
+                        "description": "조회 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -526,15 +621,15 @@
         "/api/reviews/{reviewId}": {
             "delete": {
                 "tags": [
-                    "\ub9ac\ubdf0"
+                    "리뷰"
                 ],
-                "summary": "\ub9ac\ubdf0 \uc0ad\uc81c (\ube44\ubc00\ubc88\ud638 \uac80\uc99d)",
+                "summary": "리뷰 삭제 (비밀번호 검증)",
                 "operationId": "deleteReview",
                 "parameters": [
                     {
                         "name": "reviewId",
                         "in": "path",
-                        "description": "\ufffd\ufffd\ufffd\ubdf0 ID",
+                        "description": "리뷰 ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -554,7 +649,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "\uc0ad\uc81c \uc131\uacf5",
+                        "description": "삭제 성공",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -564,7 +659,7 @@
                         }
                     },
                     "400": {
-                        "description": "\ube44\ubc00\ubc88\ud638 \ubd88\uc77c\uce58",
+                        "description": "비밀번호 불일치",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -574,7 +669,7 @@
                         }
                     },
                     "404": {
-                        "description": "\uc874\uc7ac\ud558\uc9c0 \ufffd\ufffd\ub294 \ub9ac\ubdf0",
+                        "description": "존재하지 않는 리뷰",
                         "content": {
                             "*/*": {
                                 "schema": {
@@ -707,12 +802,12 @@
             },
             "RequestResponse": {
                 "type": "object",
-                "description": "\ub4f1\ub85d \uc694\uccad \uc751\ub2f5",
+                "description": "등록 요청 응답",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\uc0dd\uc131\ub41c \uc694\uccad ID",
+                        "description": "생성된 요청 ID",
                         "example": 1
                     }
                 },
@@ -748,6 +843,21 @@
                     },
                     "description": {
                         "type": "string"
+                    },
+                    "lat": {
+                        "type": "number"
+                    },
+                    "lng": {
+                        "type": "number"
+                    },
+                    "instagramUrl": {
+                        "type": "string"
+                    },
+                    "websiteUrl": {
+                        "type": "string"
+                    },
+                    "naverMapUrl": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -758,25 +868,25 @@
             },
             "ReviewCreateRequest": {
                 "type": "object",
-                "description": "\ub9ac\ubdf0 \uc791\uc131 \uc694\uccad",
+                "description": "리뷰 작성 요청",
                 "properties": {
                     "nickname": {
                         "type": "string",
-                        "description": "\ub2c9\ub124\uc784",
-                        "example": "\ub728\uac1c\ud558\ub294\uace0\uc591\uc774",
+                        "description": "닉네임",
+                        "example": "뜨개하는고양이",
                         "maxLength": 50,
                         "minLength": 0
                     },
                     "email": {
                         "type": "string",
-                        "description": "\uc774\uba54\uc77c",
+                        "description": "이메일",
                         "example": "cat@example.com",
                         "maxLength": 100,
                         "minLength": 0
                     },
                     "password": {
                         "type": "string",
-                        "description": "\ube44\ubc00\ubc88\ud638 (\uc0ad\uc81c \uc2dc \uc0ac\uc6a9, 4~20\uc790)",
+                        "description": "비밀번호 (삭제 시 사용, 4~20자)",
                         "example": 1234,
                         "maxLength": 20,
                         "minLength": 4,
@@ -784,8 +894,8 @@
                     },
                     "content": {
                         "type": "string",
-                        "description": "\ub9ac\ubdf0 \ub0b4\uc6a9",
-                        "example": "\uc2e4 \uc885\ub958\uac00 \ub2e4\uc591\ud558\uace0 \uc0ac\uc7a5\ub2d8\uc774 \uce5c\uc808\ud574\uc694!",
+                        "description": "리뷰 내용",
+                        "example": "실 종류가 다양하고 사장님이 친절해요!",
                         "minLength": 1
                     }
                 },
@@ -809,27 +919,27 @@
             },
             "ReviewResponse": {
                 "type": "object",
-                "description": "\ub9ac\ubdf0 \uc751\ub2f5",
+                "description": "리뷰 응답",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\ub9ac\ubdf0 ID",
+                        "description": "리뷰 ID",
                         "example": 1
                     },
                     "nickname": {
                         "type": "string",
-                        "description": "\ub2c9\ub124\uc784",
-                        "example": "\ub728\uac1c\ud558\ub294\uace0\uc591\uc774"
+                        "description": "닉네임",
+                        "example": "뜨개하는고양이"
                     },
                     "content": {
                         "type": "string",
-                        "description": "\ub9ac\ubdf0 \ub0b4\uc6a9"
+                        "description": "리뷰 내용"
                     },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "\uc791\uc131\uc77c\uc2dc"
+                        "description": "작성일시"
                     }
                 },
                 "required": [
@@ -837,6 +947,25 @@
                     "createdAt",
                     "id",
                     "nickname"
+                ]
+            },
+            "QuickCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
                 ]
             },
             "ApiResponseListPlaceListResponse": {
@@ -855,22 +984,22 @@
             },
             "BrandDto": {
                 "type": "object",
-                "description": "\ube0c\ub79c\ub4dc \uc694\uc57d \uc815\ubcf4",
+                "description": "브랜드 요약 정보",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\ube0c\ub79c\ub4dc ID",
+                        "description": "브랜드 ID",
                         "example": 1
                     },
                     "name": {
                         "type": "string",
-                        "description": "\ube0c\ub79c\ub4dc\uba85",
-                        "example": "\ub4dc\ubbf8\ud2b8\ub9ac\uc544"
+                        "description": "브랜드명",
+                        "example": "드미트리아"
                     },
                     "type": {
                         "type": "string",
-                        "description": "\ube0c\ub79c\ub4dc \uc720\ud615",
+                        "description": "브랜드 유형",
                         "example": "YARN"
                     }
                 },
@@ -882,18 +1011,18 @@
             },
             "CategoryDto": {
                 "type": "object",
-                "description": "\uce74\ud14c\uace0\ub9ac \uc694\uc57d \uc815\ubcf4",
+                "description": "카테고리 요약 정보",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\uce74\ud14c\uace0\ub9ac ID",
+                        "description": "카테고리 ID",
                         "example": 1
                     },
                     "name": {
                         "type": "string",
-                        "description": "\uce74\ud14c\uace0\ub9ac\uba85",
-                        "example": "\uacf5\ubc29"
+                        "description": "카테고리명",
+                        "example": "공방"
                     }
                 },
                 "required": [
@@ -903,75 +1032,79 @@
             },
             "PlaceListResponse": {
                 "type": "object",
-                "description": "\uc7a5\uc18c \ubaa9\ub85d \uc751\ub2f5",
+                "description": "장소 목록 응답",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\uc7a5\uc18c ID",
+                        "description": "장소 ID",
                         "example": 1
                     },
                     "name": {
                         "type": "string",
-                        "description": "\uc7a5\uc18c\uba85",
-                        "example": "\uc2e4\uacfc \ubc14\ub298"
+                        "description": "장소명",
+                        "example": "실과 바늘"
                     },
                     "region": {
                         "type": "string",
-                        "description": "\uc9c0\uc5ed",
-                        "example": "\uc11c\uc6b8"
+                        "description": "지역",
+                        "example": "서울"
                     },
                     "district": {
                         "type": "string",
-                        "description": "\ub3d9\ub124",
-                        "example": "\uc131\uc218"
+                        "description": "동네",
+                        "example": "성수"
                     },
                     "address": {
                         "type": "string",
-                        "description": "\uc8fc\uc18c",
-                        "example": "\uc11c\uc6b8 \uc131\ub3d9\uad6c \uc5f0\ubb34\uc7a5\uae38 1"
+                        "description": "주소",
+                        "example": "서울 성동구 연무장길 1"
                     },
                     "lat": {
                         "type": "number",
-                        "description": "\uc704\ub3c4"
+                        "description": "위도"
                     },
                     "lng": {
                         "type": "number",
-                        "description": "\uacbd\ub3c4"
+                        "description": "경도"
                     },
                     "status": {
                         "type": "string",
-                        "description": "\uc6b4\uc601 \uc0c1\ud0dc",
+                        "description": "운영 상태",
                         "example": "OPEN"
                     },
                     "categories": {
                         "type": "array",
-                        "description": "\uce74\ud14c\uace0\ub9ac \ubaa9\ub85d",
+                        "description": "카테고리 목록",
                         "items": {
                             "$ref": "#/components/schemas/CategoryDto"
                         }
                     },
                     "tags": {
                         "type": "array",
-                        "description": "\ud0dc\uadf8 \ubaa9\ub85d",
+                        "description": "태그 목록",
                         "items": {
                             "$ref": "#/components/schemas/TagDto"
                         }
                     },
                     "brands": {
                         "type": "array",
-                        "description": "\ube0c\ub79c\ub4dc \ubaa9\ub85d",
+                        "description": "브랜드 목록",
                         "items": {
                             "$ref": "#/components/schemas/BrandDto"
                         }
                     },
                     "instagramUrl": {
                         "type": "string",
-                        "description": "\uc778\uc2a4\ud0c0\uadf8\ub7a8 URL"
+                        "description": "인스타그램 URL"
+                    },
+                    "websiteUrl": {
+                        "type": "string",
+                        "description": "웹사이트 URL"
                     },
                     "naverMapUrl": {
                         "type": "string",
-                        "description": "\ub124\uc774\ubc84 \uc9c0\ub3c4 URL"
+                        "description": "네이버 지도 URL"
                     }
                 },
                 "required": [
@@ -988,18 +1121,18 @@
             },
             "TagDto": {
                 "type": "object",
-                "description": "\ud0dc\uadf8 \uc694\uc57d \uc815\ubcf4",
+                "description": "태그 요약 정보",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\ud0dc\uadf8 ID",
+                        "description": "태그 ID",
                         "example": 1
                     },
                     "name": {
                         "type": "string",
-                        "description": "\ud0dc\uadf8\uba85",
-                        "example": "\ucd08\ubcf4\ud658\uc601"
+                        "description": "태그명",
+                        "example": "초보환영"
                     }
                 },
                 "required": [
@@ -1034,97 +1167,97 @@
             },
             "PlaceDetailResponse": {
                 "type": "object",
-                "description": "\uc7a5\uc18c \uc0c1\uc138 \uc751\ub2f5",
+                "description": "장소 상세 응답",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\uc7a5\uc18c ID",
+                        "description": "장소 ID",
                         "example": 1
                     },
                     "name": {
                         "type": "string",
-                        "description": "\uc7a5\uc18c\uba85",
-                        "example": "\uc2e4\uacfc \ubc14\ub298"
+                        "description": "장소명",
+                        "example": "실과 바늘"
                     },
                     "region": {
                         "type": "string",
-                        "description": "\uc9c0\uc5ed",
-                        "example": "\uc11c\uc6b8"
+                        "description": "지역",
+                        "example": "서울"
                     },
                     "district": {
                         "type": "string",
-                        "description": "\ub3d9\ub124",
-                        "example": "\uc131\uc218"
+                        "description": "동네",
+                        "example": "성수"
                     },
                     "address": {
                         "type": "string",
-                        "description": "\uc8fc\uc18c",
-                        "example": "\uc11c\uc6b8 \uc131\ub3d9\uad6c \uc5f0\ubb34\uc7a5\uae38 1"
+                        "description": "주소",
+                        "example": "서울 성동구 연무장길 1"
                     },
                     "lat": {
                         "type": "number",
-                        "description": "\uc704\ub3c4"
+                        "description": "위도"
                     },
                     "lng": {
                         "type": "number",
-                        "description": "\uacbd\ub3c4"
+                        "description": "경도"
                     },
                     "hoursText": {
                         "type": "string",
-                        "description": "\uc601\uc5c5\uc2dc\uac04 \ud14d\uc2a4\ud2b8",
-                        "example": "\ud654~\uae08 10:00-19:00"
+                        "description": "영업시간 텍스트",
+                        "example": "화~금 10:00-19:00"
                     },
                     "closedDays": {
                         "type": "string",
-                        "description": "\ud734\ubb34\uc77c",
-                        "example": "\uc6d4\uc694\uc77c"
+                        "description": "휴무일",
+                        "example": "월요일"
                     },
                     "description": {
                         "type": "string",
-                        "description": "\uc7a5\uc18c \uc124\uba85"
+                        "description": "장소 설명"
                     },
                     "status": {
                         "type": "string",
-                        "description": "\uc6b4\uc601 \uc0c1\ud0dc",
+                        "description": "운영 상태",
                         "example": "OPEN"
                     },
                     "categories": {
                         "type": "array",
-                        "description": "\uce74\ud14c\uace0\ub9ac \ubaa9\ub85d",
+                        "description": "카테고리 목록",
                         "items": {
                             "$ref": "#/components/schemas/CategoryDto"
                         }
                     },
                     "tags": {
                         "type": "array",
-                        "description": "\ud0dc\uadf8 \ubaa9\ub85d",
+                        "description": "태그 목록",
                         "items": {
                             "$ref": "#/components/schemas/TagDto"
                         }
                     },
                     "brands": {
                         "type": "array",
-                        "description": "\ube0c\ub79c\ub4dc \ubaa9\ub85d",
+                        "description": "브랜드 목록",
                         "items": {
                             "$ref": "#/components/schemas/BrandDto"
                         }
                     },
                     "instagramUrl": {
                         "type": "string",
-                        "description": "\uc778\uc2a4\ud0c0\uadf8\ub7a8 URL"
+                        "description": "인스타그램 URL"
                     },
                     "websiteUrl": {
                         "type": "string",
-                        "description": "\uc6f9\uc0ac\uc774\ud2b8 URL"
+                        "description": "웹사이트 URL"
                     },
                     "naverMapUrl": {
                         "type": "string",
-                        "description": "\ub124\uc774\ubc84 \uc9c0\ub3c4 URL"
+                        "description": "네이버 지도 URL"
                     },
                     "events": {
                         "type": "array",
-                        "description": "\ud65c\uc131 \uc774\ubca4\ud2b8 \ubaa9\ub85d",
+                        "description": "활성 이벤트 목록",
                         "items": {
                             "$ref": "#/components/schemas/PlaceEventDto"
                         }
@@ -1145,44 +1278,52 @@
             },
             "PlaceEventDto": {
                 "type": "object",
-                "description": "\uc7a5\uc18c\uc5d0 \uc5f0\uacb0\ub41c \uc774\ubca4\ud2b8 \uc694\uc57d \uc815\ubcf4",
+                "description": "장소에 연결된 이벤트 요약 정보",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\uc774\ubca4\ud2b8 ID",
+                        "description": "이벤트 ID",
                         "example": 10
                     },
                     "title": {
                         "type": "string",
-                        "description": "\uc774\ubca4\ud2b8 \uc81c\ubaa9",
-                        "example": "\ubd04 \uc2dc\uc98c \ud074\ub798\uc2a4 \ubaa8\uc9d1"
+                        "description": "이벤트 제목",
+                        "example": "봄 시즌 클래스 모집"
                     },
                     "eventType": {
                         "type": "string",
-                        "description": "\uc774\ubca4\ud2b8 \uc720\ud615",
+                        "description": "이벤트 유형",
                         "example": "TESTER_RECRUIT"
                     },
                     "startDate": {
                         "type": "string",
                         "format": "date",
-                        "description": "\uc2dc\uc791\uc77c",
+                        "description": "시작일",
                         "example": "2026-04-15"
                     },
                     "endDate": {
                         "type": "string",
                         "format": "date",
-                        "description": "\uc885\ub8cc\uc77c",
+                        "description": "종료일",
                         "example": "2026-05-10"
                     },
                     "active": {
                         "type": "boolean",
-                        "description": "\ud65c\uc131 \uc5ec\ubd80",
+                        "description": "활성 여부",
                         "example": true
                     },
-                    "links": {
+                    "instagramUrl": {
                         "type": "string",
-                        "description": "\uad00\ub828 \ub9c1\ud06c"
+                        "description": "인스타그램 URL"
+                    },
+                    "websiteUrl": {
+                        "type": "string",
+                        "description": "웹사이트 URL"
+                    },
+                    "naverMapUrl": {
+                        "type": "string",
+                        "description": "네이버 지도 URL"
                     }
                 },
                 "required": [
@@ -1209,53 +1350,61 @@
             },
             "EventListResponse": {
                 "type": "object",
-                "description": "\uc774\ubca4\ud2b8 \ubaa9\ub85d \uc751\ub2f5",
+                "description": "이벤트 목록 응답",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\uc774\ubca4\ud2b8 ID",
+                        "description": "이벤트 ID",
                         "example": 1
                     },
                     "title": {
                         "type": "string",
-                        "description": "\uc774\ubca4\ud2b8 \uc81c\ubaa9",
-                        "example": "\ubd04\ub9de\uc774 \ub728\uac1c \ub9c8\ucf13"
+                        "description": "이벤트 제목",
+                        "example": "봄맞이 뜨개 마켓"
                     },
                     "eventType": {
                         "type": "string",
-                        "description": "\uc774\ubca4\ud2b8 \uc720\ud615",
+                        "description": "이벤트 유형",
                         "example": "POPUP"
                     },
                     "startDate": {
                         "type": "string",
                         "format": "date",
-                        "description": "\uc2dc\uc791\uc77c"
+                        "description": "시작일"
                     },
                     "endDate": {
                         "type": "string",
                         "format": "date",
-                        "description": "\uc885\ub8cc\uc77c"
+                        "description": "종료일"
                     },
                     "locationText": {
                         "type": "string",
-                        "description": "\uc7a5\uc18c \ud14d\uc2a4\ud2b8"
+                        "description": "장소 텍스트"
                     },
                     "lat": {
                         "type": "number",
-                        "description": "\uc704\ub3c4"
+                        "description": "위도"
                     },
                     "lng": {
                         "type": "number",
-                        "description": "\uacbd\ub3c4"
+                        "description": "경도"
                     },
                     "active": {
                         "type": "boolean",
-                        "description": "\ud65c\uc131 \uc5ec\ubd80"
+                        "description": "활성 여부"
                     },
-                    "links": {
+                    "instagramUrl": {
                         "type": "string",
-                        "description": "\uad00\ub828 \ub9c1\ud06c"
+                        "description": "인스타그램 URL"
+                    },
+                    "websiteUrl": {
+                        "type": "string",
+                        "description": "웹사이트 URL"
+                    },
+                    "naverMapUrl": {
+                        "type": "string",
+                        "description": "네이버 지도 URL"
                     }
                 },
                 "required": [
@@ -1279,62 +1428,70 @@
             },
             "EventDetailResponse": {
                 "type": "object",
-                "description": "\uc774\ubca4\ud2b8 \uc0c1\uc138 \uc751\ub2f5",
+                "description": "이벤트 상세 응답",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\uc774\ubca4\ud2b8 ID",
+                        "description": "이벤트 ID",
                         "example": 1
                     },
                     "title": {
                         "type": "string",
-                        "description": "\uc774\ubca4\ud2b8 \uc81c\ubaa9",
-                        "example": "\ubd04\ub9de\uc774 \ub728\uac1c \ub9c8\ucf13"
+                        "description": "이벤트 제목",
+                        "example": "봄맞이 뜨개 마켓"
                     },
                     "description": {
                         "type": "string",
-                        "description": "\uc774\ubca4\ud2b8 \uc124\uba85"
+                        "description": "이벤트 설명"
                     },
                     "eventType": {
                         "type": "string",
-                        "description": "\uc774\ubca4\ud2b8 \uc720\ud615",
+                        "description": "이벤트 유형",
                         "example": "POPUP"
                     },
                     "startDate": {
                         "type": "string",
                         "format": "date",
-                        "description": "\uc2dc\uc791\uc77c"
+                        "description": "시작일"
                     },
                     "endDate": {
                         "type": "string",
                         "format": "date",
-                        "description": "\uc885\ub8cc\uc77c"
+                        "description": "종료일"
                     },
                     "placeId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\uc5f0\uacb0\ub41c \uc7a5\uc18c ID"
+                        "description": "연결된 장소 ID"
                     },
                     "locationText": {
                         "type": "string",
-                        "description": "\uc7a5\uc18c \ud14d\uc2a4\ud2b8"
+                        "description": "장소 텍스트"
                     },
                     "lat": {
                         "type": "number",
-                        "description": "\uc704\ub3c4"
+                        "description": "위도"
                     },
                     "lng": {
                         "type": "number",
-                        "description": "\uacbd\ub3c4"
+                        "description": "경도"
                     },
                     "active": {
                         "type": "boolean",
-                        "description": "\ud65c\uc131 \uc5ec\ubd80"
+                        "description": "활성 여부"
                     },
-                    "links": {
+                    "instagramUrl": {
                         "type": "string",
-                        "description": "\uad00\ub828 \ub9c1\ud06c"
+                        "description": "인스타그램 URL"
+                    },
+                    "websiteUrl": {
+                        "type": "string",
+                        "description": "웹사이트 URL"
+                    },
+                    "naverMapUrl": {
+                        "type": "string",
+                        "description": "네이버 지도 URL"
                     }
                 },
                 "required": [
@@ -1361,18 +1518,18 @@
             },
             "CategoryResponse": {
                 "type": "object",
-                "description": "\uce74\ud14c\uace0\ub9ac \uc751\ub2f5",
+                "description": "카테고리 응답",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\uce74\ud14c\uace0\ub9ac ID",
+                        "description": "카테고리 ID",
                         "example": 1
                     },
                     "name": {
                         "type": "string",
-                        "description": "\uce74\ud14c\uace0\ub9ac\uba85",
-                        "example": "\ub728\uac1c\uce74\ud398"
+                        "description": "카테고리명",
+                        "example": "뜨개카페"
                     }
                 },
                 "required": [
@@ -1396,18 +1553,18 @@
             },
             "BrandItem": {
                 "type": "object",
-                "description": "\ube0c\ub79c\ub4dc \ud56d\ubaa9",
+                "description": "브랜드 항목",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "\ube0c\ub79c\ub4dc ID",
+                        "description": "브랜드 ID",
                         "example": 1
                     },
                     "name": {
                         "type": "string",
-                        "description": "\ube0c\ub79c\ub4dc\uba85",
-                        "example": "\uc0b0\ub124\uc2a4\uac04"
+                        "description": "브랜드명",
+                        "example": "산네스간"
                     }
                 },
                 "required": [
@@ -1417,16 +1574,16 @@
             },
             "BrandTypeGroup": {
                 "type": "object",
-                "description": "\ube0c\ub79c\ub4dc \ud0c0\uc785 \uadf8\ub8f9",
+                "description": "브랜드 타입 그룹",
                 "properties": {
                     "type": {
                         "type": "string",
-                        "description": "\ube0c\ub79c\ub4dc \ud0c0\uc785",
+                        "description": "브랜드 타입",
                         "example": "YARN"
                     },
                     "brands": {
                         "type": "array",
-                        "description": "\ube0c\ub79c\ub4dc \ubaa9\ub85d",
+                        "description": "브랜드 목록",
                         "items": {
                             "$ref": "#/components/schemas/BrandItem"
                         }
@@ -1439,11 +1596,11 @@
             },
             "ReviewDeleteRequest": {
                 "type": "object",
-                "description": "\ub9ac\ubdf0 \uc0ad\uc81c \uc694\uccad",
+                "description": "리뷰 삭제 요청",
                 "properties": {
                     "password": {
                         "type": "string",
-                        "description": "\ube44\ubc00\ubc88\ud638",
+                        "description": "비밀번호",
                         "example": 1234,
                         "minLength": 1
                     }
