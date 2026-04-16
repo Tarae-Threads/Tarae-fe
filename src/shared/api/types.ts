@@ -45,7 +45,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** 장소 리뷰 목�� 조회 */
+        /** 장소 리뷰 목록 조회 */
         get: operations["getPlaceReviews"];
         put?: never;
         /** 장소 리뷰 작성 */
@@ -68,6 +68,54 @@ export interface paths {
         put?: never;
         /** 이벤트 리뷰 작성 */
         post: operations["createEventReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/api/tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createTag"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/api/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createCategory"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/api/brands": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createBrand"];
         delete?: never;
         options?: never;
         head?: never;
@@ -247,6 +295,11 @@ export interface components {
             endDate?: string;
             locationText?: string;
             description?: string;
+            lat?: number;
+            lng?: number;
+            instagramUrl?: string;
+            websiteUrl?: string;
+            naverMapUrl?: string;
         };
         /** @description 리뷰 작성 요청 */
         ReviewCreateRequest: {
@@ -294,6 +347,12 @@ export interface components {
              * @description 작성일시
              */
             createdAt: string;
+        };
+        QuickCreateResponse: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            type?: string;
         };
         ApiResponseListPlaceListResponse: {
             data: components["schemas"]["PlaceListResponse"][];
@@ -376,6 +435,8 @@ export interface components {
             brands: components["schemas"]["BrandDto"][];
             /** @description 인스타그램 URL */
             instagramUrl?: string;
+            /** @description 웹사이트 URL */
+            websiteUrl?: string;
             /** @description 네이버 지도 URL */
             naverMapUrl?: string;
         };
@@ -498,8 +559,12 @@ export interface components {
              * @example true
              */
             active: boolean;
-            /** @description 관련 링크 */
-            links?: string;
+            /** @description 인스타그램 URL */
+            instagramUrl?: string;
+            /** @description 웹사이트 URL */
+            websiteUrl?: string;
+            /** @description 네이버 지도 URL */
+            naverMapUrl?: string;
         };
         ApiResponseListEventListResponse: {
             data: components["schemas"]["EventListResponse"][];
@@ -540,8 +605,12 @@ export interface components {
             lng?: number;
             /** @description 활성 여부 */
             active: boolean;
-            /** @description 관련 링크 */
-            links?: string;
+            /** @description 인스타그램 URL */
+            instagramUrl?: string;
+            /** @description 웹사이트 URL */
+            websiteUrl?: string;
+            /** @description 네이버 지도 URL */
+            naverMapUrl?: string;
         };
         ApiResponseEventDetailResponse: {
             data: components["schemas"]["EventDetailResponse"];
@@ -589,8 +658,12 @@ export interface components {
             lng?: number;
             /** @description 활성 여부 */
             active: boolean;
-            /** @description 관련 링크 */
-            links?: string;
+            /** @description 인스타그램 URL */
+            instagramUrl?: string;
+            /** @description 웹사이트 URL */
+            websiteUrl?: string;
+            /** @description 네이버 지도 URL */
+            naverMapUrl?: string;
         };
         ApiResponseListCategoryResponse: {
             data: components["schemas"]["CategoryResponse"][];
@@ -840,6 +913,73 @@ export interface operations {
             };
         };
     };
+    createTag: {
+        parameters: {
+            query: {
+                name: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["QuickCreateResponse"];
+                };
+            };
+        };
+    };
+    createCategory: {
+        parameters: {
+            query: {
+                name: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["QuickCreateResponse"];
+                };
+            };
+        };
+    };
+    createBrand: {
+        parameters: {
+            query: {
+                name: string;
+                type: "YARN" | "NEEDLE" | "NOTIONS" | "PATTERNBOOK";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["QuickCreateResponse"];
+                };
+            };
+        };
+    };
     getPlaces: {
         parameters: {
             query?: {
@@ -906,8 +1046,6 @@ export interface operations {
             query?: {
                 /** @description 이벤트 타입 (TESTER_RECRUIT, SALE, EVENT_POPUP) */
                 eventType?: "TESTER_RECRUIT" | "SALE" | "EVENT_POPUP";
-                /** @description 활성 여부 (기본값: true) */
-                active?: boolean;
             };
             header?: never;
             path?: never;
@@ -1003,7 +1141,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ���뷰 ID */
+                /** @description 리뷰 ID */
                 reviewId: number;
             };
             cookie?: never;
@@ -1032,7 +1170,7 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponse"];
                 };
             };
-            /** @description 존재하지 ��는 리뷰 */
+            /** @description 존재하지 않는 리뷰 */
             404: {
                 headers: {
                     [name: string]: unknown;

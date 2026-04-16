@@ -2,9 +2,37 @@
 
 import type { Event, EventDetail, EventType } from "../types";
 import EventTypeBadge from "./EventTypeBadge";
-import { MapPin, ExternalLink, Calendar } from "lucide-react";
+import { MapPin, ExternalLink, Calendar, ChevronRight } from "lucide-react";
 import { safeHref } from "@/shared/lib/safeHref";
 import { track } from "@/shared/lib/analytics";
+
+function LinkCard({
+  href,
+  label,
+  icon,
+  kind,
+}: {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  kind: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => track("external_link", { kind })}
+      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors group"
+    >
+      <span className="text-primary">{icon}</span>
+      <span className="flex-1 text-label-lg font-medium text-on-surface">
+        {label}
+      </span>
+      <ChevronRight className="w-4 h-4 text-outline group-hover:text-on-surface-variant transition-colors" />
+    </a>
+  );
+}
 
 interface Props {
   event: Event;
@@ -14,7 +42,10 @@ interface Props {
 export default function EventDetailView({ event, detail }: Props) {
   const description = detail?.description;
   const locationText = detail?.locationText ?? event.locationText;
-  const links = safeHref(detail?.links ?? event.links);
+  const instagramUrl = safeHref(detail?.instagramUrl ?? event.instagramUrl);
+  const websiteUrl = safeHref(detail?.websiteUrl ?? event.websiteUrl);
+  const naverMapUrl = safeHref(detail?.naverMapUrl ?? event.naverMapUrl);
+  const hasLinks = instagramUrl || websiteUrl || naverMapUrl;
 
   return (
     <div className="space-y-5">
@@ -49,22 +80,33 @@ export default function EventDetailView({ event, detail }: Props) {
         </p>
       )}
 
-      {links && (
-        <a
-          href={links}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => track("external_link", { kind: "event_link" })}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors group"
-        >
-          <ExternalLink className="w-4 h-4 text-primary" />
-          <span className="flex-1 text-label-lg font-medium text-on-surface">
-            자세히 보기
-          </span>
-          <span className="w-4 h-4 text-outline group-hover:text-on-surface-variant transition-colors">
-            →
-          </span>
-        </a>
+      {hasLinks && (
+        <div className="space-y-2">
+          {instagramUrl && (
+            <LinkCard
+              href={instagramUrl}
+              label="Instagram"
+              kind="instagram"
+              icon={<ExternalLink className="w-4 h-4" />}
+            />
+          )}
+          {websiteUrl && (
+            <LinkCard
+              href={websiteUrl}
+              label="웹사이트"
+              kind="website"
+              icon={<ExternalLink className="w-4 h-4" />}
+            />
+          )}
+          {naverMapUrl && (
+            <LinkCard
+              href={naverMapUrl}
+              label="네이버 지도"
+              kind="naver_map"
+              icon={<MapPin className="w-4 h-4" />}
+            />
+          )}
+        </div>
       )}
     </div>
   );
