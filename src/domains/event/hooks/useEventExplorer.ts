@@ -11,7 +11,7 @@ interface YearMonth {
   month: number;
 }
 
-export const useEventExplorer = () => {
+export const useEventExplorer = (searchQuery?: string) => {
   const today = new Date();
 
   const [allEvents, setAllEvents] = useState<Event[]>([]);
@@ -49,15 +49,27 @@ export const useEventExplorer = () => {
     [allEvents, currentYear, currentMonth],
   );
 
-  const filteredEvents = useMemo(
-    () =>
-      filterEvents(
-        allEvents,
-        selectedTypes.size > 0 ? selectedTypes : "all",
-        selectedDate ?? undefined,
-      ),
-    [allEvents, selectedTypes, selectedDate],
-  );
+  const filteredEvents = useMemo(() => {
+    let result = filterEvents(
+      allEvents,
+      selectedTypes.size > 0 ? selectedTypes : "all",
+      selectedDate ?? undefined,
+    );
+    if (searchQuery?.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      const qNoSpace = q.replace(/\s+/g, "");
+      result = result.filter((e) => {
+        const haystack = [e.title, e.locationText ?? ""]
+          .join(" ")
+          .toLowerCase();
+        return (
+          haystack.includes(q) ||
+          haystack.replace(/\s+/g, "").includes(qNoSpace)
+        );
+      });
+    }
+    return result;
+  }, [allEvents, selectedTypes, selectedDate, searchQuery]);
 
   const toggleType = useCallback((type: EventType) => {
     setSelectedTypes((prev) => {

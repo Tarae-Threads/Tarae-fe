@@ -67,6 +67,7 @@ interface Props {
   getDistance?: (place: Place) => number | null;
   onHeightChange?: (height: number) => void;
   onSnapChange?: (snap: SnapPoint) => void;
+  searchQuery?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -86,6 +87,7 @@ export default function MobileBottomSheet({
   getDistance,
   onHeightChange,
   onSnapChange,
+  searchQuery,
 }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [snap, setSnap] = useState<SnapPoint>("peek");
@@ -321,7 +323,7 @@ export default function MobileBottomSheet({
           </div>
         ) : (
           <div className="pb-20">
-            <EventSidePanelContent onEventSelect={onEventSelect} />
+            <EventSidePanelContent onEventSelect={onEventSelect} searchQuery={searchQuery} />
           </div>
         )}
       </div>
