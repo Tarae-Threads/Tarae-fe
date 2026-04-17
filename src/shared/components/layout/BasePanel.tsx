@@ -217,7 +217,7 @@ export default function BasePanel({
         </>
       ) : (
         <div className="flex-1 overflow-y-auto hide-scrollbar">
-          <EventSidePanelContent onEventSelect={onEventSelect} selectedEventId={selectedEventId} />
+          <EventSidePanelContent onEventSelect={onEventSelect} selectedEventId={selectedEventId} searchQuery={searchQuery} />
         </div>
       )}
     </div>

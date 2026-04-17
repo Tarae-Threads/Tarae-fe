@@ -29,7 +29,7 @@ export default function Header() {
         <Link
           href="/map"
           onClick={() => track("landing_cta_click", { cta: "header_map" })}
-          className="inline-flex items-center gap-1.5 bg-primary text-white font-bold text-label-md px-4 py-2 rounded-full transition-transform active:scale-95"
+          className="inline-flex items-center gap-1.5 bg-primary text-white font-bold text-label-md px-5 py-2.5 rounded-full transition-transform active:scale-95"
         >
           <Map className="w-4 h-4" />
           지도 바로가기

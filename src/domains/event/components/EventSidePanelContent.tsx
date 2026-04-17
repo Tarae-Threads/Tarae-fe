@@ -8,11 +8,13 @@ import EventList from "./EventList";
 interface Props {
   onEventSelect?: (eventId: number) => void;
   selectedEventId?: number | null;
+  searchQuery?: string;
 }
 
 export default function EventSidePanelContent({
   onEventSelect,
   selectedEventId,
+  searchQuery,
 }: Props) {
   const {
     allEvents,
@@ -29,7 +31,7 @@ export default function EventSidePanelContent({
     prevMonth,
     selectDate,
     goToday,
-  } = useEventExplorer();
+  } = useEventExplorer(searchQuery);
 
   return (
     <div className="px-5 py-3 space-y-4">

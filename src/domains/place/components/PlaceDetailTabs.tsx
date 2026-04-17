@@ -24,8 +24,8 @@ export default function PlaceDetailTabs({ place, detail }: Props) {
       <DetailTabs
         tabs={[
           { id: "info", label: "정보" },
-          { id: "brands", label: "브랜드", count: brandCount },
           { id: "reviews", label: "리뷰" },
+          { id: "brands", label: "취급 브랜드", count: brandCount },
         ]}
         activeId={active}
         onChange={(id) => {

@@ -388,6 +388,7 @@ function HomeContent() {
               getDistance={getDistance}
               onHeightChange={setMobileSheetHeight}
               onSnapChange={setMobileSheetSnap}
+              searchQuery={searchQuery}
             />
           )}
 
