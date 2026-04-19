@@ -25,6 +25,7 @@ export default function EventSidePanelContent({
     selectedTypes,
     datesWithEvents,
     filteredEvents,
+    activeFilteredEvents,
     toggleType,
     clearTypes,
     nextMonth,
@@ -62,12 +63,13 @@ export default function EventSidePanelContent({
               : "전체 일정"}
           </h2>
           <p className="text-label-md text-outline font-medium">
-            {filteredEvents.length}개 일정
+            {selectedDate ? filteredEvents.length : activeFilteredEvents.length}개 일정
           </p>
         </div>
         <EventList
-          events={filteredEvents}
+          events={selectedDate ? filteredEvents : activeFilteredEvents}
           selectedDate={selectedDate}
+          loading={loading}
           onEventSelect={onEventSelect}
           selectedEventId={selectedEventId}
         />
