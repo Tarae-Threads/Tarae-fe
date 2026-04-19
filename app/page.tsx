@@ -6,6 +6,7 @@ import ActiveEventsSection from "@/domains/landing/components/ActiveEventsSectio
 import CategoryShortcutSection from "@/domains/landing/components/CategoryShortcutSection";
 import RegionShortcutSection from "@/domains/landing/components/RegionShortcutSection";
 import BeginnerBanner from "@/domains/landing/components/BeginnerBanner";
+import InquiryBanner from "@/domains/landing/components/InquiryBanner";
 import Footer from "@/domains/landing/components/Footer";
 
 export const revalidate = 3600;
@@ -31,6 +32,7 @@ export default function HomePage() {
           <RegionShortcutSection />
         </Suspense>
         <BeginnerBanner />
+        <InquiryBanner />
       </main>
       <Footer />
     </div>

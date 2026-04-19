@@ -66,3 +66,5 @@ export type BrandItem = components["schemas"]["BrandItem"];
 export type ReviewResponse = components["schemas"]["ReviewResponse"];
 export type ReviewCreateRequest = components["schemas"]["ReviewCreateRequest"];
 export type ReviewDeleteRequest = components["schemas"]["ReviewDeleteRequest"];
+export type InquiryCreateRequest = components["schemas"]["InquiryCreateRequest"];
+export type InquiryCreateResponse = components["schemas"]["InquiryCreateResponse"];
