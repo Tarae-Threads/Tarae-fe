@@ -300,16 +300,25 @@ export default function MobileBottomSheet({
                 <PlaceCardSkeleton key={i} />
               ))
             ) : places.length === 0 ? (
-              <EmptyState
-                icon={<MapPin className="text-outline h-8 w-8" />}
-                title="검색 결과가 없어요"
-                description="필터를 변경하거나 검색어를 수정해보세요."
-                action={
-                  hasActiveFilters && onClearFilters
-                    ? { label: "필터 초기화", onClick: onClearFilters }
-                    : undefined
-                }
-              />
+              viewportFilterActive && onClearViewportFilter ? (
+                <EmptyState
+                  icon={<MapPin className="text-outline h-8 w-8" />}
+                  title="이 지역에는 장소가 없어요"
+                  description="지도를 이동하거나 전체 지역으로 확장해보세요."
+                  action={{ label: "전체 지역 보기", onClick: onClearViewportFilter }}
+                />
+              ) : (
+                <EmptyState
+                  icon={<MapPin className="text-outline h-8 w-8" />}
+                  title="검색 결과가 없어요"
+                  description="필터를 변경하거나 검색어를 수정해보세요."
+                  action={
+                    hasActiveFilters && onClearFilters
+                      ? { label: "필터 초기화", onClick: onClearFilters }
+                      : undefined
+                  }
+                />
+              )
             ) : (
               places.map((place) => (
                 <PlaceCardCompact
