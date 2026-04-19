@@ -13,6 +13,10 @@
     ],
     "tags": [
         {
+            "name": "문의",
+            "description": "문의하기 API"
+        },
+        {
             "name": "리뷰",
             "description": "장소/이벤트 리뷰 API"
         },
@@ -197,6 +201,47 @@
                             "*/*": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiResponseReviewResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/inquiries": {
+            "post": {
+                "tags": [
+                    "문의"
+                ],
+                "summary": "문의 제출",
+                "operationId": "create",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InquiryCreateRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "문의 제출 성공",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseInquiryCreateResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "유효하지 않은 요청 값",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseInquiryCreateResponse"
                                 }
                             }
                         }
@@ -947,6 +992,62 @@
                     "createdAt",
                     "id",
                     "nickname"
+                ]
+            },
+            "InquiryCreateRequest": {
+                "type": "object",
+                "description": "문의 제출 요청",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "문의 제목",
+                        "example": "배송 관련 문의",
+                        "maxLength": 255,
+                        "minLength": 0
+                    },
+                    "body": {
+                        "type": "string",
+                        "description": "문의 내용",
+                        "minLength": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "답변받을 이메일",
+                        "example": "user@example.com",
+                        "maxLength": 100,
+                        "minLength": 0
+                    }
+                },
+                "required": [
+                    "body",
+                    "email",
+                    "title"
+                ]
+            },
+            "ApiResponseInquiryCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/InquiryCreateResponse"
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            },
+            "InquiryCreateResponse": {
+                "type": "object",
+                "description": "문의 제출 응답",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "문의 ID",
+                        "example": 1
+                    }
+                },
+                "required": [
+                    "id"
                 ]
             },
             "QuickCreateResponse": {
