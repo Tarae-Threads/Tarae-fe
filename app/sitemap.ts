@@ -3,6 +3,7 @@ import {
   fetchPlacesForLanding,
   fetchEventsForLanding,
 } from '@/domains/landing/queries/landingApi'
+import { listArticles } from '@/domains/news/queries/newsSource'
 
 const SITE_URL = 'https://www.taraethreads.com'
 
@@ -24,11 +25,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily',
       priority: 0.9,
     },
+    {
+      url: `${SITE_URL}/news`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
   ]
 
-  const [places, events] = await Promise.all([
+  const [places, events, articles] = await Promise.all([
     fetchPlacesForLanding(),
     fetchEventsForLanding(),
+    listArticles(),
   ])
 
   const placeEntries: MetadataRoute.Sitemap = places.map((p) => ({
@@ -45,5 +53,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
-  return [...staticEntries, ...placeEntries, ...eventEntries]
+  const newsEntries: MetadataRoute.Sitemap = articles.map((a) => ({
+    url: `${SITE_URL}/news/${a.slug}`,
+    lastModified: a.date,
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }))
+
+  return [...staticEntries, ...placeEntries, ...eventEntries, ...newsEntries]
 }
