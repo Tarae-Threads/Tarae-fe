@@ -4,7 +4,7 @@ import {
   fetchEventsForLanding,
 } from '@/domains/landing/queries/landingApi'
 
-const SITE_URL = 'https://tarae.vercel.app'
+const SITE_URL = 'https://www.taraethreads.com'
 
 export const revalidate = 3600
 

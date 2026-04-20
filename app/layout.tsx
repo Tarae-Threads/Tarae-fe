@@ -5,7 +5,7 @@ import GoogleAnalyticsLoader from "@/shared/components/analytics/GoogleAnalytics
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://tarae.vercel.app"),
+  metadataBase: new URL("https://www.taraethreads.com"),
   title: {
     default: "타래 | 뜨개 장소, 정보, 모임을 한 곳에서",
     template: "%s | 타래",
@@ -61,22 +61,22 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://tarae.vercel.app/#org",
+      "@id": "https://www.taraethreads.com/#org",
       name: "타래",
       alternateName: "Tarae",
-      url: "https://tarae.vercel.app",
-      logo: "https://tarae.vercel.app/logo.png",
+      url: "https://www.taraethreads.com",
+      logo: "https://www.taraethreads.com/logo.png",
       email: "taraethreads@gmail.com",
       description:
         "뜨개인을 위한 플랫폼. 흩어져 있는 뜨개 정보를 한 곳에서 연결합니다.",
     },
     {
       "@type": "WebSite",
-      "@id": "https://tarae.vercel.app/#website",
-      url: "https://tarae.vercel.app",
+      "@id": "https://www.taraethreads.com/#website",
+      url: "https://www.taraethreads.com",
       name: "타래",
       inLanguage: "ko-KR",
-      publisher: { "@id": "https://tarae.vercel.app/#org" },
+      publisher: { "@id": "https://www.taraethreads.com/#org" },
     },
   ],
 };

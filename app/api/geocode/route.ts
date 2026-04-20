@@ -29,7 +29,6 @@ function isRateLimited(ip: string): boolean {
 
 // 허용 Origin — 배포/개발 도메인
 const ALLOWED_ORIGINS = new Set([
-  "https://tarae.vercel.app",
   "https://taraethreads.com",
   "https://www.taraethreads.com",
   "http://localhost:3000",
