@@ -32,12 +32,21 @@ export const metadata: Metadata = {
     title: "타래 | 뜨개 장소, 정보, 모임을 한 곳에서",
     description:
       "흩어져 있는 뜨개 정보를 한 곳에서 탐색하고 연결하세요. 뜨개인을 위한 플랫폼.",
+    images: [
+      {
+        url: "/tarae_thumbnail.png",
+        width: 1200,
+        height: 630,
+        alt: "타래 — 뜨개의 모든 것",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "타래 | 뜨개 장소, 정보, 모임을 한 곳에서",
     description:
       "흩어져 있는 뜨개 정보를 한 곳에서 탐색하고 연결하세요. 뜨개인을 위한 플랫폼.",
+    images: ["/tarae_thumbnail.png"],
   },
   alternates: {
     canonical: "/",
@@ -45,6 +54,31 @@ export const metadata: Metadata = {
   other: {
     "theme-color": "#91472b",
   },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarae.vercel.app/#org",
+      name: "타래",
+      alternateName: "Tarae",
+      url: "https://tarae.vercel.app",
+      logo: "https://tarae.vercel.app/logo.png",
+      email: "taraethreads@gmail.com",
+      description:
+        "뜨개인을 위한 플랫폼. 흩어져 있는 뜨개 정보를 한 곳에서 연결합니다.",
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://tarae.vercel.app/#website",
+      url: "https://tarae.vercel.app",
+      name: "타래",
+      inLanguage: "ko-KR",
+      publisher: { "@id": "https://tarae.vercel.app/#org" },
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -55,6 +89,12 @@ export default function RootLayout({
   return (
     <html lang="ko" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
+        <Script
+          id="ld-json-site"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Providers>{children}</Providers>
         <Script
           src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"

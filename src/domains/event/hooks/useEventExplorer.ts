@@ -71,6 +71,12 @@ export const useEventExplorer = (searchQuery?: string) => {
     return result;
   }, [allEvents, selectedTypes, selectedDate, searchQuery]);
 
+  // 리스트용: 오늘 기준 진행중인 이벤트만
+  const activeFilteredEvents = useMemo(() => {
+    const todayStr = getTodayString();
+    return filteredEvents.filter((e) => (e.endDate ?? e.startDate) >= todayStr);
+  }, [filteredEvents]);
+
   const toggleType = useCallback((type: EventType) => {
     setSelectedTypes((prev) => {
       const next = new Set(prev);
@@ -119,6 +125,7 @@ export const useEventExplorer = (searchQuery?: string) => {
     selectedTypes,
     datesWithEvents,
     filteredEvents,
+    activeFilteredEvents,
     toggleType,
     clearTypes,
     nextMonth,

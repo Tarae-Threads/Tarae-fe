@@ -13,7 +13,10 @@ import {
   XCircle,
   ExternalLink,
   ChevronRight,
+  Flag,
 } from "lucide-react";
+import { useModal } from "@/shared/hooks/useModal";
+import SubmitForm from "@/shared/components/layout/SubmitForm";
 
 // ---------------------------------------------------------------------------
 // 링크 카드
@@ -81,6 +84,7 @@ interface Props {
 }
 
 export default function PlaceDetailView({ place, detail }: Props) {
+  const { openModal } = useModal();
   const categories = detail?.categories ?? place.categories;
   const tags = detail?.tags ?? place.tags;
   const instagramUrl = safeHref(detail?.instagramUrl ?? place.instagramUrl);
@@ -203,6 +207,23 @@ export default function PlaceDetailView({ place, detail }: Props) {
           )}
         </div>
       )}
+
+      {/* 제보 유도 CTA */}
+      <button
+        type="button"
+        onClick={() =>
+          openModal(SubmitForm, {}, { title: "제보하기", size: "md" })
+        }
+        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors group text-left"
+      >
+        <Flag className="w-4 h-4 text-outline shrink-0" />
+        <span className="flex-1 text-label-md text-on-surface-variant">
+          정보가 달라졌나요?
+        </span>
+        <span className="text-label-sm text-primary font-bold group-hover:underline">
+          수정 제보
+        </span>
+      </button>
     </div>
   );
 }

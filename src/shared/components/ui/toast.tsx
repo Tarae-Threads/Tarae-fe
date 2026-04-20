@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Toast } from "@base-ui/react/toast"
 import { cva, type VariantProps } from "class-variance-authority"
-import { XIcon } from "lucide-react"
+import { XIcon, CheckCircle2, AlertTriangle, Info } from "lucide-react"
 import { create } from "zustand"
 
 import { cn } from "@/shared/lib/utils"
@@ -13,14 +13,14 @@ import { cn } from "@/shared/lib/utils"
 // ---------------------------------------------------------------------------
 
 const toastVariants = cva(
-  "pointer-events-auto relative flex w-full items-start gap-3 rounded-2xl editorial-shadow p-4 transition-all",
+  "pointer-events-auto relative flex w-full max-w-sm items-center gap-3 rounded-2xl p-4 shadow-xl backdrop-blur-xl transition-all",
   {
     variants: {
       variant: {
-        default: "bg-surface-container text-on-surface",
-        success: "bg-secondary-container text-on-secondary-container",
-        error: "bg-destructive/10 text-destructive",
-        info: "bg-primary-fixed text-on-surface",
+        default: "bg-surface-container/80 text-on-surface border border-outline-variant/40",
+        success: "bg-secondary-container/80 text-on-secondary-container border border-secondary/40 shadow-secondary/10",
+        error: "bg-destructive/10 backdrop-saturate-150 text-destructive border border-destructive/30 shadow-destructive/10",
+        info: "bg-primary-fixed/80 text-on-surface border border-primary/30 shadow-primary/10",
       },
     },
     defaultVariants: {
@@ -28,6 +28,13 @@ const toastVariants = cva(
     },
   },
 )
+
+const VARIANT_ICON: Record<ToastVariant, React.ReactNode> = {
+  default: null,
+  success: <CheckCircle2 className="size-5 shrink-0" />,
+  error: <AlertTriangle className="size-5 shrink-0" />,
+  info: <Info className="size-5 shrink-0" />,
+}
 
 type ToastVariant = NonNullable<VariantProps<typeof toastVariants>["variant"]>
 
@@ -85,7 +92,7 @@ function useToast() {
           title: data.title,
           description: data.description,
           type: data.variant ?? "default",
-          timeout: data.duration ?? 5000,
+          timeout: data.duration ?? 3000,
           actionProps: data.action
             ? { onClick: data.action.onClick, children: data.action.label }
             : undefined,
@@ -154,9 +161,10 @@ function ToastItem({ toast: t }: ToastItemProps) {
         "transition-[transform,opacity] duration-300 ease-out",
       )}
     >
+      {VARIANT_ICON[variant]}
       <Toast.Content data-slot="toast-content" className="flex flex-1 flex-col gap-1">
         {t.title && (
-          <Toast.Title data-slot="toast-title" className="text-sm font-semibold leading-tight">
+          <Toast.Title data-slot="toast-title" className="text-sm font-bold leading-tight">
             {t.title}
           </Toast.Title>
         )}
@@ -194,7 +202,7 @@ function ToastItem({ toast: t }: ToastItemProps) {
                 ? "hover:bg-on-secondary-container/10"
                 : "hover:bg-on-surface/10",
           )}
-          aria-label="Close"
+          aria-label="닫기"
         >
           <XIcon className="size-3.5" />
         </Toast.Close>
@@ -218,7 +226,7 @@ function Toaster() {
         title: data.title,
         description: data.description,
         type: data.variant ?? "default",
-        timeout: data.duration ?? 5000,
+        timeout: data.duration ?? 3000,
         actionProps: data.action
           ? { onClick: data.action.onClick, children: data.action.label }
           : undefined,
@@ -241,11 +249,11 @@ function Toaster() {
   return (
     <Toast.Viewport
       data-slot="toast-viewport"
+      aria-label="알림"
       className={cn(
-        "fixed z-[100] flex max-h-screen gap-2 p-4",
-        // 모바일: 상단 중앙, PC: 좌측 하단
-        "inset-x-0 top-0 flex-col items-center",
-        "sm:top-auto sm:bottom-0 sm:left-0 sm:right-auto sm:items-start sm:w-[380px] sm:flex-col-reverse",
+        "fixed z-[100] flex max-h-screen gap-2 px-4",
+        // 모바일/PC 모두 하단 중앙, BottomNav 위
+        "inset-x-0 bottom-16 md:bottom-6 flex-col-reverse items-center",
       )}
     >
       {manager.toasts.map((t) => (

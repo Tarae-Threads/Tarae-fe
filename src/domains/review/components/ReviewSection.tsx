@@ -1,7 +1,7 @@
 "use client";
 
 import { MessageSquare, PenSquare } from "lucide-react";
-import Skeleton from "@/shared/components/ui/Skeleton";
+import { ReviewCardSkeleton } from "@/shared/components/ui/Skeleton";
 import EmptyState from "@/shared/components/ui/EmptyState";
 import { useModal } from "@/shared/hooks/useModal";
 import { useReviews } from "../hooks/useReviews";
@@ -58,17 +58,7 @@ export default function ReviewSection({ type, targetId }: Props) {
       {loading ? (
         <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="bg-surface-container-low rounded-2xl p-4">
-              <div className="flex items-center gap-3 mb-3">
-                <Skeleton className="w-9 h-9 rounded-full" />
-                <div className="flex-1 space-y-1.5">
-                  <Skeleton className="h-3.5 w-24" />
-                  <Skeleton className="h-3 w-14" />
-                </div>
-              </div>
-              <Skeleton className="h-3.5 w-full mb-1.5" />
-              <Skeleton className="h-3.5 w-4/5" />
-            </div>
+            <ReviewCardSkeleton key={i} />
           ))}
         </div>
       ) : reviews.length === 0 ? (

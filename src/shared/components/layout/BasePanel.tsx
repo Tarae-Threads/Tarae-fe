@@ -152,15 +152,30 @@ export default function BasePanel({
                 ))}
               </div>
             ) : places.length === 0 ? (
-              <EmptyState
-                title="검색 결과가 없어요"
-                description="필터를 변경하거나 검색어를 수정해보세요."
-                icon={<MapPin className="w-8 h-8 text-outline" />}
-                action={(searchQuery || selectedCategories.size > 0 || selectedRegion !== 'all') ? {
-                  label: '필터 초기화',
-                  onClick: () => { onSearchChange(''); onClearCategories(); onRegionChange('all'); }
-                } : undefined}
-              />
+              (() => {
+                if (viewportFilterActive && onClearViewportFilter) {
+                  return (
+                    <EmptyState
+                      title="이 지역에는 장소가 없어요"
+                      description="지도를 이동하거나 전체 지역으로 확장해보세요."
+                      icon={<MapPin className="w-8 h-8 text-outline" />}
+                      action={{ label: '전체 지역 보기', onClick: onClearViewportFilter }}
+                    />
+                  )
+                }
+                const hasFilters = searchQuery || selectedCategories.size > 0 || selectedRegion !== 'all'
+                return (
+                  <EmptyState
+                    title="검색 결과가 없어요"
+                    description="필터를 변경하거나 검색어를 수정해보세요."
+                    icon={<MapPin className="w-8 h-8 text-outline" />}
+                    action={hasFilters ? {
+                      label: '필터 초기화',
+                      onClick: () => { onSearchChange(''); onClearCategories(); onRegionChange('all'); }
+                    } : undefined}
+                  />
+                )
+              })()
             ) : (
               <div className="px-4 space-y-3 pb-4">
                 {places.map(place => (

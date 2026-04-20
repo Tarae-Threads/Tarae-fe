@@ -30,17 +30,18 @@ export default function FormChipGroup({
   }
 
   return (
-    <div>
-      <label className="text-label-md font-bold text-on-surface-variant mb-1.5 block">
+    <div role="group" aria-label={label}>
+      <div className="text-label-md font-bold text-on-surface-variant mb-1.5 block">
         {label}{required && ' *'}{mode === 'multi' && ' (복수 선택)'}
-      </label>
+      </div>
       <div className="flex flex-wrap gap-2">
         {options.map(opt => (
           <button
             key={opt.value}
             type="button"
             onClick={() => onToggle(opt.value)}
-            className="px-3 py-1.5 text-label-xs font-bold rounded-full transition-all border-2"
+            aria-pressed={isSelected(opt.value)}
+            className="px-3 py-1.5 text-label-xs font-bold rounded-full transition-all border-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
             style={isSelected(opt.value)
               ? { backgroundColor: opt.bg, borderColor: opt.color, color: opt.color }
               : { backgroundColor: opt.bg, borderColor: 'transparent', color: opt.color }
@@ -50,7 +51,7 @@ export default function FormChipGroup({
           </button>
         ))}
       </div>
-      {error && <p className="text-destructive text-label-xs mt-1">{error}</p>}
+      {error && <p role="alert" className="text-destructive text-label-xs mt-1">{error}</p>}
     </div>
   )
 }

@@ -24,7 +24,10 @@ function formatDate(iso?: string) {
 
 export default async function ActiveEventsSection() {
   const events = await fetchEventsForLanding();
-  const list = events.slice(0, 6);
+  const today = new Date().toISOString().slice(0, 10);
+  const list = events
+    .filter((e) => (e.endDate ?? e.startDate) >= today)
+    .slice(0, 6);
 
   if (list.length === 0) return null;
 

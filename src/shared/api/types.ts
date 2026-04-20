@@ -56,6 +56,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/inquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 문의 제출 */
+        post: operations["create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/events/{eventId}/reviews": {
         parameters: {
             query?: never;
@@ -347,6 +364,33 @@ export interface components {
              * @description 작성일시
              */
             createdAt: string;
+        };
+        /** @description 문의 제출 요청 */
+        InquiryCreateRequest: {
+            /**
+             * @description 문의 제목
+             * @example 배송 관련 문의
+             */
+            title: string;
+            /** @description 문의 내용 */
+            body: string;
+            /**
+             * @description 답변받을 이메일
+             * @example user@example.com
+             */
+            email: string;
+        };
+        ApiResponseInquiryCreateResponse: {
+            data: components["schemas"]["InquiryCreateResponse"];
+        };
+        /** @description 문의 제출 응답 */
+        InquiryCreateResponse: {
+            /**
+             * Format: int64
+             * @description 문의 ID
+             * @example 1
+             */
+            id: number;
         };
         QuickCreateResponse: {
             /** Format: int64 */
@@ -850,6 +894,39 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseReviewResponse"];
+                };
+            };
+        };
+    };
+    create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InquiryCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description 문의 제출 성공 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseInquiryCreateResponse"];
+                };
+            };
+            /** @description 유효하지 않은 요청 값 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseInquiryCreateResponse"];
                 };
             };
         };
