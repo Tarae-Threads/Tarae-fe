@@ -32,12 +32,21 @@ export const metadata: Metadata = {
     title: "타래 | 뜨개 장소, 정보, 모임을 한 곳에서",
     description:
       "흩어져 있는 뜨개 정보를 한 곳에서 탐색하고 연결하세요. 뜨개인을 위한 플랫폼.",
+    images: [
+      {
+        url: "/tarae_thumbnail.png",
+        width: 1200,
+        height: 630,
+        alt: "타래 — 뜨개의 모든 것",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "타래 | 뜨개 장소, 정보, 모임을 한 곳에서",
     description:
       "흩어져 있는 뜨개 정보를 한 곳에서 탐색하고 연결하세요. 뜨개인을 위한 플랫폼.",
+    images: ["/tarae_thumbnail.png"],
   },
   alternates: {
     canonical: "/",
