@@ -29,12 +29,19 @@ const SNAP_RATIOS: Record<SnapPoint, number> = {
 const BOTTOM_NAV_HEIGHT = 48;
 const SEARCH_BAR_BOTTOM = 72; // top-4(16px) + h-14(56px)
 
-function getSnapHeight(snap: SnapPoint): number {
+// iOS Chrome/Safari 의 동적 toolbar 로 뷰포트 높이가 수시로 변함.
+// visualViewport 가 지원되면 실제 가시 영역을, 아니면 innerHeight 를 사용.
+function getViewportHeight(): number {
   if (typeof window === "undefined") return 0;
+  return window.visualViewport?.height ?? window.innerHeight;
+}
+
+function getSnapHeight(snap: SnapPoint): number {
+  const vh = getViewportHeight();
+  if (vh === 0) return 0;
   // full: 검색창 아래까지
-  if (snap === "full")
-    return window.innerHeight - SEARCH_BAR_BOTTOM - BOTTOM_NAV_HEIGHT;
-  return window.innerHeight * SNAP_RATIOS[snap];
+  if (snap === "full") return vh - SEARCH_BAR_BOTTOM - BOTTOM_NAV_HEIGHT;
+  return vh * SNAP_RATIOS[snap];
 }
 
 // 한 단계씩만 이동
@@ -105,6 +112,23 @@ export default function MobileBottomSheet({
     setSheetHeight(h); // eslint-disable-line react-hooks/set-state-in-effect
     onHeightChange?.(h);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // iOS 동적 toolbar 로 뷰포트 높이가 바뀌면 현재 snap 높이도 재계산.
+  // window.resize 는 iOS 에서 주소창 토글에 발화 안 하므로 visualViewport 도 같이 구독.
+  useEffect(() => {
+    const handleResize = () => {
+      const h = getSnapHeight(snap);
+      setSheetHeight(h); // eslint-disable-line react-hooks/set-state-in-effect
+      onHeightChange?.(h);
+    };
+    window.addEventListener("resize", handleResize);
+    const vv = window.visualViewport;
+    vv?.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      vv?.removeEventListener("resize", handleResize);
+    };
+  }, [snap, onHeightChange]);
 
   const dragState = useRef({
     startY: 0,
@@ -189,9 +213,10 @@ export default function MobileBottomSheet({
         return;
       }
 
-      const available = window.innerHeight - BOTTOM_NAV_HEIGHT;
+      const vh = getViewportHeight();
+      const available = vh - BOTTOM_NAV_HEIGHT;
       const newHeight = Math.max(
-        window.innerHeight * 0.05,
+        vh * 0.05,
         Math.min(available, ds.startHeight + deltaY),
       );
 
