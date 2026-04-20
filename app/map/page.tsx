@@ -255,7 +255,7 @@ function HomeContent() {
         : null;
 
   return (
-    <main className="h-screen w-full overflow-hidden bg-surface-container-lowest flex">
+    <main className="h-[100dvh] w-full overflow-hidden bg-surface-container-lowest flex">
       {/* Desktop: NavBar + BasePanel + DetailPanel */}
       <NavBar
         activeTab={activeTab}
@@ -335,8 +335,10 @@ function HomeContent() {
                 const bounds = mapRef.current?.getBounds();
                 if (bounds) activateViewportFilter(bounds);
               }}
-              className="absolute left-1/2 -translate-x-1/2 z-20 bg-surface/90 backdrop-blur-md text-on-surface font-bold text-label-lg px-5 py-2.5 rounded-full shadow-lg border border-border hover:bg-surface transition-colors active:scale-95 md:hidden"
-              style={{ bottom: `${mobileSheetHeight + BOTTOM_NAV_HEIGHT + 16}px` }}
+              className="absolute left-1/2 -translate-x-1/2 z-40 bg-surface/90 backdrop-blur-md text-on-surface font-bold text-label-lg px-5 py-2.5 rounded-full shadow-lg border border-border hover:bg-surface transition-colors active:scale-95 md:hidden"
+              style={{
+                bottom: `calc(${mobileSheetHeight + BOTTOM_NAV_HEIGHT + 16}px + env(safe-area-inset-bottom))`,
+              }}
             >
               현재 지역만 보기
             </button>
@@ -355,7 +357,7 @@ function HomeContent() {
 
         {/* Mobile UI */}
         <div className="md:hidden">
-          <div className={`absolute top-0 left-0 right-0 z-50 px-4 pt-4 pb-2 transition-colors duration-300 ${
+          <div className={`absolute top-0 left-0 right-0 z-50 px-4 pb-2 pt-[calc(env(safe-area-inset-top)+1rem)] transition-colors duration-300 ${
             mobileSheetSnap === "full" || (mobileDetailOpen && detailSnap === "peek") ? "bg-surface-container-low" : ""
           } ${mobileDetailOpen && detailSnap === "full" ? "hidden" : ""}`}>
             <PlaceSearchBar
