@@ -10,6 +10,19 @@ import {
 } from "react";
 import Script from "next/script";
 import type { Place } from "../types";
+import { toast } from "@/shared/components/ui/toast";
+
+function notifyGeolocationError(err: GeolocationPositionError | null) {
+  if (err && err.code === err.PERMISSION_DENIED) {
+    toast.error("현재 위치 권한이 차단되어 있습니다.", {
+      description: "브라우저 설정에서 위치 권한을 허용으로 바꿔주세요.",
+    });
+    return;
+  }
+  toast.error("현재 위치를 가져올 수 없습니다.", {
+    description: "잠시 후 다시 시도해 주세요.",
+  });
+}
 
 /* ---- Naver Maps 최소 타입 정의 ---- */
 interface NaverLatLng {
@@ -136,35 +149,43 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
       mapInstanceRef.current.setZoom(zoom - 1, true);
     },
     locate() {
-      if (!mapInstanceRef.current || !navigator.geolocation) return;
-      navigator.geolocation.getCurrentPosition((pos) => {
-        const map = mapInstanceRef.current;
-        if (!map) return;
-        const N = window.naver.maps;
-        const { latitude, longitude } = pos.coords;
-        const position = new N.LatLng(latitude, longitude);
-        map.panTo(position);
-        map.setZoom(14, true);
+      if (!mapInstanceRef.current) return;
+      if (!navigator.geolocation) {
+        notifyGeolocationError(null);
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const map = mapInstanceRef.current;
+          if (!map) return;
+          const N = window.naver.maps;
+          const { latitude, longitude } = pos.coords;
+          const position = new N.LatLng(latitude, longitude);
+          map.panTo(position);
+          map.setZoom(14, true);
 
-        // Create or update my location marker
-        if (myLocationMarkerRef.current) {
-          myLocationMarkerRef.current.setMap(null);
-        }
-        const markerHtml = `
-          <div style="position:relative;display:flex;align-items:center;justify-content:center;width:36px;height:36px;">
-            <img src="/favicon.ico" width="36" height="36" alt="내 위치" style="border-radius:9999px;border:3px solid #91472b;box-shadow:0 4px 12px rgba(29,27,22,0.2);object-fit:cover;" />
-            <div style="position:absolute;width:36px;height:36px;border-radius:9999px;background:rgba(145,71,43,0.12);animation:pulse 2s ease-in-out infinite;pointer-events:none;"></div>
-          </div>
-        `;
-        myLocationMarkerRef.current = new N.Marker({
-          position,
-          icon: {
-            content: markerHtml,
-            anchor: new N.Point(20, 20),
-          },
-          map,
-        });
-      });
+          // Create or update my location marker
+          if (myLocationMarkerRef.current) {
+            myLocationMarkerRef.current.setMap(null);
+          }
+          const markerHtml = `
+            <div style="position:relative;display:flex;align-items:center;justify-content:center;width:36px;height:36px;">
+              <img src="/favicon.ico" width="36" height="36" alt="내 위치" style="border-radius:9999px;border:3px solid #91472b;box-shadow:0 4px 12px rgba(29,27,22,0.2);object-fit:cover;" />
+              <div style="position:absolute;width:36px;height:36px;border-radius:9999px;background:rgba(145,71,43,0.12);animation:pulse 2s ease-in-out infinite;pointer-events:none;"></div>
+            </div>
+          `;
+          myLocationMarkerRef.current = new N.Marker({
+            position,
+            icon: {
+              content: markerHtml,
+              anchor: new N.Point(20, 20),
+            },
+            map,
+          });
+        },
+        (err) => notifyGeolocationError(err),
+        { timeout: 10000, maximumAge: 60000 },
+      );
     },
     panTo(lat: number, lng: number, zoom?: number) {
       const map = mapInstanceRef.current;
