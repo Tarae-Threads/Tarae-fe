@@ -41,6 +41,8 @@ import {
   MapPin,
   Pencil,
   Calendar,
+  CheckCircle2,
+  Search,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 
@@ -227,6 +229,7 @@ export default function SubmitForm({ onClose }: Props) {
   const [placeMode, setPlaceMode] = useState<PlaceMode>(null);
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [descriptionCount, setDescriptionCount] = useState(0);
 
   // 퍼널 추적용 — 오픈 시간 + 성공 여부 플래그
   const openedAtRef = useRef<number>(now());
@@ -375,6 +378,28 @@ export default function SubmitForm({ onClose }: Props) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // 작성 중 브라우저 닫기/새로고침 가드
+  const placeDirty = placeForm.formState.isDirty;
+  const updateDirty = updateForm.formState.isDirty;
+  const eventDirty = eventForm.formState.isDirty;
+  const hasUserInput =
+    placeDirty ||
+    updateDirty ||
+    eventDirty ||
+    selectedCategories.size > 0 ||
+    customCategory.length > 0 ||
+    selectedEventType !== null ||
+    selectedPlaceId !== null;
+  useEffect(() => {
+    if (!hasUserInput) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      if (succeededRef.current) return;
+      e.preventDefault();
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [hasUserInput]);
 
   // 탭 변경 시에도 submit_open 재발송 (다른 플로우 시작)
   useEffect(() => {
@@ -564,6 +589,9 @@ export default function SubmitForm({ onClose }: Props) {
       const status =
         (err as { response?: { status?: number } })?.response?.status;
       track("submit_error", { flow: "placeNew", status });
+      toast.error("제보 등록에 실패했어요.", {
+        description: "잠시 후 다시 시도해주세요.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -603,6 +631,9 @@ export default function SubmitForm({ onClose }: Props) {
       const status =
         (err as { response?: { status?: number } })?.response?.status;
       track("submit_error", { flow: "placeUpdate", status });
+      toast.error("제보 등록에 실패했어요.", {
+        description: "잠시 후 다시 시도해주세요.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -635,6 +666,9 @@ export default function SubmitForm({ onClose }: Props) {
       const status =
         (err as { response?: { status?: number } })?.response?.status;
       track("submit_error", { flow: "event", status });
+      toast.error("제보 등록에 실패했어요.", {
+        description: "잠시 후 다시 시도해주세요.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -707,42 +741,32 @@ export default function SubmitForm({ onClose }: Props) {
             <FormInput
               label="장소명"
               required
+              autoFocus
+              maxLength={100}
               placeholder="뜨개 장소 이름"
               registration={placeForm.register("name")}
               error={placeForm.formState.errors.name?.message}
             />
-            <div>
-              <label className="text-label-md font-bold text-on-surface-variant mb-1 block">
-                주소 *
-              </label>
-              <div className="flex gap-2">
-                <div className="flex-1 min-w-0">
-                  <FormInput
-                    label=""
-                    readOnly
-                    placeholder="주소 검색을 눌러주세요"
-                    registration={placeForm.register("address")}
-                    error={placeForm.formState.errors.address?.message}
-                    onClick={openAddressSearch}
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={openAddressSearch}
-                  className="shrink-0 px-3 h-11 mt-auto bg-secondary text-secondary-foreground font-bold text-label-md rounded-xl"
-                >
-                  검색
-                </button>
-              </div>
-            </div>
+            <FormInput
+              label="주소"
+              required
+              readOnly
+              placeholder="눌러서 주소 검색"
+              registration={placeForm.register("address")}
+              error={placeForm.formState.errors.address?.message}
+              onClick={openAddressSearch}
+              rightSlot={<Search className="size-4" />}
+            />
             <FormInput
               label="상세주소"
+              maxLength={100}
               placeholder="층, 호수 등 상세주소"
               registration={placeForm.register("addressDetail")}
             />
             {coords && (
-              <p className="text-label-xs text-outline">
-                좌표: {coords.lat.toFixed(5)}, {coords.lng.toFixed(5)}
+              <p className="text-label-xs text-secondary flex items-center gap-1">
+                <CheckCircle2 className="size-3.5" />
+                위치가 확인되었어요
               </p>
             )}
           </div>
@@ -881,6 +905,9 @@ export default function SubmitForm({ onClose }: Props) {
             <FormInput
               label="제목"
               required
+              autoFocus
+              maxLength={200}
+              showCount
               placeholder="이벤트 제목"
               registration={eventForm.register("title")}
               error={eventForm.formState.errors.title?.message}
@@ -894,37 +921,24 @@ export default function SubmitForm({ onClose }: Props) {
               mode="single"
               error={eventTypeError}
             />
-            <div>
-              <label className="text-label-md font-bold text-on-surface-variant mb-1 block">
-                장소
-              </label>
-              <div className="flex gap-2">
-                <div className="flex-1 min-w-0">
-                  <FormInput
-                    label=""
-                    readOnly
-                    placeholder="주소 검색을 눌러주세요"
-                    registration={eventForm.register("address")}
-                    onClick={openEventAddressSearch}
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={openEventAddressSearch}
-                  className="shrink-0 px-3 h-11 mt-auto bg-secondary text-secondary-foreground font-bold text-label-md rounded-xl"
-                >
-                  검색
-                </button>
-              </div>
-            </div>
+            <FormInput
+              label="장소"
+              readOnly
+              placeholder="눌러서 주소 검색"
+              registration={eventForm.register("address")}
+              onClick={openEventAddressSearch}
+              rightSlot={<Search className="size-4" />}
+            />
             <FormInput
               label="상세주소"
+              maxLength={100}
               placeholder="층, 호수 등 상세주소"
               registration={eventForm.register("addressDetail")}
             />
             {eventCoords && (
-              <p className="text-label-xs text-outline">
-                좌표: {eventCoords.lat.toFixed(5)}, {eventCoords.lng.toFixed(5)}
+              <p className="text-label-xs text-secondary flex items-center gap-1">
+                <CheckCircle2 className="size-3.5" />
+                위치가 확인되었어요
               </p>
             )}
           </div>
@@ -932,7 +946,7 @@ export default function SubmitForm({ onClose }: Props) {
       case 1:
         return (
           <div className="space-y-4 px-2">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <FormInput
                 label="시작일"
                 required
@@ -946,11 +960,31 @@ export default function SubmitForm({ onClose }: Props) {
                 registration={eventForm.register("endDate")}
               />
             </div>
-            <FormInput
-              label="설명"
-              placeholder="이벤트 상세 내용"
-              registration={eventForm.register("description")}
-            />
+            <div>
+              <label
+                htmlFor="event-description"
+                className="text-label-md font-bold text-on-surface-variant mb-1 block"
+              >
+                설명
+              </label>
+              <textarea
+                id="event-description"
+                rows={5}
+                maxLength={2000}
+                placeholder="이벤트 상세 내용"
+                {...eventForm.register("description")}
+                onChange={(e) => {
+                  eventForm.register("description").onChange(e);
+                  setDescriptionCount(e.target.value.length);
+                }}
+                className="bg-surface-container text-label-lg text-on-surface placeholder:text-outline focus:ring-primary/30 w-full resize-none rounded-xl px-4 py-3 focus:ring-2 focus:outline-none"
+              />
+              <div className="mt-1 flex justify-end">
+                <p className="text-outline text-label-xs tabular-nums">
+                  {descriptionCount}/2000
+                </p>
+              </div>
+            </div>
           </div>
         );
       default:
