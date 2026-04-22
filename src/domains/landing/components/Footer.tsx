@@ -27,8 +27,8 @@ export default function Footer() {
                 타래
               </p>
             </div>
-            <p className="text-body-sm text-on-surface-variant whitespace-nowrap leading-relaxed">
-              뜨개인을 위한 플랫폼. 흩어져 있는 뜨개 정보를 한 곳에서 연결합니다.
+            <p className="text-body-sm text-on-surface-variant md:whitespace-nowrap leading-relaxed">
+              뜨개인을 위한 플랫폼.<br className="md:hidden" /> 흩어져 있는 뜨개 정보를 한 곳에서 연결합니다.
             </p>
           </div>
           <nav className="text-label-md text-on-surface-variant flex flex-wrap gap-x-6 gap-y-2">
