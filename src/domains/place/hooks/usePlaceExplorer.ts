@@ -3,6 +3,10 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { getPlaces } from "@/domains/place/queries/placeApi";
 import type { Place } from "../types";
+import {
+  notifyGeolocationError,
+  requestUserLocation,
+} from "@/shared/lib/geolocation";
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
   const R = 6371;
@@ -195,6 +199,21 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     return haversineKm(userLocation.lat, userLocation.lng, lat, lng);
   }, [userLocation]);
 
+  const requestDistanceSort = useCallback(() => {
+    if (userLocation) {
+      setSortBy("distance");
+      return;
+    }
+    requestUserLocation()
+      .then((loc) => {
+        setUserLocation(loc);
+        setSortBy("distance");
+      })
+      .catch((err: GeolocationPositionError | null) => {
+        notifyGeolocationError(err);
+      });
+  }, [userLocation]);
+
   return {
     // data
     filteredPlaces,
@@ -225,6 +244,7 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     // sort
     sortBy,
     setSortBy,
+    requestDistanceSort,
     // distance
     userLocation,
     getDistance,

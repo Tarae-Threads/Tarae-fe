@@ -5,16 +5,24 @@ import CalendarGrid from "./CalendarGrid";
 import EventTypeFilter from "./EventTypeFilter";
 import EventList from "./EventList";
 
+type SortBy = "name-asc" | "name-desc" | "distance";
+
 interface Props {
   onEventSelect?: (eventId: number) => void;
   selectedEventId?: number | null;
   searchQuery?: string;
+  selectedRegion?: string;
+  sortBy?: SortBy;
+  userLocation?: { lat: number; lng: number } | null;
 }
 
 export default function EventSidePanelContent({
   onEventSelect,
   selectedEventId,
   searchQuery,
+  selectedRegion,
+  sortBy,
+  userLocation,
 }: Props) {
   const {
     allEvents,
@@ -32,7 +40,7 @@ export default function EventSidePanelContent({
     prevMonth,
     selectDate,
     goToday,
-  } = useEventExplorer(searchQuery);
+  } = useEventExplorer(searchQuery, { selectedRegion, sortBy, userLocation });
 
   return (
     <div className="px-5 py-3 space-y-4">

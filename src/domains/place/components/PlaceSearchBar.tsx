@@ -4,8 +4,10 @@ import PlaceFilter from "./PlaceFilter";
 import type { SortBy } from "./PlaceFilter";
 import PlaceCategoryTabs from "./PlaceCategoryTabs";
 import { Search, SlidersHorizontal, X } from "lucide-react";
+import type { NavTab } from "@/shared/components/layout/NavBar";
 
 interface PlaceSearchBarProps {
+  activeTab?: NavTab;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   filterOpen: boolean;
@@ -17,10 +19,12 @@ interface PlaceSearchBarProps {
   onRegionChange: (region: string) => void;
   sortBy: SortBy;
   onSortChange: (sort: SortBy) => void;
+  onDistanceSortRequest?: () => void;
   resultCount?: number;
 }
 
 export default function PlaceSearchBar({
+  activeTab = "places",
   searchQuery,
   onSearchChange,
   filterOpen,
@@ -32,6 +36,7 @@ export default function PlaceSearchBar({
   onRegionChange,
   sortBy,
   onSortChange,
+  onDistanceSortRequest,
   resultCount,
 }: PlaceSearchBarProps) {
   const activeFilterCount = selectedRegion !== "all" ? 1 : 0;
@@ -89,17 +94,20 @@ export default function PlaceSearchBar({
             onRegionChange={onRegionChange}
             sortBy={sortBy}
             onSortChange={onSortChange}
+            onDistanceSortRequest={onDistanceSortRequest}
           />
         </div>
       )}
 
-      <div className="mt-3">
-        <PlaceCategoryTabs
-          selectedCategories={selectedCategories}
-          onToggleCategory={onToggleCategory}
-          onClearCategories={onClearCategories}
-        />
-      </div>
+      {activeTab === "places" && (
+        <div className="mt-3">
+          <PlaceCategoryTabs
+            selectedCategories={selectedCategories}
+            onToggleCategory={onToggleCategory}
+            onClearCategories={onClearCategories}
+          />
+        </div>
+      )}
     </div>
   );
 }

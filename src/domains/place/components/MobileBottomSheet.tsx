@@ -61,6 +61,8 @@ function nextSnap(current: SnapPoint, direction: "up" | "down"): SnapPoint {
 // Props
 // ---------------------------------------------------------------------------
 
+type SortBy = "name-asc" | "name-desc" | "distance";
+
 interface Props {
   activeTab: NavTab;
   places: Place[];
@@ -75,6 +77,9 @@ interface Props {
   onHeightChange?: (height: number) => void;
   onSnapChange?: (snap: SnapPoint) => void;
   searchQuery?: string;
+  selectedRegion?: string;
+  sortBy?: SortBy;
+  userLocation?: { lat: number; lng: number } | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -95,6 +100,9 @@ export default function MobileBottomSheet({
   onHeightChange,
   onSnapChange,
   searchQuery,
+  selectedRegion,
+  sortBy,
+  userLocation,
 }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [snap, setSnap] = useState<SnapPoint>("peek");
@@ -299,6 +307,9 @@ export default function MobileBottomSheet({
           {viewportFilterActive && (
             <button
               onClick={onClearViewportFilter}
+              onTouchStart={stopPropagation}
+              onTouchMove={stopPropagation}
+              onTouchEnd={stopPropagation}
               className="bg-primary/10 text-primary text-label-md hover:bg-primary/15 mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 font-bold transition-colors"
             >
               <X className="h-3.5 w-3.5" />
@@ -357,7 +368,13 @@ export default function MobileBottomSheet({
           </div>
         ) : (
           <div className="pb-20">
-            <EventSidePanelContent onEventSelect={onEventSelect} searchQuery={searchQuery} />
+            <EventSidePanelContent
+              onEventSelect={onEventSelect}
+              searchQuery={searchQuery}
+              selectedRegion={selectedRegion}
+              sortBy={sortBy}
+              userLocation={userLocation}
+            />
           </div>
         )}
       </div>

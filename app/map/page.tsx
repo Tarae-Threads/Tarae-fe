@@ -73,6 +73,7 @@ function HomeContent() {
     toggleFilter,
     sortBy,
     setSortBy,
+    requestDistanceSort,
     userLocation,
     getDistance,
   } = usePlaceExplorer(initialPlaceId);
@@ -283,6 +284,8 @@ function HomeContent() {
         selectedEventId={selectedEvent?.id ?? null}
         sortBy={sortBy}
         onSortChange={setSortBy}
+        onDistanceSortRequest={requestDistanceSort}
+        userLocation={userLocation}
         viewportFilterActive={viewportFilterActive}
         onClearViewportFilter={clearViewportFilter}
         getDistance={getDistance}
@@ -361,6 +364,7 @@ function HomeContent() {
             mobileSheetSnap === "full" || (mobileDetailOpen && detailSnap === "peek") ? "bg-surface-container-low" : ""
           } ${mobileDetailOpen && detailSnap === "full" ? "hidden" : ""}`}>
             <PlaceSearchBar
+              activeTab={activeTab}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
               filterOpen={filterOpen}
@@ -372,6 +376,7 @@ function HomeContent() {
               onRegionChange={setSelectedRegion}
               sortBy={sortBy}
               onSortChange={setSortBy}
+              onDistanceSortRequest={requestDistanceSort}
               resultCount={displayPlaces.length}
             />
           </div>
@@ -391,6 +396,9 @@ function HomeContent() {
               onHeightChange={setMobileSheetHeight}
               onSnapChange={setMobileSheetSnap}
               searchQuery={searchQuery}
+              selectedRegion={selectedRegion}
+              sortBy={sortBy}
+              userLocation={userLocation}
             />
           )}
 
