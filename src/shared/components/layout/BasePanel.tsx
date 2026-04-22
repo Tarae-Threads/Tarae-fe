@@ -31,6 +31,8 @@ interface Props {
   selectedEventId?: number | null
   sortBy: SortBy
   onSortChange: (sort: SortBy) => void
+  onDistanceSortRequest?: () => void
+  userLocation?: { lat: number; lng: number } | null
   viewportFilterActive?: boolean
   onClearViewportFilter?: () => void
   getDistance?: (place: Place) => number | null
@@ -53,6 +55,8 @@ export default function BasePanel({
   selectedEventId,
   sortBy,
   onSortChange,
+  onDistanceSortRequest,
+  userLocation,
   viewportFilterActive,
   onClearViewportFilter,
   getDistance,
@@ -119,6 +123,7 @@ export default function BasePanel({
                   onRegionChange={onRegionChange}
                   sortBy={sortBy}
                   onSortChange={onSortChange}
+                  onDistanceSortRequest={onDistanceSortRequest}
                 />
               </div>
             )}
@@ -232,7 +237,14 @@ export default function BasePanel({
         </>
       ) : (
         <div className="flex-1 overflow-y-auto hide-scrollbar">
-          <EventSidePanelContent onEventSelect={onEventSelect} selectedEventId={selectedEventId} searchQuery={searchQuery} />
+          <EventSidePanelContent
+            onEventSelect={onEventSelect}
+            selectedEventId={selectedEventId}
+            searchQuery={searchQuery}
+            selectedRegion={selectedRegion}
+            sortBy={sortBy}
+            userLocation={userLocation}
+          />
         </div>
       )}
     </div>

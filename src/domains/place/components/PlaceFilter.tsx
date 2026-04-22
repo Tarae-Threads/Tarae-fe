@@ -10,6 +10,7 @@ interface PlaceFilterProps {
   onRegionChange: (region: string) => void
   sortBy: SortBy
   onSortChange: (sort: SortBy) => void
+  onDistanceSortRequest?: () => void
 }
 
 const SORT_OPTIONS: { value: SortBy; label: string }[] = [
@@ -23,7 +24,15 @@ export default function PlaceFilter({
   onRegionChange,
   sortBy,
   onSortChange,
+  onDistanceSortRequest,
 }: PlaceFilterProps) {
+  const handleSortClick = (value: SortBy) => {
+    if (value === 'distance' && onDistanceSortRequest) {
+      onDistanceSortRequest()
+      return
+    }
+    onSortChange(value)
+  }
   return (
     <div className="space-y-4">
       {/* Sort */}
@@ -37,7 +46,7 @@ export default function PlaceFilter({
               key={opt.value}
               label={opt.label}
               selected={sortBy === opt.value}
-              onClick={() => onSortChange(opt.value)}
+              onClick={() => handleSortClick(opt.value)}
             />
           ))}
         </div>

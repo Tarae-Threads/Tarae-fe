@@ -10,19 +10,7 @@ import {
 } from "react";
 import Script from "next/script";
 import type { Place } from "../types";
-import { toast } from "@/shared/components/ui/toast";
-
-function notifyGeolocationError(err: GeolocationPositionError | null) {
-  if (err && err.code === err.PERMISSION_DENIED) {
-    toast.error("현재 위치 권한이 차단되어 있습니다.", {
-      description: "브라우저 설정에서 위치 권한을 허용으로 바꿔주세요.",
-    });
-    return;
-  }
-  toast.error("현재 위치를 가져올 수 없습니다.", {
-    description: "잠시 후 다시 시도해 주세요.",
-  });
-}
+import { notifyGeolocationError } from "@/shared/lib/geolocation";
 
 /* ---- Naver Maps 최소 타입 정의 ---- */
 interface NaverLatLng {
