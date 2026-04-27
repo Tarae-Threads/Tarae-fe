@@ -149,8 +149,7 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
           const N = window.naver.maps;
           const { latitude, longitude } = pos.coords;
           const position = new N.LatLng(latitude, longitude);
-          map.panTo(position);
-          map.setZoom(14, true);
+          map.morph(position, 14, { duration: 500 });
 
           // Create or update my location marker
           if (myLocationMarkerRef.current) {
