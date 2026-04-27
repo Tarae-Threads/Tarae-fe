@@ -2,10 +2,27 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { fetchPlacesForLanding } from "../queries/landingApi";
 import TrackedLink from "@/shared/components/analytics/TrackedLink";
+import CategoryBadge from "@/domains/place/components/CategoryBadge";
+
+const TRENDING_PLACE_NAMES = [
+  "바늘이야기 연희점",
+  "솜솜뜨개",
+  "쎄비 하우스",
+  "누가바닛츠",
+  "니틴",
+  "옐로우헤이트",
+  "플레이스낙양",
+  "메리노",
+];
+
+const normalizeName = (s: string) => s.replace(/\s+/g, "");
 
 export default async function TrendingPlaces() {
   const places = await fetchPlacesForLanding();
-  const trending = places.slice(0, 8);
+  const placeByName = new Map(places.map((p) => [normalizeName(p.name), p]));
+  const trending = TRENDING_PLACE_NAMES
+    .map((name) => placeByName.get(normalizeName(name)))
+    .filter((p): p is NonNullable<typeof p> => p !== undefined);
 
   if (trending.length === 0) return null;
 
@@ -58,13 +75,8 @@ export default async function TrendingPlaces() {
                 {place.address}
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {place.categories.slice(0, 2).map((c) => (
-                  <span
-                    key={c.id}
-                    className="text-label-xs font-bold text-primary bg-primary-fixed px-2 py-0.5 rounded-full"
-                  >
-                    {c.name}
-                  </span>
+                {place.categories.map((c) => (
+                  <CategoryBadge key={c.id} category={c.name} />
                 ))}
               </div>
             </TrackedLink>

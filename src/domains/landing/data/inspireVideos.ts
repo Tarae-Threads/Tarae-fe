@@ -16,19 +16,19 @@
 
 export interface InspireVideo {
   /** 고유 ID (analytics·key) */
-  id: string
+  id: string;
   /** 11자 YouTube 영상 ID */
-  videoId: string
+  videoId: string;
   /** 카드에 노출되는 우리 한줄 카피 */
-  caption: string
+  caption: string;
   /** 크리에이터 크레딧 */
-  creator: { name: string; channelUrl?: string }
+  creator: { name: string; channelUrl?: string };
   /** 선택 태그 칩 */
-  tag?: string
+  tag?: string;
   /** false 면 비노출 */
-  active: boolean
+  active: boolean;
   /** 오름차순 정렬 기준 (없으면 배열 순서) */
-  sort?: number
+  sort?: number;
 }
 
 export const INSPIRE_VIDEOS: InspireVideo[] = [
@@ -36,26 +36,36 @@ export const INSPIRE_VIDEOS: InspireVideo[] = [
     id: "hiyo-moss-heather",
     videoId: "d-DWqZFMJ4g",
     caption: "초록 물결 베스트… 손님, 이건 직접 뜨셔야 합니다.",
-    creator: { name: "히요정", channelUrl: "https://www.youtube.com/@hiyojeong" },
+    creator: {
+      name: "히요정",
+      channelUrl: "https://www.youtube.com/@hiyojeong",
+    },
     tag: "베스트",
-    active: true,
-  },
-  {
-    id: "hiyo-fleur-cardigan",
-    videoId: "yy9_C9ZhhRM",
-    caption: "크로셰 꽃 가디건. 이게 뜨개라고?",
-    creator: { name: "히요정", channelUrl: "https://www.youtube.com/@hiyojeong" },
-    tag: "가디건",
     active: true,
   },
   {
     id: "oyangi-cat-cowichan",
     videoId: "DSp6ouw0VPo",
     caption: "고양이 카우쳔 · 입기 좋은 날씨의 자랑템.",
-    creator: { name: "오양이", channelUrl: "https://www.youtube.com/@oyangiee" },
+    creator: {
+      name: "오양이",
+      channelUrl: "https://www.youtube.com/@oyangiee",
+    },
     tag: "스웨터",
     active: true,
   },
+  {
+    id: "hiyo-fleur-cardigan",
+    videoId: "yy9_C9ZhhRM",
+    caption: "크로셰 꽃 가디건. 이게 뜨개라고?",
+    creator: {
+      name: "히요정",
+      channelUrl: "https://www.youtube.com/@hiyojeong",
+    },
+    tag: "가디건",
+    active: true,
+  },
+
   {
     id: "seooff-amsterdam-cardigan",
     videoId: "YZeSftF3Ipo",
@@ -68,7 +78,10 @@ export const INSPIRE_VIDEOS: InspireVideo[] = [
     id: "yuwing-olga-hood",
     videoId: "NCma4wuYaBM",
     caption: "가을용 후드 스웨터, 첫 서울 뜨개숍 방문기까지.",
-    creator: { name: "유윙 yuwing", channelUrl: "https://www.youtube.com/@yuwing_" },
+    creator: {
+      name: "유윙 yuwing",
+      channelUrl: "https://www.youtube.com/@yuwing_",
+    },
     tag: "스웨터",
     active: true,
   },
@@ -87,7 +100,10 @@ export const INSPIRE_VIDEOS: InspireVideo[] = [
     id: "koro-scrunchie-bag",
     videoId: "IpqFgsriv70",
     caption: "초보자용 스크런치 가방. 첫 뜨개 프로젝트 후보.",
-    creator: { name: "koro_knitting", channelUrl: "https://www.youtube.com/@koro_knitting" },
+    creator: {
+      name: "koro_knitting",
+      channelUrl: "https://www.youtube.com/@koro_knitting",
+    },
     tag: "가방",
     active: true,
   },
@@ -102,14 +118,14 @@ export const INSPIRE_VIDEOS: InspireVideo[] = [
     tag: "가디건",
     active: true,
   },
-]
+];
 
 /** active 인 영상만 sort(있으면) → 배열 순서로 반환 */
 export function getActiveInspireVideos(): InspireVideo[] {
   return INSPIRE_VIDEOS.filter((v) => v.active).sort((a, b) => {
-    if (a.sort != null && b.sort != null) return a.sort - b.sort
-    if (a.sort != null) return -1
-    if (b.sort != null) return 1
-    return 0
-  })
+    if (a.sort != null && b.sort != null) return a.sort - b.sort;
+    if (a.sort != null) return -1;
+    if (b.sort != null) return 1;
+    return 0;
+  });
 }

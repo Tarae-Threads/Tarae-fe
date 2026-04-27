@@ -1,4 +1,5 @@
 import { MDXRemote } from "next-mdx-remote/rsc"
+import remarkGfm from "remark-gfm"
 import { YouTubeEmbed } from "@next/third-parties/google"
 import Image from "next/image"
 import Link from "next/link"
@@ -11,6 +12,7 @@ import {
   EventCTA,
   EventCTAGroup,
 } from "./EventBlocks"
+import InquiryButton from "./InquiryButton"
 
 const components = {
   h1: (props: ComponentProps<"h1">) => (
@@ -84,6 +86,26 @@ const components = {
     />
   ),
   hr: () => <hr className="my-8 border-outline-variant/40" />,
+  table: (props: ComponentProps<"table">) => (
+    <div className="my-6 overflow-x-auto rounded-2xl border border-outline-variant/40">
+      <table {...props} className="w-full border-collapse text-body-md text-on-surface" />
+    </div>
+  ),
+  thead: (props: ComponentProps<"thead">) => (
+    <thead {...props} className="bg-surface-container-low" />
+  ),
+  tr: (props: ComponentProps<"tr">) => (
+    <tr {...props} className="border-b border-outline-variant/30 last:border-b-0" />
+  ),
+  th: (props: ComponentProps<"th">) => (
+    <th
+      {...props}
+      className="px-4 py-2.5 text-left font-bold text-on-surface text-label-md"
+    />
+  ),
+  td: (props: ComponentProps<"td">) => (
+    <td {...props} className="px-4 py-2.5 align-top" />
+  ),
   img: ({ src = "", alt = "", ...props }: ComponentProps<"img">) => (
     <span className="block my-6 overflow-hidden rounded-xl">
       <Image
@@ -106,12 +128,18 @@ const components = {
   Prize,
   EventCTA,
   EventCTAGroup,
+  // 문의하기 모달 트리거
+  InquiryButton,
 }
 
 export default function NewsArticleBody({ source }: { source: string }) {
   return (
     <div className="mdx-content">
-      <MDXRemote source={source} components={components} />
+      <MDXRemote
+        source={source}
+        components={components}
+        options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+      />
     </div>
   )
 }
