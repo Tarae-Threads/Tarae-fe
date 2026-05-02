@@ -11,12 +11,8 @@ interface Props {
   shop: Shop
 }
 
-const MAX_BRANDS = 3
-
 export default function ShopCard({ shop }: Props) {
   const primaryCategory = shop.categories[0]?.name
-  const brandsToShow = shop.brands.slice(0, MAX_BRANDS)
-  const moreBrandsCount = shop.brands.length - brandsToShow.length
 
   // og:image 조회 우선순위: 인스타 > 웹사이트 > 네이버 (네이버는 보통 차단/일반 로고)
   const ogTargetUrl = shop.instagramUrl ?? shop.websiteUrl ?? shop.naverUrl
@@ -56,18 +52,9 @@ export default function ShopCard({ shop }: Props) {
           </div>
         )}
 
-        <h3 className="font-display font-bold text-title-sm text-on-surface line-clamp-1 mb-1">
+        <h3 className="font-display font-bold text-title-sm text-on-surface line-clamp-1 mb-1.5">
           {shop.name}
         </h3>
-
-        {shop.brands.length > 0 && (
-          <p className="text-body-sm text-on-surface-variant line-clamp-1 mb-2">
-            {brandsToShow.map((b) => b.name).join(" · ")}
-            {moreBrandsCount > 0 && (
-              <span className="text-outline"> +{moreBrandsCount}</span>
-            )}
-          </p>
-        )}
 
         {shop.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-2">

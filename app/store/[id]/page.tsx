@@ -5,6 +5,7 @@ import { ArrowLeft, Globe, Instagram } from "lucide-react"
 import Header from "@/domains/landing/components/Header"
 import Footer from "@/domains/landing/components/Footer"
 import CategoryBadge from "@/domains/place/components/CategoryBadge"
+import PlaceBrandsView from "@/domains/place/components/PlaceBrandsView"
 import TagChip from "@/shared/components/ui/TagChip"
 import ReviewSection from "@/domains/review/components/ReviewSection"
 import ShopEditButton from "@/domains/shop/components/ShopEditButton"
@@ -75,19 +76,24 @@ export default async function ShopDetailPage({
             <h1 className="font-display font-extrabold text-headline-md md:text-display-sm text-on-surface mb-3">
               {shop.name}
             </h1>
-            {shop.brands.length > 0 && (
-              <p className="text-body-lg text-on-surface-variant">
-                {shop.brands.map((b) => b.name).join(" · ")}
-              </p>
-            )}
             {shop.tags.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5">
                 {shop.tags.map((tag) => (
                   <TagChip key={tag.id} label={tag.name} size="md" />
                 ))}
               </div>
             )}
           </header>
+
+          {/* 취급 브랜드 (장소 상세와 동일 UI) */}
+          {shop.brands.length > 0 && (
+            <section className="mb-8">
+              <h2 className="font-display font-bold text-title-sm text-on-surface mb-3">
+                취급 브랜드
+              </h2>
+              <PlaceBrandsView brands={shop.brands} />
+            </section>
+          )}
 
           {/* 외부 링크 큰 버튼 */}
           {(shop.instagramUrl || shop.naverUrl || shop.websiteUrl) && (
