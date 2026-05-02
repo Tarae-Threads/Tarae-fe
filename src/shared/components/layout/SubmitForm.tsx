@@ -18,14 +18,19 @@ import {
   placeSubmissionSchema,
   eventSubmissionSchema,
   placeUpdateSchema,
+  shopSubmissionSchema,
+  shopUpdateSchema,
 } from "@/shared/schemas/submitForm";
 import type {
   PlaceSubmissionData,
   EventSubmissionData,
   PlaceUpdateData,
+  ShopSubmissionData,
+  ShopUpdateData,
 } from "@/shared/schemas/submitForm";
 import { requestPlace, getCategories, getBrands } from "@/domains/place/queries/placeApi";
 import { requestEvent } from "@/domains/event/queries/eventApi";
+import { requestShop, getShops } from "@/domains/shop/queries/shopApi";
 import { getPlaces } from "@/domains/place/queries/placeApi";
 import type { BrandTypeGroup } from "@/shared/api/client";
 import BrandMultiSelect from "@/shared/components/ui/BrandMultiSelect";
@@ -43,6 +48,7 @@ import {
   Calendar,
   CheckCircle2,
   Search,
+  Store,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 
@@ -58,8 +64,9 @@ const eventTypeOptions = EVENT_TYPE_KEYS.map((type) => ({
   color: EVENT_TYPE_COLOR[type],
 }));
 
-type FormTab = "place" | "event";
+type FormTab = "place" | "event" | "store";
 type PlaceMode = "new" | "update" | null;
+type ShopMode = "new" | "update" | null;
 
 // ---------------------------------------------------------------------------
 // 스텝 설정
@@ -71,6 +78,9 @@ const STEP_TITLES = {
   placeNew: ["장소 기본 정보", "카테고리 선택", "추가 정보를 알려주세요"],
   placeUpdate: ["어떤 장소를 수정하나요?", "수정할 내용을 알려주세요"], // step 1: 1개 이상 필수
   event: ["어떤 일정인가요?", "언제, 어디서 진행되나요?"],
+  shopSelect: ["어떤 제보를 하시겠어요?"],
+  shopNew: ["상점 기본 정보", "추가 정보를 알려주세요"],
+  shopUpdate: ["어떤 상점을 수정하나요?", "수정할 내용을 알려주세요"],
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -222,10 +232,11 @@ function PlaceDetailFields({
 
 interface Props {
   onClose: (v?: unknown) => void;
+  initialTab?: FormTab;
 }
 
-export default function SubmitForm({ onClose }: Props) {
-  const [tab, setTab] = useState<FormTab>("place");
+export default function SubmitForm({ onClose, initialTab = "place" }: Props) {
+  const [tab, setTab] = useState<FormTab>(initialTab);
   const [placeMode, setPlaceMode] = useState<PlaceMode>(null);
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -297,6 +308,19 @@ export default function SubmitForm({ onClose }: Props) {
         );
       })
       .catch(() => {});
+
+    // 상점 목록 (업데이트 드롭다운용)
+    getShops()
+      .then((shops) => {
+        setShopOptions(
+          shops.map((s) => ({
+            value: String(s.id),
+            label: s.name,
+            sub: s.brands.map((b) => b.name).slice(0, 3).join(" · "),
+          })),
+        );
+      })
+      .catch(() => {});
   }, []);
 
   // Geocoding 좌표 (장소 / 이벤트 각각)
@@ -325,6 +349,36 @@ export default function SubmitForm({ onClose }: Props) {
     defaultValues: { email: "" },
   });
 
+  // Shop form (NEW)
+  const [shopMode, setShopMode] = useState<ShopMode>(null);
+  const shopForm = useForm<ShopSubmissionData>({
+    resolver: zodResolver(shopSubmissionSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      linkInstagram: "",
+      linkNaver: "",
+      linkWebsite: "",
+      brandsYarn: "",
+      brandsNeedle: "",
+      brandsNotions: "",
+      brandsPatternbook: "",
+      tags: "",
+      note: "",
+    },
+  });
+
+  // Shop update form
+  const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
+  const [shopSelectError, setShopSelectError] = useState<string>();
+  const [shopOptions, setShopOptions] = useState<
+    { value: string; label: string; sub?: string }[]
+  >([]);
+  const shopUpdateForm = useForm<ShopUpdateData>({
+    resolver: zodResolver(shopUpdateSchema),
+    defaultValues: { email: "" },
+  });
+
   // Event form
   const [selectedEventType, setSelectedEventType] = useState<EventType | null>(
     null,
@@ -350,15 +404,21 @@ export default function SubmitForm({ onClose }: Props) {
   // 스텝 계산
   // ---------------------------------------------------------------------------
 
-  // place 탭에서 mode 미선택이면 선택 화면
+  // place / store 탭에서 mode 미선택이면 선택 화면
   const stepKey: keyof typeof STEP_TITLES =
     tab === "event"
       ? "event"
-      : placeMode === null
-        ? "placeSelect"
-        : placeMode === "new"
-          ? "placeNew"
-          : "placeUpdate";
+      : tab === "store"
+        ? shopMode === null
+          ? "shopSelect"
+          : shopMode === "new"
+            ? "shopNew"
+            : "shopUpdate"
+        : placeMode === null
+          ? "placeSelect"
+          : placeMode === "new"
+            ? "placeNew"
+            : "placeUpdate";
 
   const titles = STEP_TITLES[stepKey];
   const totalSteps = titles.length;
@@ -369,6 +429,7 @@ export default function SubmitForm({ onClose }: Props) {
   useEffect(() => {
     setStep(0);
     setPlaceMode(null);
+    setShopMode(null);
     setEventCoords(null);
   }, [tab]);
 
@@ -389,14 +450,19 @@ export default function SubmitForm({ onClose }: Props) {
   const placeDirty = placeForm.formState.isDirty;
   const updateDirty = updateForm.formState.isDirty;
   const eventDirty = eventForm.formState.isDirty;
+  const shopDirty = shopForm.formState.isDirty;
+  const shopUpdateDirty = shopUpdateForm.formState.isDirty;
   const hasUserInput =
     placeDirty ||
     updateDirty ||
     eventDirty ||
+    shopDirty ||
+    shopUpdateDirty ||
     selectedCategories.size > 0 ||
     customCategory.length > 0 ||
     selectedEventType !== null ||
-    selectedPlaceId !== null;
+    selectedPlaceId !== null ||
+    selectedShopId !== null;
   useEffect(() => {
     if (!hasUserInput) return;
     const handler = (e: BeforeUnloadEvent) => {
@@ -419,8 +485,8 @@ export default function SubmitForm({ onClose }: Props) {
 
   // 스텝 진입 이벤트
   useEffect(() => {
-    // placeSelect 모드에서는 카드 선택 화면 → step_view 의미 없음 (별도 이벤트 사용)
-    if (stepKey === "placeSelect") return;
+    // *Select 모드에서는 카드 선택 화면 → step_view 의미 없음 (별도 이벤트 사용)
+    if (stepKey === "placeSelect" || stepKey === "shopSelect") return;
     track("submit_step_view", {
       flow: stepKey,
       step,
@@ -517,6 +583,46 @@ export default function SubmitForm({ onClose }: Props) {
           flow: stepKey,
           step,
           fields: ["placeId"],
+        });
+        return;
+      }
+      if (!emailValid) {
+        track("submit_validation_error", {
+          flow: stepKey,
+          step,
+          fields: ["email"],
+        });
+        return;
+      }
+    }
+    if (stepKey === "shopNew" && step === 0) {
+      const valid = await shopForm.trigger([
+        "name",
+        "email",
+        "linkInstagram",
+        "linkNaver",
+        "linkWebsite",
+      ]);
+      if (!valid) {
+        const errs = shopForm.formState.errors;
+        if (errs.name) failedFields.push("name");
+        if (errs.email) failedFields.push("email");
+        track("submit_validation_error", {
+          flow: stepKey,
+          step,
+          fields: failedFields,
+        });
+        return;
+      }
+    }
+    if (stepKey === "shopUpdate" && step === 0) {
+      const emailValid = await shopUpdateForm.trigger("email");
+      if (!selectedShopId) {
+        setShopSelectError("상점을 선택해주세요");
+        track("submit_validation_error", {
+          flow: stepKey,
+          step,
+          fields: ["shopId"],
         });
         return;
       }
@@ -708,6 +814,155 @@ export default function SubmitForm({ onClose }: Props) {
       const status =
         (err as { response?: { status?: number } })?.response?.status;
       track("submit_error", { flow: "placeUpdate", status });
+      toast.error("제보 등록에 실패했어요.", {
+        description: "잠시 후 다시 시도해주세요.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const onShopSubmit = async (data: ShopSubmissionData) => {
+    // 추가정보 한 항목 이상 입력 여부 (카테고리는 받지 않음)
+    const hasAdditionalInfo =
+      Boolean(
+        (data.brandsYarn ?? "").trim() ||
+          (data.brandsNeedle ?? "").trim() ||
+          (data.brandsNotions ?? "").trim() ||
+          (data.brandsPatternbook ?? "").trim() ||
+          (data.tags ?? "").trim() ||
+          (data.note ?? "").trim(),
+      ) ||
+      brandSelectState.yarnIds.length > 0 ||
+      brandSelectState.needleIds.length > 0 ||
+      brandSelectState.notionsIds.length > 0 ||
+      brandSelectState.patternbookIds.length > 0;
+    if (!hasAdditionalInfo) {
+      track("submit_validation_error", {
+        flow: "shopNew",
+        step,
+        fields: ["additionalInfo"],
+      });
+      toast.error("추가 정보를 1개 이상 입력해주세요");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await requestShop({
+        requestType: "NEW",
+        name: data.name,
+        instagramUrl: data.linkInstagram || undefined,
+        naverUrl: data.linkNaver || undefined,
+        websiteUrl: data.linkWebsite || undefined,
+        brandYarnIds:
+          brandSelectState.yarnIds.length > 0 ? brandSelectState.yarnIds : undefined,
+        brandsYarn: data.brandsYarn || undefined,
+        brandNeedleIds:
+          brandSelectState.needleIds.length > 0
+            ? brandSelectState.needleIds
+            : undefined,
+        brandsNeedle: data.brandsNeedle || undefined,
+        brandNotionsIds:
+          brandSelectState.notionsIds.length > 0
+            ? brandSelectState.notionsIds
+            : undefined,
+        brandsNotions: data.brandsNotions || undefined,
+        brandPatternbookIds:
+          brandSelectState.patternbookIds.length > 0
+            ? brandSelectState.patternbookIds
+            : undefined,
+        brandsPatternbook: data.brandsPatternbook || undefined,
+        tags: data.tags || undefined,
+        note: data.note || undefined,
+        email: data.email || undefined,
+      });
+      toast.success("제보가 등록되었습니다");
+      succeededRef.current = true;
+      track("submit_success", {
+        flow: "shopNew",
+        durationMs: Math.round(now() - openedAtRef.current),
+      });
+      onClose();
+    } catch (err) {
+      const status =
+        (err as { response?: { status?: number } })?.response?.status;
+      track("submit_error", { flow: "shopNew", status });
+      toast.error("제보 등록에 실패했어요.", {
+        description: "잠시 후 다시 시도해주세요.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const onShopUpdate = async (data: ShopUpdateData) => {
+    // 변경 정보 한 항목 이상 입력 여부
+    const hasUpdateInfo =
+      Boolean(
+        (data.linkInstagram ?? "").trim() ||
+          (data.linkNaver ?? "").trim() ||
+          (data.linkWebsite ?? "").trim() ||
+          (data.brandsYarn ?? "").trim() ||
+          (data.brandsNeedle ?? "").trim() ||
+          (data.brandsNotions ?? "").trim() ||
+          (data.brandsPatternbook ?? "").trim() ||
+          (data.tags ?? "").trim() ||
+          (data.note ?? "").trim(),
+      ) ||
+      brandSelectState.yarnIds.length > 0 ||
+      brandSelectState.needleIds.length > 0 ||
+      brandSelectState.notionsIds.length > 0 ||
+      brandSelectState.patternbookIds.length > 0;
+    if (!hasUpdateInfo) {
+      track("submit_validation_error", {
+        flow: "shopUpdate",
+        step,
+        fields: ["updateInfo"],
+      });
+      toast.error("수정할 내용을 1개 이상 입력해주세요");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await requestShop({
+        requestType: "UPDATE",
+        shopId: Number(selectedShopId),
+        instagramUrl: data.linkInstagram || undefined,
+        naverUrl: data.linkNaver || undefined,
+        websiteUrl: data.linkWebsite || undefined,
+        brandYarnIds:
+          brandSelectState.yarnIds.length > 0 ? brandSelectState.yarnIds : undefined,
+        brandsYarn: data.brandsYarn || undefined,
+        brandNeedleIds:
+          brandSelectState.needleIds.length > 0
+            ? brandSelectState.needleIds
+            : undefined,
+        brandsNeedle: data.brandsNeedle || undefined,
+        brandNotionsIds:
+          brandSelectState.notionsIds.length > 0
+            ? brandSelectState.notionsIds
+            : undefined,
+        brandsNotions: data.brandsNotions || undefined,
+        brandPatternbookIds:
+          brandSelectState.patternbookIds.length > 0
+            ? brandSelectState.patternbookIds
+            : undefined,
+        brandsPatternbook: data.brandsPatternbook || undefined,
+        tags: data.tags || undefined,
+        note: data.note || undefined,
+        email: data.email || undefined,
+      });
+      toast.success("제보가 등록되었습니다");
+      succeededRef.current = true;
+      track("submit_success", {
+        flow: "shopUpdate",
+        durationMs: Math.round(now() - openedAtRef.current),
+      });
+      onClose();
+    } catch (err) {
+      const status =
+        (err as { response?: { status?: number } })?.response?.status;
+      track("submit_error", { flow: "shopUpdate", status });
       toast.error("제보 등록에 실패했어요.", {
         description: "잠시 후 다시 시도해주세요.",
       });
@@ -1114,6 +1369,240 @@ export default function SubmitForm({ onClose }: Props) {
   };
 
   // ---------------------------------------------------------------------------
+  // 스토어 제보 step 렌더
+  // ---------------------------------------------------------------------------
+
+  const renderShopModeSelect = () => (
+    <div className="flex flex-col gap-3">
+      <button
+        type="button"
+        onClick={() => {
+          setShopMode("new");
+          setStep(0);
+          track("submit_mode_select", { mode: "shop_new" });
+        }}
+        className="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-low transition-all hover:bg-surface-container active:scale-[0.98]"
+      >
+        <div className="flex size-10 items-center justify-center rounded-xl bg-primary-fixed">
+          <Store className="size-5 text-primary" />
+        </div>
+        <div className="text-left">
+          <p className="text-label-lg font-bold text-on-surface">
+            새 상점 제보
+          </p>
+          <p className="text-label-sm text-on-surface-variant">
+            아직 등록되지 않은 온라인 뜨개 상점을 알려주세요
+          </p>
+        </div>
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          setShopMode("update");
+          setStep(0);
+          track("submit_mode_select", { mode: "shop_update" });
+        }}
+        className="flex items-center gap-4 p-4 rounded-2xl bg-surface-container-low transition-all hover:bg-surface-container active:scale-[0.98]"
+      >
+        <div className="flex size-10 items-center justify-center rounded-xl bg-secondary-container">
+          <Pencil className="size-5 text-secondary" />
+        </div>
+        <div className="text-left">
+          <p className="text-label-lg font-bold text-on-surface">
+            기존 상점 수정
+          </p>
+          <p className="text-label-sm text-on-surface-variant">
+            링크, 브랜드 등 변경된 정보를 알려주세요
+          </p>
+        </div>
+      </button>
+    </div>
+  );
+
+  const renderShopNewStep = () => {
+    const brandsByType = (type: string) =>
+      brandGroups.find((g) => g.type === type)?.brands ?? [];
+
+    switch (step) {
+      case 0:
+        return (
+          <div className="space-y-4 px-2">
+            <FormInput
+              label="상점명"
+              required
+              autoFocus
+              maxLength={100}
+              placeholder="온라인 뜨개 상점 이름"
+              registration={shopForm.register("name")}
+              error={shopForm.formState.errors.name?.message}
+            />
+            <FormInput
+              label="인스타그램"
+              placeholder="https://instagram.com/..."
+              registration={shopForm.register("linkInstagram")}
+              error={shopForm.formState.errors.linkInstagram?.message}
+            />
+            <FormInput
+              label="네이버 스마트스토어"
+              placeholder="https://smartstore.naver.com/..."
+              registration={shopForm.register("linkNaver")}
+              error={shopForm.formState.errors.linkNaver?.message}
+            />
+            <FormInput
+              label="웹사이트"
+              placeholder="https://..."
+              registration={shopForm.register("linkWebsite")}
+              error={shopForm.formState.errors.linkWebsite?.message}
+            />
+            <FormInput
+              label="이메일"
+              type="email"
+              helperText="입력하면 경품 이벤트에 응모돼요"
+              placeholder="cat@example.com"
+              registration={shopForm.register("email")}
+              error={shopForm.formState.errors.email?.message}
+            />
+          </div>
+        );
+      case 1:
+        return (
+          <div className="space-y-4 px-2">
+            <p className="text-body-sm text-on-surface-variant">
+              1개 이상 입력해주세요. 나중에 수정할 수 있어요.
+            </p>
+            <fieldset className="space-y-3">
+              <legend className="text-label-md font-bold text-on-surface mb-1">
+                취급 브랜드
+              </legend>
+              {BRAND_FIELD_CONFIG.map((cfg) => (
+                <BrandMultiSelect
+                  key={cfg.type}
+                  label={cfg.label}
+                  brands={brandsByType(cfg.type)}
+                  selectedIds={brandSelectState[cfg.key]}
+                  onChangeIds={(ids) => handleBrandIdsChange(cfg.key, ids)}
+                  fallbackRegistration={shopForm.register(cfg.fallbackField as keyof ShopSubmissionData)}
+                  placeholder={cfg.placeholder}
+                />
+              ))}
+            </fieldset>
+            <FormInput
+              label="태그"
+              placeholder="수입실, 손염색실, 도안 (쉼표로 구분)"
+              registration={shopForm.register("tags")}
+              error={shopForm.formState.errors.tags?.message}
+            />
+            <FormInput
+              label="참고사항"
+              placeholder="추가 정보"
+              registration={shopForm.register("note")}
+              error={shopForm.formState.errors.note?.message}
+            />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const renderShopUpdateStep = () => {
+    const brandsByType = (type: string) =>
+      brandGroups.find((g) => g.type === type)?.brands ?? [];
+
+    switch (step) {
+      case 0:
+        return (
+          <div className="space-y-4 px-2 min-h-[400px]">
+            <SearchSelect
+              label="상점 선택"
+              required
+              options={shopOptions}
+              value={selectedShopId}
+              onChange={(id) => {
+                setSelectedShopId(id);
+                shopUpdateForm.setValue("shopId", id || "", {
+                  shouldValidate: true,
+                });
+                setShopSelectError(undefined);
+              }}
+              placeholder="상점명 또는 브랜드로 검색..."
+              error={shopSelectError}
+            />
+            <FormInput
+              label="이메일"
+              type="email"
+              helperText="입력하면 경품 이벤트에 응모돼요"
+              placeholder="cat@example.com"
+              registration={shopUpdateForm.register("email")}
+              error={shopUpdateForm.formState.errors.email?.message}
+            />
+          </div>
+        );
+      case 1:
+        return (
+          <div className="space-y-4 px-2">
+            <p className="text-body-sm text-on-surface-variant">
+              변경된 항목을 1개 이상 입력해주세요.
+            </p>
+            <fieldset className="space-y-3">
+              <legend className="text-label-md font-bold text-on-surface mb-1">
+                링크
+              </legend>
+              <FormInput
+                label="인스타그램"
+                placeholder="https://instagram.com/..."
+                registration={shopUpdateForm.register("linkInstagram")}
+                error={shopUpdateForm.formState.errors.linkInstagram?.message}
+              />
+              <FormInput
+                label="네이버 스마트스토어"
+                placeholder="https://smartstore.naver.com/..."
+                registration={shopUpdateForm.register("linkNaver")}
+                error={shopUpdateForm.formState.errors.linkNaver?.message}
+              />
+              <FormInput
+                label="웹사이트"
+                placeholder="https://..."
+                registration={shopUpdateForm.register("linkWebsite")}
+                error={shopUpdateForm.formState.errors.linkWebsite?.message}
+              />
+            </fieldset>
+            <fieldset className="space-y-3">
+              <legend className="text-label-md font-bold text-on-surface mb-1">
+                취급 브랜드
+              </legend>
+              {BRAND_FIELD_CONFIG.map((cfg) => (
+                <BrandMultiSelect
+                  key={cfg.type}
+                  label={cfg.label}
+                  brands={brandsByType(cfg.type)}
+                  selectedIds={brandSelectState[cfg.key]}
+                  onChangeIds={(ids) => handleBrandIdsChange(cfg.key, ids)}
+                  fallbackRegistration={shopUpdateForm.register(cfg.fallbackField as keyof ShopUpdateData)}
+                  placeholder={cfg.placeholder}
+                />
+              ))}
+            </fieldset>
+            <FormInput
+              label="태그"
+              placeholder="수입실, 손염색실, 도안 (쉼표로 구분)"
+              registration={shopUpdateForm.register("tags")}
+              error={shopUpdateForm.formState.errors.tags?.message}
+            />
+            <FormInput
+              label="참고사항"
+              placeholder="추가 정보"
+              registration={shopUpdateForm.register("note")}
+              error={shopUpdateForm.formState.errors.note?.message}
+            />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  // ---------------------------------------------------------------------------
   // submit / footer 로직
   // ---------------------------------------------------------------------------
 
@@ -1122,10 +1611,14 @@ export default function SubmitForm({ onClose }: Props) {
       ? placeForm.handleSubmit(onPlaceSubmit)
       : stepKey === "placeUpdate"
         ? updateForm.handleSubmit(onPlaceUpdate)
-        : eventForm.handleSubmit(onEventSubmit);
+        : stepKey === "shopNew"
+          ? shopForm.handleSubmit(onShopSubmit)
+          : stepKey === "shopUpdate"
+            ? shopUpdateForm.handleSubmit(onShopUpdate)
+            : eventForm.handleSubmit(onEventSubmit);
 
-  // placeSelect 모드에서는 폼 없이 카드 선택만
-  const isSelectMode = stepKey === "placeSelect";
+  // placeSelect / shopSelect 모드에서는 폼 없이 카드 선택만
+  const isSelectMode = stepKey === "placeSelect" || stepKey === "shopSelect";
 
   // ---------------------------------------------------------------------------
   // 렌더
@@ -1159,6 +1652,18 @@ export default function SubmitForm({ onClose }: Props) {
         >
           <Calendar className="w-3.5 h-3.5" /> 일정
         </button>
+        <button
+          type="button"
+          onClick={() => setTab("store")}
+          className={cn(
+            "flex items-center gap-1.5 px-4 py-2 text-label-lg font-bold rounded-full transition-all",
+            tab === "store"
+              ? "bg-secondary text-secondary-foreground"
+              : "bg-surface-container text-on-surface-variant",
+          )}
+        >
+          <Store className="w-3.5 h-3.5" /> 스토어
+        </button>
       </div>
 
       {/* Step Indicator + Title */}
@@ -1170,9 +1675,10 @@ export default function SubmitForm({ onClose }: Props) {
       </div>
 
       {isSelectMode ? (
-        /* 장소 모드 선택 — 폼 없이 카드 선택 */
+        /* 장소·상점 모드 선택 — 폼 없이 카드 선택 */
         <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
-          {renderPlaceModeSelect()}
+          {stepKey === "placeSelect" && renderPlaceModeSelect()}
+          {stepKey === "shopSelect" && renderShopModeSelect()}
         </div>
       ) : (
         /* 폼 스텝 */
@@ -1191,6 +1697,8 @@ export default function SubmitForm({ onClose }: Props) {
             {stepKey === "placeNew" && renderPlaceNewStep()}
             {stepKey === "placeUpdate" && renderPlaceUpdateStep()}
             {stepKey === "event" && renderEventStep()}
+            {stepKey === "shopNew" && renderShopNewStep()}
+            {stepKey === "shopUpdate" && renderShopUpdateStep()}
           </div>
 
           {/* Sticky Footer */}
@@ -1207,11 +1715,12 @@ export default function SubmitForm({ onClose }: Props) {
                 <ChevronLeft className="w-4 h-4" /> 이전
               </button>
             ) : (
-              tab === "place" && (
+              (tab === "place" || tab === "store") && (
                 <button
                   type="button"
                   onClick={() => {
-                    setPlaceMode(null);
+                    if (tab === "place") setPlaceMode(null);
+                    else setShopMode(null);
                     setStep(0);
                   }}
                   className="flex items-center justify-center gap-1 px-4 py-3 rounded-xl bg-surface-container text-on-surface-variant font-bold text-label-md transition-all hover:bg-surface-container-high"

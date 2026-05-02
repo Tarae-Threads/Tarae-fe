@@ -68,3 +68,6 @@ export type ReviewCreateRequest = components["schemas"]["ReviewCreateRequest"];
 export type ReviewDeleteRequest = components["schemas"]["ReviewDeleteRequest"];
 export type InquiryCreateRequest = components["schemas"]["InquiryCreateRequest"];
 export type InquiryCreateResponse = components["schemas"]["InquiryCreateResponse"];
+export type ShopListResponse = components["schemas"]["ShopListResponse"];
+export type ShopDetailResponse = components["schemas"]["ShopDetailResponse"];
+export type ShopRequestInput = components["schemas"]["ShopRequestInput"];

@@ -66,6 +66,49 @@ export const placeUpdateSchema = z.object({
 
 export type PlaceUpdateData = z.infer<typeof placeUpdateSchema>
 
+// 새 온라인 상점 제보
+export const shopSubmissionSchema = z.object({
+  name: z
+    .string()
+    .min(1, '상점명을 입력해주세요')
+    .max(100, '상점명은 100자 이하로 입력해주세요'),
+  email: z
+    .email('올바른 이메일을 입력해주세요')
+    .optional()
+    .or(z.literal('')),
+  linkInstagram: urlField,
+  linkNaver: urlField,
+  linkWebsite: urlField,
+  brandsYarn: shortText(200, '브랜드'),
+  brandsNeedle: shortText(200, '브랜드'),
+  brandsNotions: shortText(200, '브랜드'),
+  brandsPatternbook: shortText(200, '브랜드'),
+  tags: shortText(500, '태그'),
+  note: shortText(500, '참고사항'),
+})
+
+export type ShopSubmissionData = z.infer<typeof shopSubmissionSchema>
+
+// 기존 온라인 상점 수정 (모든 필드 optional, 변경분만 입력)
+export const shopUpdateSchema = z.object({
+  shopId: z.string().min(1, '상점을 선택해주세요'),
+  email: z
+    .email('올바른 이메일을 입력해주세요')
+    .optional()
+    .or(z.literal('')),
+  linkInstagram: urlField,
+  linkNaver: urlField,
+  linkWebsite: urlField,
+  brandsYarn: shortText(200, '브랜드'),
+  brandsNeedle: shortText(200, '브랜드'),
+  brandsNotions: shortText(200, '브랜드'),
+  brandsPatternbook: shortText(200, '브랜드'),
+  tags: shortText(500, '태그'),
+  note: shortText(500, '참고사항'),
+})
+
+export type ShopUpdateData = z.infer<typeof shopUpdateSchema>
+
 // 일정 제보
 export const eventSubmissionSchema = z.object({
   title: z

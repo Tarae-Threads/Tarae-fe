@@ -10,6 +10,7 @@ import {
   createPlaceReview,
   createEventReview,
 } from "../queries/reviewApi";
+import { createShopReview } from "@/domains/shop/queries/shopApi";
 import { STORAGE_KEYS, type ReviewTargetType, type ReviewPrefill } from "../constants";
 import { generateRandomNickname } from "../utils/nickname";
 import { track } from "@/shared/lib/analytics";
@@ -74,7 +75,9 @@ export default function ReviewForm({ onClose, type, targetId }: Props) {
       const review =
         type === "place"
           ? await createPlaceReview(targetId, body)
-          : await createEventReview(targetId, body);
+          : type === "event"
+            ? await createEventReview(targetId, body)
+            : await createShopReview(targetId, body);
 
       // 다음 작성 편의용 prefill 저장 (비밀번호 제외)
       try {
