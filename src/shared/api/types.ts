@@ -4,6 +4,41 @@
  */
 
 export interface paths {
+    "/api/shops/{shopId}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 온라인샵 리뷰 목록 조회 */
+        get: operations["getShopReviews"];
+        put?: never;
+        /** 온라인샵 리뷰 작성 */
+        post: operations["createShopReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/requests/shops": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 온라인샵 등록 요청 */
+        post: operations["requestShop"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/requests/places": {
         parameters: {
             query?: never;
@@ -45,7 +80,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** 장소 리뷰 목록 조회 */
+        /** 장소 리뷰 목�� 조회 */
         get: operations["getPlaceReviews"];
         put?: never;
         /** 장소 리뷰 작성 */
@@ -133,6 +168,40 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["createBrand"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/shops": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 온라인샵 목록 조회 */
+        get: operations["getShops"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/shops/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 온라인샵 상세 조회 */
+        get: operations["getShop"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -262,62 +331,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        PlaceRequestInput: {
-            /** @enum {string} */
-            requestType: "NEW" | "UPDATE";
-            /** Format: int64 */
-            placeId?: number;
-            name?: string;
-            address?: string;
-            addressDetail?: string;
-            lat?: number;
-            lng?: number;
-            categoryIds?: number[];
-            categoryText?: string;
-            hoursText?: string;
-            closedDays?: string;
-            brandYarnIds?: number[];
-            brandsYarn?: string;
-            brandNeedleIds?: number[];
-            brandsNeedle?: string;
-            brandNotionsIds?: number[];
-            brandsNotions?: string;
-            brandPatternbookIds?: number[];
-            brandsPatternbook?: string;
-            instagramUrl?: string;
-            websiteUrl?: string;
-            naverMapUrl?: string;
-            tags?: string;
-            note?: string;
-        };
-        ApiResponseRequestResponse: {
-            data: components["schemas"]["RequestResponse"];
-        };
-        /** @description 등록 요청 응답 */
-        RequestResponse: {
-            /**
-             * Format: int64
-             * @description 생성된 요청 ID
-             * @example 1
-             */
-            id: number;
-        };
-        EventRequestInput: {
-            title: string;
-            /** @enum {string} */
-            eventType: "TESTER_RECRUIT" | "SALE" | "EVENT_POPUP";
-            /** Format: date */
-            startDate: string;
-            /** Format: date */
-            endDate?: string;
-            locationText?: string;
-            description?: string;
-            lat?: number;
-            lng?: number;
-            instagramUrl?: string;
-            websiteUrl?: string;
-            naverMapUrl?: string;
-        };
         /** @description 리뷰 작성 요청 */
         ReviewCreateRequest: {
             /**
@@ -326,10 +339,10 @@ export interface components {
              */
             nickname: string;
             /**
-             * @description 이메일
+             * @description 이메일 (선택)
              * @example cat@example.com
              */
-            email: string;
+            email?: string;
             /**
              * @description 비밀번호 (삭제 시 사용, 4~20자)
              * @example 1234
@@ -365,6 +378,87 @@ export interface components {
              */
             createdAt: string;
         };
+        ShopRequestInput: {
+            /** @enum {string} */
+            requestType: "NEW" | "UPDATE";
+            /** Format: int64 */
+            shopId?: number;
+            name?: string;
+            instagramUrl?: string;
+            naverUrl?: string;
+            websiteUrl?: string;
+            categoryIds?: number[];
+            categoryText?: string;
+            brandYarnIds?: number[];
+            brandsYarn?: string;
+            brandNeedleIds?: number[];
+            brandsNeedle?: string;
+            brandNotionsIds?: number[];
+            brandsNotions?: string;
+            brandPatternbookIds?: number[];
+            brandsPatternbook?: string;
+            tags?: string;
+            note?: string;
+            email?: string;
+        };
+        ApiResponseRequestResponse: {
+            data: components["schemas"]["RequestResponse"];
+        };
+        /** @description 등록 요청 응답 */
+        RequestResponse: {
+            /**
+             * Format: int64
+             * @description 생성된 요청 ID
+             * @example 1
+             */
+            id: number;
+        };
+        PlaceRequestInput: {
+            /** @enum {string} */
+            requestType: "NEW" | "UPDATE";
+            /** Format: int64 */
+            placeId?: number;
+            name?: string;
+            address?: string;
+            addressDetail?: string;
+            lat?: number;
+            lng?: number;
+            categoryIds?: number[];
+            categoryText?: string;
+            hoursText?: string;
+            closedDays?: string;
+            brandYarnIds?: number[];
+            brandsYarn?: string;
+            brandNeedleIds?: number[];
+            brandsNeedle?: string;
+            brandNotionsIds?: number[];
+            brandsNotions?: string;
+            brandPatternbookIds?: number[];
+            brandsPatternbook?: string;
+            instagramUrl?: string;
+            websiteUrl?: string;
+            naverMapUrl?: string;
+            tags?: string;
+            note?: string;
+            email?: string;
+        };
+        EventRequestInput: {
+            title: string;
+            /** @enum {string} */
+            eventType: "TESTER_RECRUIT" | "SALE" | "EVENT_POPUP";
+            /** Format: date */
+            startDate: string;
+            /** Format: date */
+            endDate?: string;
+            locationText?: string;
+            description?: string;
+            lat?: number;
+            lng?: number;
+            instagramUrl?: string;
+            websiteUrl?: string;
+            naverMapUrl?: string;
+            email?: string;
+        };
         /** @description 문의 제출 요청 */
         InquiryCreateRequest: {
             /**
@@ -398,8 +492,8 @@ export interface components {
             name: string;
             type?: string;
         };
-        ApiResponseListPlaceListResponse: {
-            data: components["schemas"]["PlaceListResponse"][];
+        ApiResponseListShopListResponse: {
+            data: components["schemas"]["ShopListResponse"][];
         };
         /** @description 브랜드 요약 정보 */
         BrandDto: {
@@ -433,6 +527,81 @@ export interface components {
              * @example 공방
              */
             name: string;
+        };
+        /** @description 온라인샵 목록 응답 */
+        ShopListResponse: {
+            /**
+             * Format: int64
+             * @description 온라인샵 ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description 온라인샵명
+             * @example 실뭉치샵
+             */
+            name: string;
+            /** @description 인스타그램 URL */
+            instagramUrl?: string;
+            /** @description 네이버 스마트스토어 URL */
+            naverUrl?: string;
+            /** @description 웹사이트 URL */
+            websiteUrl?: string;
+            /** @description 카테고리 목록 */
+            categories: components["schemas"]["CategoryDto"][];
+            /** @description 태그 목록 */
+            tags: components["schemas"]["TagDto"][];
+            /** @description 브랜드 목록 */
+            brands: components["schemas"]["BrandDto"][];
+        };
+        /** @description 태그 요약 정보 */
+        TagDto: {
+            /**
+             * Format: int64
+             * @description 태그 ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description 태그명
+             * @example 초보환영
+             */
+            name: string;
+        };
+        ApiResponseListReviewResponse: {
+            data: components["schemas"]["ReviewResponse"][];
+        };
+        ApiResponseShopDetailResponse: {
+            data: components["schemas"]["ShopDetailResponse"];
+        };
+        /** @description 온라인샵 상세 응답 */
+        ShopDetailResponse: {
+            /**
+             * Format: int64
+             * @description 온라인샵 ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description 온라인샵명
+             * @example 실뭉치샵
+             */
+            name: string;
+            /** @description 인스타그램 URL */
+            instagramUrl?: string;
+            /** @description 네이버 스마트스토어 URL */
+            naverUrl?: string;
+            /** @description 웹사이트 URL */
+            websiteUrl?: string;
+            /** @description 카테고리 목록 */
+            categories: components["schemas"]["CategoryDto"][];
+            /** @description 태그 목록 */
+            tags: components["schemas"]["TagDto"][];
+            /** @description 브랜드 목록 */
+            brands: components["schemas"]["BrandDto"][];
+        };
+        ApiResponseListPlaceListResponse: {
+            data: components["schemas"]["PlaceListResponse"][];
         };
         /** @description 장소 목록 응답 */
         PlaceListResponse: {
@@ -483,23 +652,6 @@ export interface components {
             websiteUrl?: string;
             /** @description 네이버 지도 URL */
             naverMapUrl?: string;
-        };
-        /** @description 태그 요약 정보 */
-        TagDto: {
-            /**
-             * Format: int64
-             * @description 태그 ID
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description 태그명
-             * @example 초보환영
-             */
-            name: string;
-        };
-        ApiResponseListReviewResponse: {
-            data: components["schemas"]["ReviewResponse"][];
         };
         ApiResponsePlaceDetailResponse: {
             data: components["schemas"]["PlaceDetailResponse"];
@@ -773,6 +925,98 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getShopReviews: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 온라인샵 ID */
+                shopId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListReviewResponse"];
+                };
+            };
+        };
+    };
+    createShopReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 온라인샵 ID */
+                shopId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description 작성 성공 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseReviewResponse"];
+                };
+            };
+            /** @description 존재하지 않는 온라인샵 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseReviewResponse"];
+                };
+            };
+        };
+    };
+    requestShop: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShopRequestInput"];
+            };
+        };
+        responses: {
+            /** @description 요청 등록 성공 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseRequestResponse"];
+                };
+            };
+            /** @description 유효하지 않은 요청 값 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseRequestResponse"];
+                };
+            };
+        };
+    };
     requestPlace: {
         parameters: {
             query?: never;
@@ -1057,6 +1301,65 @@ export interface operations {
             };
         };
     };
+    getShops: {
+        parameters: {
+            query?: {
+                /** @description 검색어 (온라인샵명, 태그, 브랜드 통합 검색) */
+                keyword?: string;
+                /** @description 카테고리 ID */
+                categoryId?: number;
+                /** @description 태그 ID */
+                tagId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListShopListResponse"];
+                };
+            };
+        };
+    };
+    getShop: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 온라인샵 ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseShopDetailResponse"];
+                };
+            };
+            /** @description 존재하지 않는 온라인샵 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseShopDetailResponse"];
+                };
+            };
+        };
+    };
     getPlaces: {
         parameters: {
             query?: {
@@ -1218,7 +1521,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description 리뷰 ID */
+                /** @description ���뷰 ID */
                 reviewId: number;
             };
             cookie?: never;
@@ -1247,7 +1550,7 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponse"];
                 };
             };
-            /** @description 존재하지 않는 리뷰 */
+            /** @description 존재하지 ��는 리뷰 */
             404: {
                 headers: {
                     [name: string]: unknown;
