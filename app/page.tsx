@@ -16,7 +16,7 @@ export const revalidate = 3600;
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col bg-surface">
+    <div className="min-h-screen flex flex-col bg-surface md:pl-16 pb-20 md:pb-0">
       <Header />
       <main className="flex-1">
         <HomeBannerCarousel />

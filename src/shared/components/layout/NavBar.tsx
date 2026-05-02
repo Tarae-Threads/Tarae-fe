@@ -2,25 +2,29 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { Home, Map, Calendar, Plus } from 'lucide-react'
+import { Home, Map, Calendar, Store, Plus } from 'lucide-react'
 
-export type NavTab = 'places' | 'events'
+export type NavTab = 'home' | 'places' | 'events' | 'store'
 
 interface Props {
-  activeTab: NavTab
-  onTabChange: (tab: NavTab) => void
+  activeTab: NavTab | null
   onSubmit: () => void
 }
 
-const tabs: { id: NavTab; icon: typeof Map; label: string }[] = [
-  { id: 'places', icon: Map, label: '장소' },
-  { id: 'events', icon: Calendar, label: '일정' },
+const tabs: { id: NavTab; href: string; icon: typeof Map; label: string }[] = [
+  { id: 'home', href: '/', icon: Home, label: '홈' },
+  { id: 'places', href: '/map', icon: Map, label: '장소' },
+  { id: 'events', href: '/map?tab=events', icon: Calendar, label: '일정' },
+  { id: 'store', href: '/store', icon: Store, label: '스토어' },
 ]
 
-export default function NavBar({ activeTab, onTabChange, onSubmit }: Props) {
+export default function NavBar({ activeTab, onSubmit }: Props) {
   return (
-    <nav className="hidden md:flex flex-col items-center w-16 shrink-0 h-full bg-surface py-4 gap-1">
-      {/* Logo → Home */}
+    <nav
+      aria-label="사이드 내비게이션"
+      className="hidden md:flex fixed left-0 top-0 h-full w-16 z-50 flex-col items-center bg-surface py-4 gap-1 border-r border-outline-variant/40"
+    >
+      {/* Logo → Home (별도 시각 자산) */}
       <Link
         href="/"
         aria-label="홈"
@@ -35,25 +39,14 @@ export default function NavBar({ activeTab, onTabChange, onSubmit }: Props) {
         />
       </Link>
 
-      {/* Home */}
-      <Link
-        href="/"
-        aria-label="홈"
-        className="relative flex flex-col items-center justify-center w-12 h-14 rounded-xl text-outline hover:bg-surface-container hover:text-on-surface transition-all"
-      >
-        <Home className="w-5 h-5" />
-        <span className="text-label-2xs mt-1 font-bold">홈</span>
-      </Link>
-
-      {/* Tabs */}
-      {tabs.map(({ id, icon: Icon, label }) => {
+      {tabs.map(({ id, href, icon: Icon, label }) => {
         const isActive = activeTab === id
         return (
-          <button
+          <Link
             key={id}
-            onClick={() => onTabChange(id)}
+            href={href}
             aria-label={label}
-            className={`relative flex flex-col items-center justify-center w-12 h-14 rounded-xl cursor-pointer transition-all ${
+            className={`relative flex flex-col items-center justify-center w-12 h-14 rounded-xl transition-all ${
               isActive
                 ? 'text-primary'
                 : 'text-outline hover:bg-surface-container hover:text-on-surface'
@@ -64,15 +57,14 @@ export default function NavBar({ activeTab, onTabChange, onSubmit }: Props) {
             )}
             <Icon className="w-5 h-5" />
             <span className="text-label-2xs mt-1 font-bold">{label}</span>
-          </button>
+          </Link>
         )
       })}
 
-      {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Submit */}
       <button
+        type="button"
         onClick={onSubmit}
         aria-label="제보하기"
         className="w-12 h-14 signature-gradient text-white rounded-xl flex flex-col items-center justify-center shadow-lg cursor-pointer active:scale-95 transition-transform"

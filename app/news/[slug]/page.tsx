@@ -85,7 +85,7 @@ export default async function NewsDetailPage({
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface">
+    <div className="min-h-screen flex flex-col bg-surface md:pl-16 pb-20 md:pb-0">
       <Script
         id={`ld-json-article-${article.slug}`}
         type="application/ld+json"
