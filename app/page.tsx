@@ -10,6 +10,7 @@ import InquiryBanner from "@/domains/landing/components/InquiryBanner";
 import InspireVideosSection from "@/domains/landing/components/InspireVideosSection";
 import LatestNewsSection from "@/domains/news/components/LatestNewsSection";
 import Footer from "@/domains/landing/components/Footer";
+import PopupBanner from "@/domains/landing/components/PopupBanner";
 
 export const revalidate = 3600;
 
@@ -39,6 +40,7 @@ export default function HomePage() {
         <InquiryBanner />
       </main>
       <Footer />
+      <PopupBanner />
     </div>
   );
 }
