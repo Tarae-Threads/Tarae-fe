@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Header from "@/domains/landing/components/Header";
 import HomeBannerCarousel from "@/domains/landing/components/HomeBannerCarousel";
 import TrendingPlaces from "@/domains/landing/components/TrendingPlaces";
+import TrendingStores from "@/domains/landing/components/TrendingStores";
 import ActiveEventsSection from "@/domains/landing/components/ActiveEventsSection";
 import CategoryShortcutSection from "@/domains/landing/components/CategoryShortcutSection";
 import RegionShortcutSection from "@/domains/landing/components/RegionShortcutSection";
@@ -23,6 +24,9 @@ export default function HomePage() {
         <InspireVideosSection />
         <Suspense fallback={null}>
           <TrendingPlaces />
+        </Suspense>
+        <Suspense fallback={null}>
+          <TrendingStores />
         </Suspense>
         <Suspense fallback={null}>
           <ActiveEventsSection />

@@ -2,6 +2,7 @@ import type {
   PlaceListResponse,
   EventListResponse,
   BrandTypeGroup,
+  ShopListResponse,
 } from "@/shared/api/client";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -39,3 +40,6 @@ export const fetchEventsForLanding = () =>
 
 export const fetchBrandsForLanding = () =>
   safeFetch<BrandTypeGroup[]>("/api/brands", []);
+
+export const fetchShopsForLanding = () =>
+  safeFetch<ShopListResponse[]>("/api/shops", []);
