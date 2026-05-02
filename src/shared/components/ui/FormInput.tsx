@@ -5,7 +5,7 @@ interface Props {
   label: string
   required?: boolean
   placeholder?: string
-  type?: 'text' | 'date'
+  type?: 'text' | 'date' | 'email'
   readOnly?: boolean
   error?: string
   registration: UseFormRegisterReturn
@@ -14,6 +14,8 @@ interface Props {
   showCount?: boolean
   autoFocus?: boolean
   rightSlot?: React.ReactNode
+  /** 라벨 우측에 outline 톤 보조 문구 (앞에 "·" 자동 prepend) */
+  helperText?: string
 }
 
 export default function FormInput({
@@ -29,6 +31,7 @@ export default function FormInput({
   showCount,
   autoFocus,
   rightSlot,
+  helperText,
 }: Props) {
   const inputId = useId()
   const [count, setCount] = useState(0)
@@ -49,12 +52,17 @@ export default function FormInput({
         >
           {label}
           {required && ' *'}
+          {helperText && (
+            <span className="text-outline font-medium ml-1">· {helperText}</span>
+          )}
         </label>
       )}
       <div className="relative">
         <input
           id={inputId}
           type={type}
+          inputMode={type === 'email' ? 'email' : undefined}
+          autoComplete={type === 'email' ? 'email' : undefined}
           placeholder={placeholder}
           readOnly={readOnly}
           onClick={onClick}

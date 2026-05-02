@@ -69,10 +69,12 @@ export default function ReviewForm({ onClose, type, targetId }: Props) {
   const onSubmit = async (data: ReviewCreateFormData) => {
     setSubmitting(true);
     try {
+      // BE 가 email optional 로 전환 중 — 그 전까지는 빈 문자열로 송신
+      const body = { ...data, email: data.email ?? "" };
       const review =
         type === "place"
-          ? await createPlaceReview(targetId, data)
-          : await createEventReview(targetId, data);
+          ? await createPlaceReview(targetId, body)
+          : await createEventReview(targetId, body);
 
       // 다음 작성 편의용 prefill 저장 (비밀번호 제외)
       try {
@@ -133,8 +135,8 @@ export default function ReviewForm({ onClose, type, targetId }: Props) {
 
       <div>
         <label className="text-label-md font-bold text-on-surface-variant mb-1 block">
-          이메일 *
-          <span className="text-outline font-medium ml-1">· 공개되지 않아요</span>
+          이메일
+          <span className="text-outline font-medium ml-1">· 입력하면 경품 이벤트에 응모돼요</span>
         </label>
         <input
           type="email"

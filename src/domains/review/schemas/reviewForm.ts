@@ -5,7 +5,10 @@ export const reviewCreateSchema = z.object({
     .string()
     .min(1, "닉네임을 입력해주세요")
     .max(50, "닉네임은 50자 이하로 입력해주세요"),
-  email: z.email("올바른 이메일을 입력해주세요"),
+  email: z
+    .email("올바른 이메일을 입력해주세요")
+    .optional()
+    .or(z.literal("")),
   password: z
     .string()
     .min(4, "비밀번호는 4자 이상")

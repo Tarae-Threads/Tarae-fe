@@ -68,8 +68,8 @@ type PlaceMode = "new" | "update" | null;
 // place mode 선택이 step 0, 이후 분기
 const STEP_TITLES = {
   placeSelect: ["어떤 제보를 하시겠어요?"],
-  placeNew: ["장소 기본 정보", "카테고리 선택", "추가 정보가 있나요?"],
-  placeUpdate: ["어떤 장소를 수정하나요?", "수정할 내용을 알려주세요"],
+  placeNew: ["장소 기본 정보", "카테고리 선택", "추가 정보를 알려주세요"],
+  placeUpdate: ["어떤 장소를 수정하나요?", "수정할 내용을 알려주세요"], // step 1: 1개 이상 필수
   event: ["어떤 일정인가요?", "언제, 어디서 진행되나요?"],
 } as const;
 
@@ -314,6 +314,7 @@ export default function SubmitForm({ onClose }: Props) {
   const [categoryError, setCategoryError] = useState<string>();
   const placeForm = useForm<PlaceSubmissionData>({
     resolver: zodResolver(placeSubmissionSchema),
+    defaultValues: { email: "" },
   });
 
   // Place update form
@@ -321,6 +322,7 @@ export default function SubmitForm({ onClose }: Props) {
   const [placeSelectError, setPlaceSelectError] = useState<string>();
   const updateForm = useForm<PlaceUpdateData>({
     resolver: zodResolver(placeUpdateSchema),
+    defaultValues: { email: "" },
   });
 
   // Event form
@@ -332,11 +334,15 @@ export default function SubmitForm({ onClose }: Props) {
     resolver: zodResolver(eventSubmissionSchema),
     defaultValues: {
       title: "",
+      email: "",
       startDate: "",
       endDate: "",
       address: "",
       addressDetail: "",
       description: "",
+      linkInstagram: "",
+      linkWebsite: "",
+      linkNaverMap: "",
     },
   });
 
@@ -475,11 +481,12 @@ export default function SubmitForm({ onClose }: Props) {
 
     if (stepKey === "placeNew") {
       if (step === 0) {
-        const valid = await placeForm.trigger(["name", "address"]);
+        const valid = await placeForm.trigger(["name", "address", "email"]);
         if (!valid) {
           const errs = placeForm.formState.errors;
           if (errs.name) failedFields.push("name");
           if (errs.address) failedFields.push("address");
+          if (errs.email) failedFields.push("email");
         }
         if (!valid) {
           track("submit_validation_error", {
@@ -503,6 +510,7 @@ export default function SubmitForm({ onClose }: Props) {
       }
     }
     if (stepKey === "placeUpdate" && step === 0) {
+      const emailValid = await updateForm.trigger("email");
       if (!selectedPlaceId) {
         setPlaceSelectError("장소를 선택해주세요");
         track("submit_validation_error", {
@@ -512,9 +520,17 @@ export default function SubmitForm({ onClose }: Props) {
         });
         return;
       }
+      if (!emailValid) {
+        track("submit_validation_error", {
+          flow: stepKey,
+          step,
+          fields: ["email"],
+        });
+        return;
+      }
     }
     if (stepKey === "event" && step === 0) {
-      const titleValid = await eventForm.trigger("title");
+      const fieldsValid = await eventForm.trigger(["title", "email"]);
       if (!selectedEventType) {
         setEventTypeError("유형을 선택해주세요");
         track("submit_validation_error", {
@@ -524,11 +540,14 @@ export default function SubmitForm({ onClose }: Props) {
         });
         return;
       }
-      if (!titleValid) {
+      if (!fieldsValid) {
+        const errs = eventForm.formState.errors;
+        if (errs.title) failedFields.push("title");
+        if (errs.email) failedFields.push("email");
         track("submit_validation_error", {
           flow: stepKey,
           step,
-          fields: ["title"],
+          fields: failedFields,
         });
         return;
       }
@@ -547,6 +566,34 @@ export default function SubmitForm({ onClose }: Props) {
       setCategoryError("카테고리를 선택하거나 직접 입력해주세요");
       return;
     }
+    // 추가정보(step 2) 한 항목 이상 입력 여부 — schema 텍스트 필드 + brandSelectState ID
+    const hasAdditionalInfo =
+      Boolean(
+        (data.hours ?? "").trim() ||
+          (data.closedDays ?? "").trim() ||
+          (data.brandsYarn ?? "").trim() ||
+          (data.brandsNeedle ?? "").trim() ||
+          (data.brandsNotions ?? "").trim() ||
+          (data.brandsPatternbook ?? "").trim() ||
+          (data.linkInstagram ?? "").trim() ||
+          (data.linkWebsite ?? "").trim() ||
+          (data.linkNaverMap ?? "").trim() ||
+          (data.tags ?? "").trim() ||
+          (data.note ?? "").trim(),
+      ) ||
+      brandSelectState.yarnIds.length > 0 ||
+      brandSelectState.needleIds.length > 0 ||
+      brandSelectState.notionsIds.length > 0 ||
+      brandSelectState.patternbookIds.length > 0;
+    if (!hasAdditionalInfo) {
+      track("submit_validation_error", {
+        flow: "placeNew",
+        step,
+        fields: ["additionalInfo"],
+      });
+      toast.error("추가 정보를 1개 이상 입력해주세요");
+      return;
+    }
     setSubmitting(true);
     try {
       const categoryIds = [...selectedCategories]
@@ -557,6 +604,7 @@ export default function SubmitForm({ onClose }: Props) {
         name: data.name,
         address: data.address,
         addressDetail: data.addressDetail || undefined,
+        email: data.email || undefined,
         lat: coords?.lat,
         lng: coords?.lng,
         categoryIds,
@@ -598,11 +646,40 @@ export default function SubmitForm({ onClose }: Props) {
   };
 
   const onPlaceUpdate = async (data: PlaceUpdateData) => {
+    // 변경 정보 한 항목 이상 입력 여부 — schema 텍스트 필드 + brandSelectState ID
+    const hasUpdateInfo =
+      Boolean(
+        (data.hours ?? "").trim() ||
+          (data.closedDays ?? "").trim() ||
+          (data.brandsYarn ?? "").trim() ||
+          (data.brandsNeedle ?? "").trim() ||
+          (data.brandsNotions ?? "").trim() ||
+          (data.brandsPatternbook ?? "").trim() ||
+          (data.linkInstagram ?? "").trim() ||
+          (data.linkWebsite ?? "").trim() ||
+          (data.linkNaverMap ?? "").trim() ||
+          (data.tags ?? "").trim() ||
+          (data.note ?? "").trim(),
+      ) ||
+      brandSelectState.yarnIds.length > 0 ||
+      brandSelectState.needleIds.length > 0 ||
+      brandSelectState.notionsIds.length > 0 ||
+      brandSelectState.patternbookIds.length > 0;
+    if (!hasUpdateInfo) {
+      track("submit_validation_error", {
+        flow: "placeUpdate",
+        step,
+        fields: ["updateInfo"],
+      });
+      toast.error("수정할 내용을 1개 이상 입력해주세요");
+      return;
+    }
     setSubmitting(true);
     try {
       await requestPlace({
         requestType: "UPDATE",
         placeId: Number(selectedPlaceId),
+        email: data.email || undefined,
         hoursText: data.hours || undefined,
         closedDays: data.closedDays || undefined,
         brandYarnIds: brandSelectState.yarnIds.length > 0 ? brandSelectState.yarnIds : undefined,
@@ -654,6 +731,10 @@ export default function SubmitForm({ onClose }: Props) {
         lat: eventCoords?.lat,
         lng: eventCoords?.lng,
         description: data.description || undefined,
+        instagramUrl: data.linkInstagram || undefined,
+        websiteUrl: data.linkWebsite || undefined,
+        naverMapUrl: data.linkNaverMap || undefined,
+        email: data.email || undefined,
       });
       toast.success("제보가 등록되었습니다");
       succeededRef.current = true;
@@ -672,13 +753,6 @@ export default function SubmitForm({ onClose }: Props) {
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const handleSkipSubmit = () => {
-    track("submit_skip_submit", { flow: stepKey });
-    if (stepKey === "placeNew") placeForm.handleSubmit(onPlaceSubmit)();
-    if (stepKey === "placeUpdate") updateForm.handleSubmit(onPlaceUpdate)();
-    if (stepKey === "event") eventForm.handleSubmit(onEventSubmit)();
   };
 
   // ---------------------------------------------------------------------------
@@ -763,6 +837,14 @@ export default function SubmitForm({ onClose }: Props) {
               placeholder="층, 호수 등 상세주소"
               registration={placeForm.register("addressDetail")}
             />
+            <FormInput
+              label="이메일"
+              type="email"
+              helperText="입력하면 경품 이벤트에 응모돼요"
+              placeholder="cat@example.com"
+              registration={placeForm.register("email")}
+              error={placeForm.formState.errors.email?.message}
+            />
             {coords && (
               <p className="text-label-xs text-secondary flex items-center gap-1">
                 <CheckCircle2 className="size-3.5" />
@@ -801,7 +883,7 @@ export default function SubmitForm({ onClose }: Props) {
         return (
           <div className="space-y-4 px-2">
             <p className="text-body-sm text-on-surface-variant">
-              아는 정보만 입력해주세요. 나중에 수정할 수 있어요.
+              1개 이상 입력해주세요. 나중에 수정할 수 있어요.
             </p>
             <PlaceDetailFields
               register={(name) =>
@@ -844,13 +926,21 @@ export default function SubmitForm({ onClose }: Props) {
               placeholder="장소명 또는 주소로 검색..."
               error={placeSelectError}
             />
+            <FormInput
+              label="이메일"
+              type="email"
+              helperText="입력하면 경품 이벤트에 응모돼요"
+              placeholder="cat@example.com"
+              registration={updateForm.register("email")}
+              error={updateForm.formState.errors.email?.message}
+            />
           </div>
         );
       case 1:
         return (
           <div className="space-y-4 px-2">
             <p className="text-body-sm text-on-surface-variant">
-              변경된 항목만 입력해주세요.
+              변경된 항목을 1개 이상 입력해주세요.
             </p>
             <PlaceDetailFields
               register={(name) =>
@@ -935,6 +1025,14 @@ export default function SubmitForm({ onClose }: Props) {
               placeholder="층, 호수 등 상세주소"
               registration={eventForm.register("addressDetail")}
             />
+            <FormInput
+              label="이메일"
+              type="email"
+              helperText="입력하면 경품 이벤트에 응모돼요"
+              placeholder="cat@example.com"
+              registration={eventForm.register("email")}
+              error={eventForm.formState.errors.email?.message}
+            />
             {eventCoords && (
               <p className="text-label-xs text-secondary flex items-center gap-1">
                 <CheckCircle2 className="size-3.5" />
@@ -985,6 +1083,29 @@ export default function SubmitForm({ onClose }: Props) {
                 </p>
               </div>
             </div>
+            <fieldset className="space-y-3">
+              <legend className="text-label-md font-bold text-on-surface mb-1">
+                링크
+              </legend>
+              <FormInput
+                label="인스타그램"
+                placeholder="https://instagram.com/..."
+                registration={eventForm.register("linkInstagram")}
+                error={eventForm.formState.errors.linkInstagram?.message}
+              />
+              <FormInput
+                label="웹사이트"
+                placeholder="https://..."
+                registration={eventForm.register("linkWebsite")}
+                error={eventForm.formState.errors.linkWebsite?.message}
+              />
+              <FormInput
+                label="네이버 지도"
+                placeholder="https://naver.me/..."
+                registration={eventForm.register("linkNaverMap")}
+                error={eventForm.formState.errors.linkNaverMap?.message}
+              />
+            </fieldset>
           </div>
         );
       default:
@@ -1002,10 +1123,6 @@ export default function SubmitForm({ onClose }: Props) {
       : stepKey === "placeUpdate"
         ? updateForm.handleSubmit(onPlaceUpdate)
         : eventForm.handleSubmit(onEventSubmit);
-
-  const lastStepIsOptional =
-    (stepKey === "placeNew" && step === 2) ||
-    (stepKey === "placeUpdate" && step === 1);
 
   // placeSelect 모드에서는 폼 없이 카드 선택만
   const isSelectMode = stepKey === "placeSelect";
@@ -1105,26 +1222,14 @@ export default function SubmitForm({ onClose }: Props) {
             )}
 
             {isLastStep ? (
-              <div className="flex flex-1 gap-2">
-                {lastStepIsOptional && (
-                  <button
-                    type="button"
-                    onClick={handleSkipSubmit}
-                    disabled={submitting}
-                    className="flex-1 py-3 rounded-xl bg-surface-container text-on-surface-variant font-bold text-label-md transition-all hover:bg-surface-container-high disabled:opacity-50"
-                  >
-                    건너뛰고 제보
-                  </button>
-                )}
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="flex-1 signature-gradient text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 disabled:opacity-50"
-                >
-                  <Send className="w-4 h-4" />{" "}
-                  {submitting ? "제출 중..." : "제보하기"}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="flex-1 signature-gradient text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 disabled:opacity-50"
+              >
+                <Send className="w-4 h-4" />{" "}
+                {submitting ? "제출 중..." : "제보하기"}
+              </button>
             ) : (
               <button
                 type="submit"

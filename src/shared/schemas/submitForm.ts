@@ -25,6 +25,10 @@ export const placeSubmissionSchema = z.object({
     .min(1, '주소를 검색해주세요')
     .max(255, '주소는 255자 이하로 입력해주세요'),
   addressDetail: shortText(100, '상세주소'),
+  email: z
+    .email('올바른 이메일을 입력해주세요')
+    .optional()
+    .or(z.literal('')),
   hours: shortText(200, '영업시간'),
   closedDays: shortText(200, '휴무일'),
   note: shortText(500, '참고사항'),
@@ -43,6 +47,10 @@ export type PlaceSubmissionData = z.infer<typeof placeSubmissionSchema>
 // 기존 장소 업데이트 (모든 필드 optional, 변경분만 입력)
 export const placeUpdateSchema = z.object({
   placeId: z.string().min(1, '장소를 선택해주세요'),
+  email: z
+    .email('올바른 이메일을 입력해주세요')
+    .optional()
+    .or(z.literal('')),
   hours: shortText(200, '영업시간'),
   closedDays: shortText(200, '휴무일'),
   note: shortText(500, '참고사항'),
@@ -64,6 +72,10 @@ export const eventSubmissionSchema = z.object({
     .string()
     .min(1, '제목을 입력해주세요')
     .max(200, '제목은 200자 이하로 입력해주세요'),
+  email: z
+    .email('올바른 이메일을 입력해주세요')
+    .optional()
+    .or(z.literal('')),
   startDate: z
     .string()
     .min(1, '시작일을 선택해주세요')
@@ -76,6 +88,9 @@ export const eventSubmissionSchema = z.object({
   address: shortText(255, '주소'),
   addressDetail: shortText(100, '상세주소'),
   description: shortText(2000, '설명'),
+  linkInstagram: urlField,
+  linkWebsite: urlField,
+  linkNaverMap: urlField,
 })
 
 export type EventSubmissionData = z.infer<typeof eventSubmissionSchema>
