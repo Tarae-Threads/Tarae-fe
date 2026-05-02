@@ -3,7 +3,7 @@ export const STORAGE_KEYS = {
   REVIEW_PREFILL: "tarae_review_prefill",
 } as const;
 
-export type ReviewTargetType = "place" | "event";
+export type ReviewTargetType = "place" | "event" | "shop";
 
 export interface OwnedReviewRecord {
   reviewId: number;

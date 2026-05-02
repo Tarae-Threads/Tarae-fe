@@ -21,9 +21,9 @@ export default function PrivacyPolicy({ onClose: _ }: Props) {
         </h3>
         <ul className="list-disc pl-5 space-y-1.5 text-on-surface-variant">
           <li>
-            <b className="text-on-surface">장소·이벤트 제보 시</b>: 제보 내용
-            (장소명, 주소, 영업시간, 브랜드, 링크, 참고사항 등). 좌표는
-            입력한 주소를 기반으로 변환됩니다.
+            <b className="text-on-surface">장소·일정·스토어 제보 시</b>: 제보
+            내용 (장소·상점명, 주소, 영업시간, 브랜드, 링크, 참고사항, 응모용
+            이메일 등). 장소 좌표는 입력한 주소를 기반으로 변환됩니다.
           </li>
           <li>
             <b className="text-on-surface">리뷰 작성 시</b>: 닉네임, 이메일,
@@ -41,7 +41,7 @@ export default function PrivacyPolicy({ onClose: _ }: Props) {
           2. 이용 목적
         </h3>
         <ul className="list-disc pl-5 space-y-1.5 text-on-surface-variant">
-          <li>장소·이벤트 데이터베이스 구축 및 지도 서비스 제공</li>
+          <li>장소·일정·스토어 데이터베이스 구축 및 탐색 서비스 제공</li>
           <li>이용자 간 정보 공유(리뷰) 및 본인 확인(리뷰 삭제)</li>
           <li>서비스 개선을 위한 이용 통계·오류 분석</li>
         </ul>
@@ -75,7 +75,7 @@ export default function PrivacyPolicy({ onClose: _ }: Props) {
           4. 보관 기간
         </h3>
         <ul className="list-disc pl-5 space-y-1.5 text-on-surface-variant">
-          <li>장소·이벤트·리뷰 데이터: 서비스 운영 기간 동안 보관</li>
+          <li>장소·일정·스토어·리뷰 데이터: 서비스 운영 기간 동안 보관</li>
           <li>리뷰 삭제 시: 즉시 파기</li>
           <li>Google Analytics 쿠키(`_ga`): 최대 2년</li>
           <li>이용 로그: 최대 6개월</li>
@@ -99,7 +99,7 @@ export default function PrivacyPolicy({ onClose: _ }: Props) {
         </h3>
         <p className="text-on-surface-variant">
           작성한 리뷰는 작성 시 입력한 비밀번호로 직접 삭제하실 수 있습니다.
-          제보한 장소·이벤트 데이터의 수정·삭제는 추후 문의 채널을 통해
+          제보한 장소·일정·스토어 데이터의 수정·삭제는 추후 문의 채널을 통해
           요청 가능합니다.
         </p>
       </section>

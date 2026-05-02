@@ -20,14 +20,12 @@ import MobileBottomSheet from "@/domains/place/components/MobileBottomSheet";
 import PlacePanel from "@/domains/place/components/PlacePanel";
 import MapControls from "@/domains/place/components/MapControls";
 import PlaceSearchBar from "@/domains/place/components/PlaceSearchBar";
-import NavBar from "@/shared/components/layout/NavBar";
-import type { NavTab } from "@/shared/components/layout/NavBar";
 import BasePanel from "@/shared/components/layout/BasePanel";
 import DetailPanel from "@/shared/components/layout/DetailPanel";
-import BottomNav from "@/shared/components/layout/BottomNav";
-import SubmitForm from "@/shared/components/layout/SubmitForm";
-import { useModal } from "@/shared/hooks/useModal";
 import { REGION_CENTER } from "@/domains/place/constants";
+
+// AppNav (글로벌) 와 동기화: tab=events 일 때 일정 탭, 그 외엔 장소 탭
+type ActiveTab = "places" | "events";
 import { track } from "@/shared/lib/analytics";
 
 const NaverMap = dynamic(() => import("@/domains/place/components/NaverMap"), {
@@ -40,9 +38,10 @@ function HomeContent() {
   const searchParams = useSearchParams();
   const initialPlaceId = searchParams.get("placeId");
   const initialEventId = searchParams.get("eventId");
+  const initialTab: ActiveTab =
+    searchParams.get("tab") === "events" ? "events" : "places";
   const mapRef = useRef<NaverMapHandle>(null);
-  const { openModal } = useModal();
-  const [activeTab, setActiveTab] = useState<NavTab>("places");
+  const [activeTab, setActiveTab] = useState<ActiveTab>(initialTab);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [selectedEventDetail, setSelectedEventDetail] = useState<EventDetail | null>(null);
   const [selectedPlaceDetail, setSelectedPlaceDetail] = useState<PlaceDetail | null>(null);
@@ -84,6 +83,19 @@ function HomeContent() {
       mapRef.current.panTo(userLocation.lat, userLocation.lng, 13);
     }
   }, [userLocation]);
+
+  // 글로벌 nav 의 Link 클릭으로 ?tab= 가 바뀌면 activeTab 동기화 + 상세 닫기
+  const tabQuery = searchParams.get("tab");
+  useEffect(() => {
+    const next: ActiveTab = tabQuery === "events" ? "events" : "places";
+    setActiveTab((prev) => {
+      if (prev === next) return prev;
+      handlePanelClose();
+      setSelectedEvent(null);
+      setSelectedEventDetail(null);
+      return next;
+    });
+  }, [tabQuery, handlePanelClose]);
 
   // initialPlaceId로 진입 시 상세 조회
   useEffect(() => {
@@ -172,7 +184,7 @@ function HomeContent() {
       handlePlaceSelect(place);
       fetchPlaceDetail(place.id);
       track("place_select", { place_id: place.id, source: "map" });
-      window.history.replaceState(null, "", `/?placeId=${place.id}`);
+      window.history.replaceState(null, "", `/map?placeId=${place.id}`);
       if (typeof place.lat === "number" && typeof place.lng === "number") {
         smartPanTo(place.lat, place.lng, 13);
       }
@@ -188,7 +200,7 @@ function HomeContent() {
       handlePlaceSelect(place);
       fetchPlaceDetail(place.id);
       track("place_select", { place_id: place.id, source: "list" });
-      window.history.replaceState(null, "", `/?placeId=${place.id}`);
+      window.history.replaceState(null, "", `/map?placeId=${place.id}`);
       if (typeof place.lat === "number" && typeof place.lng === "number") {
         mapRef.current?.panTo(place.lat, place.lng, 14);
       }
@@ -209,7 +221,11 @@ function HomeContent() {
         setSelectedEvent(fromList);
       }
 
-      window.history.replaceState(null, "", `/?eventId=${eventId}`);
+      window.history.replaceState(
+        null,
+        "",
+        `/map?tab=events&eventId=${eventId}`,
+      );
 
       // 항상 상세 API 호출 (description 등 추가 정보)
       getEvent(eventId)
@@ -243,8 +259,10 @@ function HomeContent() {
   const handleDetailClose = useCallback(() => {
     handlePanelClose();
     setSelectedEvent(null);
-    window.history.replaceState(null, "", "/");
-  }, [handlePanelClose]);
+    // 탭 query 는 유지 — 이벤트 탭에서 닫기를 누르면 events 탭 그대로
+    const tabSuffix = activeTab === "events" ? "?tab=events" : "";
+    window.history.replaceState(null, "", `/map${tabSuffix}`);
+  }, [handlePanelClose, activeTab]);
 
   // Mobile detail data
   const mobileDetailOpen = panelOpen || !!selectedEvent;
@@ -256,16 +274,8 @@ function HomeContent() {
         : null;
 
   return (
-    <main className="h-[100dvh] w-full overflow-hidden bg-surface-container-lowest flex">
-      {/* Desktop: NavBar + BasePanel + DetailPanel */}
-      <NavBar
-        activeTab={activeTab}
-        onTabChange={(tab) => {
-          setActiveTab(tab);
-          handleDetailClose();
-        }}
-        onSubmit={() => openModal(SubmitForm, {}, { title: "제보하기", size: "md" })}
-      />
+    <main className="h-[calc(100dvh-4rem)] md:h-[100dvh] w-full overflow-hidden bg-surface-container-lowest flex md:pl-16">
+      {/* 글로벌 NavBar(사이드) / BottomNav(하단) 은 app/providers.tsx 의 AppNav 가 마운트 */}
 
       <BasePanel
         activeTab={activeTab}
@@ -409,18 +419,6 @@ function HomeContent() {
             onSnapChange={setDetailSnap}
           />
         </div>
-      </div>
-
-      {/* Mobile BottomNav */}
-      <div className="md:hidden">
-        <BottomNav
-          activeTab={activeTab}
-          onTabChange={(tab) => {
-            setActiveTab(tab);
-            handleDetailClose();
-          }}
-          onSubmit={() => openModal(SubmitForm, {}, { title: "제보하기", size: "md" })}
-        />
       </div>
 
     </main>

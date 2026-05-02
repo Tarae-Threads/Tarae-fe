@@ -27,7 +27,7 @@ export default function TermsOfService({ onClose: _ }: Props) {
         <ul className="list-disc pl-5 space-y-1.5 text-on-surface-variant">
           <li>
             <b className="text-on-surface">서비스</b>: 타래가 제공하는 뜨개
-            관련 장소·이벤트 정보 및 지도·리뷰·제보 기능 일체.
+            관련 장소·일정·스토어 정보 및 지도·리뷰·제보 기능 일체.
           </li>
           <li>
             <b className="text-on-surface">이용자</b>: 본 약관에 동의하고
@@ -35,7 +35,7 @@ export default function TermsOfService({ onClose: _ }: Props) {
           </li>
           <li>
             <b className="text-on-surface">게시물</b>: 이용자가 서비스에
-            작성·업로드한 리뷰, 장소·이벤트 제보 등 일체의 정보.
+            작성·업로드한 리뷰, 장소·일정·스토어 제보 등 일체의 정보.
           </li>
         </ul>
       </section>
@@ -45,9 +45,14 @@ export default function TermsOfService({ onClose: _ }: Props) {
           2. 서비스의 제공
         </h3>
         <ul className="list-disc pl-5 space-y-1.5 text-on-surface-variant">
-          <li>장소·이벤트 지도 탐색 및 상세 정보 제공</li>
-          <li>이용자 제보를 통한 장소·이벤트 데이터 수집 및 큐레이션</li>
+          <li>장소·일정·스토어 탐색 및 상세 정보 제공 (지도·리스트 포함)</li>
+          <li>이용자 제보를 통한 장소·일정·스토어 데이터 수집 및 큐레이션</li>
           <li>리뷰 작성·조회·삭제 기능</li>
+          <li>
+            스토어는 외부 온라인 상점에 대한 큐레이션·링크 모음입니다. 실제
+            상품 구매·결제·배송·환불은 해당 외부 사이트의 정책을 따르며 서비스는
+            그에 대해 직접적인 책임을 지지 않습니다.
+          </li>
           <li>서비스는 운영상·기술상 필요에 따라 사전 공지 후 변경·중단될 수 있습니다.</li>
         </ul>
       </section>
@@ -76,7 +81,7 @@ export default function TermsOfService({ onClose: _ }: Props) {
         </p>
         <p className="text-on-surface-variant">
           이용자가 작성한 리뷰는 작성 시 설정한 비밀번호로 직접 삭제할 수
-          있으며, 장소·이벤트 제보 정보의 수정·삭제는 문의 채널을 통해 요청할 수 있습니다.
+          있으며, 장소·일정·스토어 제보 정보의 수정·삭제는 문의 채널을 통해 요청할 수 있습니다.
         </p>
       </section>
 
@@ -85,9 +90,9 @@ export default function TermsOfService({ onClose: _ }: Props) {
           5. 게시물의 이용 권한
         </h3>
         <p className="text-on-surface-variant">
-          이용자가 서비스에 제보·작성한 장소·이벤트 정보 및 리뷰는, 서비스
-          운영·홍보·데이터베이스 구축을 위해 비독점적·무상으로 이용·복제·수정·배포될
-          수 있습니다. 이용자는 자신이 작성·제보한 정보에 대해 제3자의 권리를
+          이용자가 서비스에 제보·작성한 장소·일정·스토어 정보 및 리뷰는,
+          서비스 운영·홍보·데이터베이스 구축을 위해 비독점적·무상으로
+          이용·복제·수정·배포될 수 있습니다. 이용자는 자신이 작성·제보한 정보에 대해 제3자의 권리를
           침해하지 않음을 보증합니다.
         </p>
       </section>
@@ -98,10 +103,10 @@ export default function TermsOfService({ onClose: _ }: Props) {
         </h3>
         <ul className="list-disc pl-5 space-y-1.5 text-on-surface-variant">
           <li>
-            서비스가 제공하는 장소·이벤트 정보(영업시간·휴무일·주소·브랜드
-            취급 여부 등)는 이용자의 제보 및 공개 자료를 기반으로 수집되며,
-            실제와 다를 수 있습니다. 방문 전 반드시 해당 장소에 직접 확인하시기
-            바랍니다.
+            서비스가 제공하는 장소·일정·스토어 정보(영업시간·휴무일·주소·브랜드
+            취급 여부·외부 링크 등)는 이용자의 제보 및 공개 자료를 기반으로
+            수집되며, 실제와 다를 수 있습니다. 방문·구매 전 반드시 해당 장소·
+            상점에 직접 확인하시기 바랍니다.
           </li>
           <li>
             서비스는 정보의 정확성·최신성을 보장하지 않으며, 정보 이용으로 인한

@@ -15,7 +15,7 @@ export default function NotFound() {
           href="/"
           className="signature-gradient text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-primary/20 inline-block active:scale-95 transition-transform"
         >
-          지도로 돌아가기
+          홈으로 돌아가기
         </Link>
       </div>
     </div>

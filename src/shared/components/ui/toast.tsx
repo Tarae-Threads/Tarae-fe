@@ -251,7 +251,8 @@ function Toaster() {
       data-slot="toast-viewport"
       aria-label="알림"
       className={cn(
-        "fixed z-[100] flex max-h-screen gap-2 px-4",
+        // ModalProvider Z_BASE(1000) 보다 위 — 모달 안에서 토스트가 묻히지 않게
+        "fixed z-[9999] flex max-h-screen gap-2 px-4",
         // 모바일/PC 모두 하단 중앙, BottomNav 위
         "inset-x-0 bottom-16 md:bottom-6 flex-col-reverse items-center",
       )}

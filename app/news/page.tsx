@@ -25,7 +25,7 @@ export default async function NewsListPage() {
   const articles = await listArticles()
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface">
+    <div className="min-h-screen flex flex-col bg-surface md:pl-16 pb-20 md:pb-0">
       <Header />
       <main className="flex-1">
         <section className="container mx-auto px-4 md:px-8 py-10 md:py-16">

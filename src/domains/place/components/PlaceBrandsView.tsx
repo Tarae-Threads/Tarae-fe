@@ -1,6 +1,6 @@
 "use client";
 
-import type { PlaceDetail, BrandInfo } from "../types";
+import type { BrandInfo } from "../types";
 import Skeleton from "@/shared/components/ui/Skeleton";
 import EmptyState from "@/shared/components/ui/EmptyState";
 import {
@@ -42,11 +42,12 @@ const BRAND_TYPE_CONFIG: Record<
 };
 
 interface Props {
-  detail?: PlaceDetail | null;
+  /** undefined = 로딩 상태, [] = 빈 상태 */
+  brands?: BrandInfo[];
 }
 
-export default function PlaceBrandsView({ detail }: Props) {
-  if (!detail) {
+export default function PlaceBrandsView({ brands }: Props) {
+  if (brands === undefined) {
     return (
       <div className="space-y-3 animate-pulse">
         <Skeleton className="h-20 w-full rounded-2xl" />
@@ -55,7 +56,7 @@ export default function PlaceBrandsView({ detail }: Props) {
     );
   }
 
-  if (detail.brands.length === 0) {
+  if (brands.length === 0) {
     return (
       <EmptyState
         title="취급 브랜드 정보가 없어요"
@@ -65,7 +66,7 @@ export default function PlaceBrandsView({ detail }: Props) {
     );
   }
 
-  const grouped = detail.brands.reduce<Record<string, BrandInfo[]>>(
+  const grouped = brands.reduce<Record<string, BrandInfo[]>>(
     (acc, b) => {
       if (!acc[b.type]) acc[b.type] = [];
       acc[b.type].push(b);

@@ -1,42 +1,35 @@
 'use client'
 
 import Link from 'next/link'
-import { Home, Map, Calendar, Plus } from 'lucide-react'
+import { Home, Map, Calendar, Store, Plus } from 'lucide-react'
 import type { NavTab } from './NavBar'
 
 interface Props {
-  activeTab: NavTab
-  onTabChange: (tab: NavTab) => void
+  activeTab: NavTab | null
   onSubmit: () => void
 }
 
-const tabs: { id: NavTab; icon: typeof Map; label: string }[] = [
-  { id: 'places', icon: Map, label: '장소' },
-  { id: 'events', icon: Calendar, label: '일정' },
+const items: { id: NavTab; href: string; icon: typeof Map; label: string }[] = [
+  { id: 'home', href: '/', icon: Home, label: '홈' },
+  { id: 'places', href: '/map', icon: Map, label: '장소' },
+  { id: 'events', href: '/map?tab=events', icon: Calendar, label: '일정' },
+  { id: 'store', href: '/store', icon: Store, label: '스토어' },
 ]
 
-export default function BottomNav({ activeTab, onTabChange, onSubmit }: Props) {
+export default function BottomNav({ activeTab, onSubmit }: Props) {
   return (
     <nav
       aria-label="하단 내비게이션"
-      className="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest z-50 shadow-[0_-4px_12px_rgba(29,27,22,0.04)]"
+      className="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest z-50 shadow-[0_-4px_12px_rgba(29,27,22,0.04)]"
     >
-      <Link
-        href="/"
-        aria-label="홈"
-        className="flex flex-col items-center justify-center px-5 py-2 text-outline active:scale-90 transition-transform"
-      >
-        <Home className="w-5 h-5" aria-hidden="true" />
-        <span className="text-label-2xs mt-1 font-bold">홈</span>
-      </Link>
-
-      {tabs.map(({ id, icon: Icon, label }) => {
+      {items.map(({ id, href, icon: Icon, label }) => {
         const isActive = activeTab === id
         return (
-          <button
+          <Link
             key={id}
-            onClick={() => onTabChange(id)}
-            className={`relative flex flex-col items-center justify-center px-5 py-2 cursor-pointer active:scale-90 transition-transform ${
+            href={href}
+            aria-label={label}
+            className={`relative flex flex-col items-center justify-center px-3 py-2 active:scale-90 transition-transform ${
               isActive ? 'text-primary' : 'text-outline'
             }`}
           >
@@ -45,12 +38,14 @@ export default function BottomNav({ activeTab, onTabChange, onSubmit }: Props) {
             )}
             <Icon className="w-5 h-5" aria-hidden="true" />
             <span className="text-label-2xs mt-1 font-bold">{label}</span>
-          </button>
+          </Link>
         )
       })}
       <button
+        type="button"
         onClick={onSubmit}
-        className="flex flex-col items-center justify-center px-5 py-2 text-outline cursor-pointer active:scale-90 transition-transform"
+        aria-label="제보하기"
+        className="flex flex-col items-center justify-center px-3 py-2 text-outline cursor-pointer active:scale-90 transition-transform"
       >
         <Plus className="w-5 h-5" aria-hidden="true" />
         <span className="text-label-2xs mt-1 font-bold">제보</span>

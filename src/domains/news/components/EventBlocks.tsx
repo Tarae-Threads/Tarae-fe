@@ -175,3 +175,71 @@ export function EventCTA({
 export function EventCTAGroup({ children }: { children: React.ReactNode }) {
   return <div className="my-8 flex flex-col sm:flex-row gap-3">{children}</div>
 }
+
+// ---------------------------------------------------------------------------
+// BrandShoutoutGrid — 협찬 브랜드 샤라웃 그리드
+// ---------------------------------------------------------------------------
+
+export function BrandShoutoutGrid({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="my-8 grid grid-cols-1 sm:grid-cols-3 gap-4">{children}</div>
+  )
+}
+
+interface BrandShoutoutProps {
+  name: string
+  logo: string
+  sponsor: string
+  href?: string
+}
+
+export function BrandShoutout({ name, logo, sponsor, href }: BrandShoutoutProps) {
+  const body = (
+    <div className="relative h-full rounded-2xl bg-surface-container-high overflow-hidden editorial-shadow transition-all group-hover:shadow-xl">
+      <div className="relative aspect-square w-full bg-surface-container p-8">
+        <Image
+          src={logo}
+          alt={name}
+          fill
+          sizes="(max-width: 639px) 100vw, 33vw"
+          className="object-contain p-6"
+        />
+      </div>
+      <div className="p-4 space-y-1.5">
+        <div className="flex items-center justify-between gap-2">
+          <h4 className="font-display font-bold text-title-sm text-on-surface">
+            {name}
+          </h4>
+          {href && (
+            <ArrowRight className="w-4 h-4 text-primary shrink-0 group-hover:translate-x-0.5 transition-transform" />
+          )}
+        </div>
+        <p className="text-body-sm text-on-surface-variant leading-relaxed">
+          {sponsor}
+        </p>
+      </div>
+    </div>
+  )
+
+  if (!href) return <div>{body}</div>
+
+  const isExternal = /^https?:\/\//.test(href)
+  if (isExternal) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group block"
+        aria-label={`${name} 인스타그램 새 창에서 열기`}
+      >
+        {body}
+      </a>
+    )
+  }
+  return (
+    <Link href={href} className="group block" aria-label={name}>
+      {body}
+    </Link>
+  )
+}

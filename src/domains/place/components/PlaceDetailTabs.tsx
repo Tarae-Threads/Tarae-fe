@@ -35,7 +35,7 @@ export default function PlaceDetailTabs({ place, detail }: Props) {
       />
       <div className="pt-5">
         {active === "info" && <PlaceDetailView place={place} detail={detail} />}
-        {active === "brands" && <PlaceBrandsView detail={detail} />}
+        {active === "brands" && <PlaceBrandsView brands={detail?.brands} />}
         {active === "reviews" && (
           <ReviewSection type="place" targetId={place.id} />
         )}

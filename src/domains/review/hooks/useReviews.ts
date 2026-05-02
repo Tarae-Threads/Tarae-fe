@@ -6,6 +6,7 @@ import {
   getPlaceReviews,
   getEventReviews,
 } from "../queries/reviewApi";
+import { getShopReviews } from "@/domains/shop/queries/shopApi";
 import {
   STORAGE_KEYS,
   type ReviewTargetType,
@@ -57,7 +58,9 @@ export function useReviews(type: ReviewTargetType, targetId: number) {
       const list =
         type === "place"
           ? await getPlaceReviews(targetId)
-          : await getEventReviews(targetId);
+          : type === "event"
+            ? await getEventReviews(targetId)
+            : await getShopReviews(targetId);
       // 최신순 정렬
       list.sort(
         (a, b) =>

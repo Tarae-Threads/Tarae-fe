@@ -11,6 +11,8 @@ import {
   Prize,
   EventCTA,
   EventCTAGroup,
+  BrandShoutoutGrid,
+  BrandShoutout,
 } from "./EventBlocks"
 import InquiryButton from "./InquiryButton"
 
@@ -128,6 +130,8 @@ const components = {
   Prize,
   EventCTA,
   EventCTAGroup,
+  BrandShoutoutGrid,
+  BrandShoutout,
   // 문의하기 모달 트리거
   InquiryButton,
 }
