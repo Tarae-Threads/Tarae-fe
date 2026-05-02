@@ -108,7 +108,7 @@ export const HOME_BANNERS: HomeBanner[] = [
     overlay: {
       eyebrow: "타래 이야기",
       title: "뜨개인을 위한 플랫폼을 엽니다",
-      description: "실 가게·공방·뜨개카페부터 이벤트까지 한 곳에서.",
+      description: "실 가게·공방·뜨개카페·이벤트·온라인샵까지 한 곳에서.",
       ctaLabel: "공지 읽어보기",
       theme: "light",
     },

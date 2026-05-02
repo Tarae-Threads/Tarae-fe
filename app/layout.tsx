@@ -7,17 +7,20 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.taraethreads.com"),
   title: {
-    default: "타래 | 뜨개 장소, 정보, 모임을 한 곳에서",
+    default: "타래 | 뜨개 장소·일정·스토어를 한 곳에서",
     template: "%s | 타래",
   },
   description:
-    "흩어져 있는 뜨개 정보를 한 곳에서. 실 가게, 공방, 뜨개카페를 지도로 탐색하고, 정보와 모임까지 연결하는 뜨개인을 위한 플랫폼입니다.",
+    "흩어져 있는 뜨개 정보를 한 곳에서. 실 가게·공방·뜨개카페를 지도로, 이벤트와 세일을 일정으로, 온라인 뜨개 상점을 스토어로 — 뜨개인을 위한 정보 플랫폼.",
   keywords: [
     "뜨개질",
     "뜨개",
     "실 가게",
     "공방",
     "뜨개카페",
+    "온라인샵",
+    "뜨개샵",
+    "뜨개 이벤트",
     "니트",
     "털실",
     "뜨개 모임",
@@ -29,9 +32,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
     siteName: "타래",
-    title: "타래 | 뜨개 장소, 정보, 모임을 한 곳에서",
+    title: "타래 | 뜨개 장소·일정·스토어를 한 곳에서",
     description:
-      "흩어져 있는 뜨개 정보를 한 곳에서 탐색하고 연결하세요. 뜨개인을 위한 플랫폼.",
+      "실 가게·공방·뜨개카페·이벤트·온라인샵을 한 곳에서 탐색하세요. 뜨개인을 위한 정보 플랫폼.",
     images: [
       {
         url: "/tarae_thumbnail.png",
@@ -43,9 +46,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "타래 | 뜨개 장소, 정보, 모임을 한 곳에서",
+    title: "타래 | 뜨개 장소·일정·스토어를 한 곳에서",
     description:
-      "흩어져 있는 뜨개 정보를 한 곳에서 탐색하고 연결하세요. 뜨개인을 위한 플랫폼.",
+      "실 가게·공방·뜨개카페·이벤트·온라인샵을 한 곳에서 탐색하세요. 뜨개인을 위한 정보 플랫폼.",
     images: ["/tarae_thumbnail.png"],
   },
   alternates: {

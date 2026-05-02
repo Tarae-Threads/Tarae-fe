@@ -73,9 +73,14 @@ export default function OpenEventPopup({ onClose }: PopupContentProps) {
       </div>
 
       {/* 본문 안내 */}
-      <p className="text-body-md text-on-surface-variant flex justify-center px-5 pt-3 leading-relaxed font-bold">
-        총 7분께 경품 랜덤 추첨
-      </p>
+      <div className="px-5 pt-3 text-center space-y-1">
+        <p className="text-body-md text-on-surface font-bold">
+          총 7분께 협찬 경품 랜덤 추첨
+        </p>
+        <p className="text-label-sm text-on-surface-variant leading-relaxed">
+          리뷰 1건 또는 장소·일정·스토어 제보 1건이면 자동 응모돼요
+        </p>
+      </div>
 
       {/* 브랜드 로고 행 */}
       <div className="px-5 pt-4">
