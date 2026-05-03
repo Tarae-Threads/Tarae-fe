@@ -482,7 +482,18 @@ const NaverMap = forwardRef<NaverMapHandle, NaverMapProps>(function NaverMap(
         onLoad={initMap}
         onError={() => setMapError("네이버 지도 API를 불러올 수 없습니다. 네트워크를 확인해 주세요.")}
       />
-      <div ref={mapRef} className="w-full h-full min-h-[400px]" />
+      <div
+        ref={mapRef}
+        // 지도 컨테이너와 자식 모두에 다음을 강제:
+        // - touch-action: none → 사용자의 swipe 가 iOS Safari 의 URL bar 토글·
+        //   rubber-band 같은 system gesture 로 해석되지 않게. SDK 의 자체 touch
+        //   처리(panning·zoom) 는 listener 단계라 그대로 작동.
+        // - select-none / -webkit-touch-callout:none / -webkit-user-drag:none →
+        //   NAVER 워터마크 long-press 시 컨텍스트 메뉴·이미지 pickup 차단 (탭은 OK).
+        // [&_*]:touch-none 은 SDK 가 동적으로 추가하는 자식들 (canvas·워터마크
+        //   ·컨트롤) 모두에도 적용 — touch-action 은 inherited 가 아니라서 필수.
+        className="w-full h-full min-h-[400px] touch-none [&_*]:touch-none select-none [-webkit-touch-callout:none] [-webkit-user-drag:none]"
+      />
     </>
   );
 });

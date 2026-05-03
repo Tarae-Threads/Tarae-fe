@@ -32,7 +32,7 @@ const NaverMap = dynamic(() => import("@/domains/place/components/NaverMap"), {
   ssr: false,
 });
 
-const BOTTOM_NAV_HEIGHT = 48
+const DEFAULT_BOTTOM_NAV_HEIGHT = 80 // 측정 전 fallback (~64 content + 16 padding)
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -47,6 +47,26 @@ function HomeContent() {
   const [selectedPlaceDetail, setSelectedPlaceDetail] = useState<PlaceDetail | null>(null);
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [mobileSheetHeight, setMobileSheetHeight] = useState(0);
+  // BottomNav 실측 높이 (safe area 포함). 시트 위 floating 버튼 위치 계산용.
+  // MobileBottomSheet 도 동일하게 측정 — 두 곳에서 일관된 값을 보장.
+  const [bottomNavHeight, setBottomNavHeight] = useState(DEFAULT_BOTTOM_NAV_HEIGHT);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const measure = () => {
+      const nav = document.querySelector(
+        'nav[aria-label="하단 내비게이션"]',
+      ) as HTMLElement | null;
+      if (nav) setBottomNavHeight(nav.getBoundingClientRect().height);
+    };
+    measure();
+    const nav = document.querySelector(
+      'nav[aria-label="하단 내비게이션"]',
+    ) as HTMLElement | null;
+    if (!nav) return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(nav);
+    return () => ro.disconnect();
+  }, []);
   const [mobileSheetSnap, setMobileSheetSnap] = useState<"closed" | "peek" | "full">("peek");
   const [detailSnap, setDetailSnap] = useState<"peek" | "full">("peek");
 
@@ -274,7 +294,7 @@ function HomeContent() {
         : null;
 
   return (
-    <main className="h-[calc(100dvh-4rem)] md:h-[100dvh] w-full overflow-hidden bg-surface-container-lowest flex md:pl-16">
+    <main className="h-[calc(100dvh-5rem-env(safe-area-inset-bottom))] md:h-[100dvh] w-full overflow-hidden bg-surface-container-lowest flex md:pl-16">
       {/* 글로벌 NavBar(사이드) / BottomNav(하단) 은 app/providers.tsx 의 AppNav 가 마운트 */}
 
       <BasePanel
@@ -337,7 +357,7 @@ function HomeContent() {
           onZoomIn={() => mapRef.current?.zoomIn()}
           onZoomOut={() => mapRef.current?.zoomOut()}
           onLocate={() => mapRef.current?.locate()}
-          mobileBottomOffset={mobileSheetHeight + BOTTOM_NAV_HEIGHT}
+          mobileBottomOffset={mobileSheetHeight + bottomNavHeight}
         />
 
         {activeTab === "places" && !viewportFilterActive && (
@@ -348,9 +368,10 @@ function HomeContent() {
                 const bounds = mapRef.current?.getBounds();
                 if (bounds) activateViewportFilter(bounds);
               }}
-              className="absolute left-1/2 -translate-x-1/2 z-40 bg-surface/90 backdrop-blur-md text-on-surface font-bold text-label-lg px-5 py-2.5 rounded-full shadow-lg border border-border hover:bg-surface transition-colors active:scale-95 md:hidden"
+              className="fixed left-1/2 -translate-x-1/2 z-40 bg-surface/90 backdrop-blur-md text-on-surface font-bold text-label-lg px-5 py-2.5 rounded-full shadow-lg border border-border hover:bg-surface transition-colors active:scale-95 md:hidden"
               style={{
-                bottom: `calc(${mobileSheetHeight + BOTTOM_NAV_HEIGHT + 16}px + env(safe-area-inset-bottom))`,
+                // bottomNavHeight 는 이미 safe area 포함된 실측값 → env() 추가 X
+                bottom: `${mobileSheetHeight + bottomNavHeight + 16}px`,
               }}
             >
               현재 지역만 보기
