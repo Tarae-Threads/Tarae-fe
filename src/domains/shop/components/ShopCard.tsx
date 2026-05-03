@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { Globe, Instagram, Store as StoreIcon } from "lucide-react"
 import type { Shop } from "../types"
-import CategoryBadge from "@/domains/place/components/CategoryBadge"
 import TagChip from "@/shared/components/ui/TagChip"
 import { useOgImage } from "../hooks/useOgImage"
 
@@ -12,18 +11,16 @@ interface Props {
 }
 
 export default function ShopCard({ shop }: Props) {
-  const primaryCategory = shop.categories[0]?.name
-
   // og:image 조회 우선순위: 인스타 > 웹사이트 > 네이버 (네이버는 보통 차단/일반 로고)
   const ogTargetUrl = shop.instagramUrl ?? shop.websiteUrl ?? shop.naverUrl
   const { image, loading } = useOgImage(ogTargetUrl)
 
   return (
-    <Link
-      href={`/store/${shop.id}`}
-      className="group flex gap-4 bg-surface-container-high rounded-2xl p-4 shadow-sm hover:shadow-xl transition-all duration-300"
-    >
-      {/* 아바타 (정사각) — og:image 또는 fallback. 작게 표시해 저해상도 티 안 나게. */}
+    // article + stretched-link 패턴 — 카드 전체 클릭 가능 (제목의 Link 가
+    // before:absolute inset-0 으로 카드 영역까지 hit 영역 확장).
+    // 외부 링크 아이콘은 relative z-10 로 stretched-link 위에서 동작.
+    <article className="group relative flex gap-4 bg-surface-container-high rounded-2xl p-4 shadow-sm hover:shadow-xl transition-all duration-300">
+      {/* 아바타 (정사각) — og:image 또는 fallback */}
       <div className="shrink-0 relative size-16 sm:size-20 rounded-xl overflow-hidden bg-surface-container">
         {image ? (
           // 외부 도메인 og:image 라 next/image 대신 plain img + lazy
@@ -46,14 +43,13 @@ export default function ShopCard({ shop }: Props) {
 
       {/* 본문 */}
       <div className="flex-1 min-w-0 flex flex-col">
-        {primaryCategory && (
-          <div className="mb-1.5">
-            <CategoryBadge category={primaryCategory} size="md" />
-          </div>
-        )}
-
         <h3 className="font-display font-bold text-title-sm text-on-surface line-clamp-1 mb-1.5">
-          {shop.name}
+          <Link
+            href={`/store/${shop.id}`}
+            className="before:absolute before:inset-0 before:rounded-2xl focus-visible:outline-none focus-visible:before:ring-2 focus-visible:before:ring-primary/40"
+          >
+            {shop.name}
+          </Link>
         </h3>
 
         {shop.tags.length > 0 && (
@@ -64,7 +60,7 @@ export default function ShopCard({ shop }: Props) {
           </div>
         )}
 
-        <div className="mt-auto flex items-center gap-1.5">
+        <div className="relative z-10 mt-auto flex items-center gap-1.5">
           {shop.instagramUrl && (
             <ExternalIcon
               href={shop.instagramUrl}
@@ -92,7 +88,7 @@ export default function ShopCard({ shop }: Props) {
           )}
         </div>
       </div>
-    </Link>
+    </article>
   )
 }
 
@@ -111,7 +107,6 @@ function ExternalIcon({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      onClick={(e) => e.stopPropagation()}
       className="inline-flex size-7 items-center justify-center rounded-full bg-surface-container text-on-surface-variant hover:bg-primary-fixed hover:text-primary transition-colors"
     >
       {icon}

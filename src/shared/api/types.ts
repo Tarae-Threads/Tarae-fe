@@ -387,8 +387,6 @@ export interface components {
             instagramUrl?: string;
             naverUrl?: string;
             websiteUrl?: string;
-            categoryIds?: number[];
-            categoryText?: string;
             brandYarnIds?: number[];
             brandsYarn?: string;
             brandNeedleIds?: number[];
@@ -398,7 +396,7 @@ export interface components {
             brandPatternbookIds?: number[];
             brandsPatternbook?: string;
             tags?: string;
-            note?: string;
+            description?: string;
             email?: string;
         };
         ApiResponseRequestResponse: {
@@ -439,7 +437,7 @@ export interface components {
             websiteUrl?: string;
             naverMapUrl?: string;
             tags?: string;
-            note?: string;
+            description?: string;
             email?: string;
         };
         EventRequestInput: {
@@ -514,20 +512,6 @@ export interface components {
              */
             type: string;
         };
-        /** @description 카테고리 요약 정보 */
-        CategoryDto: {
-            /**
-             * Format: int64
-             * @description 카테고리 ID
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description 카테고리명
-             * @example 공방
-             */
-            name: string;
-        };
         /** @description 온라인샵 목록 응답 */
         ShopListResponse: {
             /**
@@ -547,8 +531,6 @@ export interface components {
             naverUrl?: string;
             /** @description 웹사이트 URL */
             websiteUrl?: string;
-            /** @description 카테고리 목록 */
-            categories: components["schemas"]["CategoryDto"][];
             /** @description 태그 목록 */
             tags: components["schemas"]["TagDto"][];
             /** @description 브랜드 목록 */
@@ -587,14 +569,14 @@ export interface components {
              * @example 실뭉치샵
              */
             name: string;
+            /** @description 온라인샵 설명 */
+            description?: string;
             /** @description 인스타그램 URL */
             instagramUrl?: string;
             /** @description 네이버 스마트스토어 URL */
             naverUrl?: string;
             /** @description 웹사이트 URL */
             websiteUrl?: string;
-            /** @description 카테고리 목록 */
-            categories: components["schemas"]["CategoryDto"][];
             /** @description 태그 목록 */
             tags: components["schemas"]["TagDto"][];
             /** @description 브랜드 목록 */
@@ -602,6 +584,20 @@ export interface components {
         };
         ApiResponseListPlaceListResponse: {
             data: components["schemas"]["PlaceListResponse"][];
+        };
+        /** @description 카테고리 요약 정보 */
+        CategoryDto: {
+            /**
+             * Format: int64
+             * @description 카테고리 ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description 카테고리명
+             * @example 공방
+             */
+            name: string;
         };
         /** @description 장소 목록 응답 */
         PlaceListResponse: {
@@ -1306,8 +1302,6 @@ export interface operations {
             query?: {
                 /** @description 검색어 (온라인샵명, 태그, 브랜드 통합 검색) */
                 keyword?: string;
-                /** @description 카테고리 ID */
-                categoryId?: number;
                 /** @description 태그 ID */
                 tagId?: number;
             };

@@ -729,7 +729,7 @@ export default function SubmitForm({ onClose, initialTab = "place" }: Props) {
         websiteUrl: data.linkWebsite || undefined,
         naverMapUrl: data.linkNaverMap || undefined,
         tags: data.tags || undefined,
-        note: data.note || undefined,
+        description: data.note || undefined,
       });
       toast.success("제보가 등록되었습니다");
       succeededRef.current = true;
@@ -800,7 +800,7 @@ export default function SubmitForm({ onClose, initialTab = "place" }: Props) {
         websiteUrl: data.linkWebsite || undefined,
         naverMapUrl: data.linkNaverMap || undefined,
         tags: data.tags || undefined,
-        note: data.note || undefined,
+        description: data.note || undefined,
       });
       toast.success("제보가 등록되었습니다");
       succeededRef.current = true;
@@ -873,7 +873,7 @@ export default function SubmitForm({ onClose, initialTab = "place" }: Props) {
             : undefined,
         brandsPatternbook: data.brandsPatternbook || undefined,
         tags: data.tags || undefined,
-        note: data.note || undefined,
+        description: data.note || undefined,
         email: data.email || undefined,
       });
       toast.success("제보가 등록되었습니다");
@@ -949,7 +949,7 @@ export default function SubmitForm({ onClose, initialTab = "place" }: Props) {
             : undefined,
         brandsPatternbook: data.brandsPatternbook || undefined,
         tags: data.tags || undefined,
-        note: data.note || undefined,
+        description: data.note || undefined,
         email: data.email || undefined,
       });
       toast.success("제보가 등록되었습니다");
