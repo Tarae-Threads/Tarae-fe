@@ -20,7 +20,8 @@ export default function BottomNav({ activeTab, onSubmit }: Props) {
   return (
     <nav
       aria-label="하단 내비게이션"
-      className="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest z-50 shadow-[0_-4px_12px_rgba(29,27,22,0.04)]"
+      className="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pt-2 bg-surface-container-lowest z-50 shadow-[0_-4px_12px_rgba(29,27,22,0.04)]"
+      style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
     >
       {items.map(({ id, href, icon: Icon, label }) => {
         const isActive = activeTab === id

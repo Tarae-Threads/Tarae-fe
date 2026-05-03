@@ -389,6 +389,20 @@
   }
 }
 
+/* iOS Safari 의 이미지 long-press → 시스템 인터랙션(공유·Quick Look·드래그)
+   기본 차단. 페이지 내에 의도된 drag-and-drop 기능은 없으므로 안전. */
+img {
+  -webkit-user-drag: none;
+}
+
+/* iOS Safari 의 rubber-band overscroll (페이지 위·아래로 끌면 빈 영역이
+   드러나는 효과) 차단 — 지도 위에서 끌었을 때 화면 위로 갈색 배경이
+   노출되는 회귀 방지. */
+html,
+body {
+  overscroll-behavior: none;
+}
+
 /* My location pulse animation */
 @keyframes pulse {
   0%,

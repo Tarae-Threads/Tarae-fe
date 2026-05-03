@@ -43,7 +43,7 @@ export default function MapControls({ onZoomIn, onZoomOut, onLocate, mobileBotto
     <>
       {/* 모바일: 동적 bottom */}
       <div
-        className="absolute right-4 flex flex-col gap-2 z-20 md:hidden"
+        className="fixed right-4 flex flex-col gap-2 z-20 md:hidden"
         style={{ bottom: mobileBottomOffset != null ? `${mobileBottomOffset + 16}px` : '120px' }}
         role="group"
         aria-label="지도 컨트롤"

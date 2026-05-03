@@ -26,7 +26,7 @@ const SNAP_RATIOS: Record<SnapPoint, number> = {
   peek: 0.3,
   full: 1,
 };
-const BOTTOM_NAV_HEIGHT = 48;
+const DEFAULT_BOTTOM_NAV_HEIGHT = 64; // BottomNav 측정 전 fallback (safe area 미포함)
 const SEARCH_BAR_BOTTOM = 72; // top-4(16px) + h-14(56px)
 
 // iOS Chrome/Safari 의 동적 toolbar 로 뷰포트 높이가 수시로 변함.
@@ -36,11 +36,11 @@ function getViewportHeight(): number {
   return window.visualViewport?.height ?? window.innerHeight;
 }
 
-function getSnapHeight(snap: SnapPoint): number {
+function getSnapHeight(snap: SnapPoint, bottomNavHeight: number): number {
   const vh = getViewportHeight();
   if (vh === 0) return 0;
   // full: 검색창 아래까지
-  if (snap === "full") return vh - SEARCH_BAR_BOTTOM - BOTTOM_NAV_HEIGHT;
+  if (snap === "full") return vh - SEARCH_BAR_BOTTOM - bottomNavHeight;
   return vh * SNAP_RATIOS[snap];
 }
 
@@ -108,6 +108,33 @@ export default function MobileBottomSheet({
   const [snap, setSnap] = useState<SnapPoint>("peek");
   const [sheetHeight, setSheetHeight] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  // visualViewport.resize 핸들러용 — isDragging state 의 stale closure 회피
+  const isDraggingRef = useRef(false);
+  // BottomNav 의 실제 렌더링 높이 (safe area 포함). ResizeObserver 로 동적 측정.
+  // 하드코딩 상수가 실제와 안 맞으면 시트 marginBottom 이 어긋나 갈색 갭이 노출됨.
+  const [bottomNavHeight, setBottomNavHeight] = useState(DEFAULT_BOTTOM_NAV_HEIGHT);
+  const bottomNavHeightRef = useRef(DEFAULT_BOTTOM_NAV_HEIGHT);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const measure = () => {
+      const nav = document.querySelector(
+        'nav[aria-label="하단 내비게이션"]',
+      ) as HTMLElement | null;
+      if (!nav) return;
+      const h = nav.getBoundingClientRect().height;
+      bottomNavHeightRef.current = h;
+      setBottomNavHeight(h);
+    };
+    measure();
+    const nav = document.querySelector(
+      'nav[aria-label="하단 내비게이션"]',
+    ) as HTMLElement | null;
+    if (!nav) return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(nav);
+    return () => ro.disconnect();
+  }, []);
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -116,16 +143,25 @@ export default function MobileBottomSheet({
 
   // 초기 높이 설정
   useEffect(() => {
-    const h = getSnapHeight("peek");
+    const h = getSnapHeight("peek", bottomNavHeightRef.current);
     setSheetHeight(h); // eslint-disable-line react-hooks/set-state-in-effect
     onHeightChange?.(h);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // iOS 동적 toolbar 로 뷰포트 높이가 바뀌면 현재 snap 높이도 재계산.
-  // window.resize 는 iOS 에서 주소창 토글에 발화 안 하므로 visualViewport 도 같이 구독.
+  // 단, **작은 변화(URL bar 자동 토글, NAVER 로고 long-press 시 흔들림 등)는
+  // 무시** — 80px 미만 변화는 시트 jumping 의 주범이라 차단.
+  // 큰 변화 (디바이스 회전 등) 만 반응.
   useEffect(() => {
+    let lastVh = getViewportHeight();
+    const RESIZE_THRESHOLD_PX = 80;
+
     const handleResize = () => {
-      const h = getSnapHeight(snap);
+      if (isDraggingRef.current) return;
+      const newVh = getViewportHeight();
+      if (Math.abs(newVh - lastVh) < RESIZE_THRESHOLD_PX) return;
+      lastVh = newVh;
+      const h = getSnapHeight(snap, bottomNavHeightRef.current);
       setSheetHeight(h); // eslint-disable-line react-hooks/set-state-in-effect
       onHeightChange?.(h);
     };
@@ -150,7 +186,7 @@ export default function MobileBottomSheet({
 
   const animateTo = useCallback(
     (target: SnapPoint) => {
-      const h = getSnapHeight(target);
+      const h = getSnapHeight(target, bottomNavHeightRef.current);
       setSnap(target);
       setSheetHeight(h);
       onHeightChange?.(h);
@@ -191,6 +227,7 @@ export default function MobileBottomSheet({
       ds.lastY = touch.clientY;
       ds.lastTime = Date.now();
       ds.velocity = 0;
+      isDraggingRef.current = true;
       setIsDragging(true);
     },
     [sheetHeight],
@@ -217,12 +254,13 @@ export default function MobileBottomSheet({
       } else if (snap === "full" && deltaY >= 0) {
         // 위로 드래그 → 스크롤에 맡기기
         ds.isScrolling = true;
+        isDraggingRef.current = false;
         setIsDragging(false);
         return;
       }
 
       const vh = getViewportHeight();
-      const available = vh - BOTTOM_NAV_HEIGHT;
+      const available = vh - bottomNavHeightRef.current;
       const newHeight = Math.max(
         vh * 0.05,
         Math.min(available, ds.startHeight + deltaY),
@@ -242,7 +280,11 @@ export default function MobileBottomSheet({
 
   const handleTouchEnd = useCallback(() => {
     const ds = dragState.current;
-    if (ds.isScrolling) return;
+    if (ds.isScrolling) {
+      isDraggingRef.current = false;
+      return;
+    }
+    isDraggingRef.current = false;
     setIsDragging(false);
 
     // 속도 기반 방향 결정
@@ -268,7 +310,7 @@ export default function MobileBottomSheet({
         mounted
           ? {
               height: sheetHeight,
-              marginBottom: BOTTOM_NAV_HEIGHT,
+              marginBottom: bottomNavHeight,
               transition: isDragging
                 ? "none"
                 : "height 0.4s cubic-bezier(0.32, 0.72, 0, 1)",
