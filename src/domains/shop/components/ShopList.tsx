@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Search, Store as StoreIcon } from "lucide-react"
 import { useModal } from "@/shared/hooks/useModal"
 import EmptyState from "@/shared/components/ui/EmptyState"
@@ -18,8 +18,6 @@ export default function ShopList() {
   const [searchInput, setSearchInput] = useState("")
   const [keyword, setKeyword] = useState("")
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null)
-
   const [shops, setShops] = useState<Shop[]>([])
   const [loading, setLoading] = useState(true)
   const [errored, setErrored] = useState(false)
@@ -36,7 +34,6 @@ export default function ShopList() {
     try {
       const list = await getShops({
         keyword: keyword || undefined,
-        categoryId: selectedCategoryId ?? undefined,
       })
       setShops(list)
     } catch {
@@ -44,25 +41,14 @@ export default function ShopList() {
     } finally {
       setLoading(false)
     }
-  }, [keyword, selectedCategoryId])
+  }, [keyword])
 
-  // 데이터 로드 (keyword/categoryId 변경 시)
+  // 데이터 로드 (keyword 변경 시)
   useEffect(() => {
     fetchShops()
   }, [fetchShops])
 
-  // 데이터에 실제 존재하는 카테고리만 칩으로
-  const availableCategories = useMemo(() => {
-    const seen = new Map<number, string>()
-    for (const shop of shops) {
-      for (const cat of shop.categories) {
-        if (!seen.has(cat.id)) seen.set(cat.id, cat.name)
-      }
-    }
-    return Array.from(seen, ([id, name]) => ({ id, name }))
-  }, [shops])
-
-  const hasActiveFilter = keyword !== "" || selectedCategoryId !== null
+  const hasActiveFilter = keyword !== ""
 
   const openShopSubmission = () => {
     openModal(
@@ -75,7 +61,6 @@ export default function ShopList() {
   const resetFilters = () => {
     setSearchInput("")
     setKeyword("")
-    setSelectedCategoryId(null)
   }
 
   return (
@@ -93,7 +78,7 @@ export default function ShopList() {
       </div>
 
       {/* 검색 */}
-      <div className="relative mb-4">
+      <div className="relative mb-6">
         <Search className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 size-4 text-outline" />
         <input
           type="text"
@@ -104,29 +89,6 @@ export default function ShopList() {
           className="w-full h-12 pl-11 pr-4 rounded-2xl text-label-lg text-on-surface placeholder:text-outline bg-surface-container focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
-
-      {/* 카테고리 칩 — 데이터에 있는 것만 */}
-      {availableCategories.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-6">
-          <Chip
-            active={selectedCategoryId === null}
-            onClick={() => setSelectedCategoryId(null)}
-          >
-            전체 카테고리
-          </Chip>
-          {availableCategories.map((cat) => (
-            <Chip
-              key={cat.id}
-              active={selectedCategoryId === cat.id}
-              onClick={() =>
-                setSelectedCategoryId((prev) => (prev === cat.id ? null : cat.id))
-              }
-            >
-              {cat.name}
-            </Chip>
-          ))}
-        </div>
-      )}
 
       {/* 결과 헤더 */}
       <div className="flex items-center justify-between mb-3">
@@ -156,8 +118,8 @@ export default function ShopList() {
           <EmptyState
             icon={<StoreIcon className="w-8 h-8 text-outline" />}
             title="조건에 맞는 상점이 없어요"
-            description="필터를 바꾸거나 초기화해보세요."
-            action={{ label: "필터 초기화", onClick: resetFilters }}
+            description="검색어를 바꾸거나 초기화해보세요."
+            action={{ label: "검색 초기화", onClick: resetFilters }}
           />
         ) : (
           <EmptyState
@@ -190,30 +152,5 @@ export default function ShopList() {
         </>
       )}
     </section>
-  )
-}
-
-function Chip({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={`px-3.5 py-1.5 rounded-full text-label-md font-bold transition-all border ${
-        active
-          ? "bg-primary text-white border-primary"
-          : "bg-surface-container text-on-surface-variant border-transparent hover:bg-surface-container-high"
-      }`}
-    >
-      {children}
-    </button>
   )
 }

@@ -4,7 +4,6 @@ import { notFound } from "next/navigation"
 import { ArrowLeft, Globe, Instagram } from "lucide-react"
 import Header from "@/domains/landing/components/Header"
 import Footer from "@/domains/landing/components/Footer"
-import CategoryBadge from "@/domains/place/components/CategoryBadge"
 import PlaceBrandsView from "@/domains/place/components/PlaceBrandsView"
 import TagChip from "@/shared/components/ui/TagChip"
 import ReviewSection from "@/domains/review/components/ReviewSection"
@@ -68,14 +67,14 @@ export default async function ShopDetailPage({
           </Link>
 
           <header className="mb-8">
-            {shop.categories[0] && (
-              <div className="mb-3">
-                <CategoryBadge category={shop.categories[0].name} size="md" />
-              </div>
-            )}
             <h1 className="font-display font-extrabold text-headline-md md:text-display-sm text-on-surface mb-3">
               {shop.name}
             </h1>
+            {shop.description && (
+              <p className="text-body-lg text-on-surface-variant leading-relaxed mb-3">
+                {shop.description}
+              </p>
+            )}
             {shop.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {shop.tags.map((tag) => (
