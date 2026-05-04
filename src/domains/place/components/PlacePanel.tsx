@@ -42,6 +42,8 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onSnapChange?: (snap: "peek" | "full") => void;
+  // open 직후 초기 snap. 만료 이벤트·장소 없는 이벤트는 지도에 보여줄 게 없어 full 로 띄움.
+  defaultSnap?: SnapPoint;
 }
 
 // ---------------------------------------------------------------------------
@@ -53,9 +55,10 @@ export default function PlacePanel({
   open,
   onClose,
   onSnapChange,
+  defaultSnap = "peek",
 }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [snap, setSnap] = useState<SnapPoint>("peek");
+  const [snap, setSnap] = useState<SnapPoint>(defaultSnap);
   const [sheetHeight, setSheetHeight] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const mounted = useSyncExternalStore(
@@ -73,13 +76,13 @@ export default function PlacePanel({
     isScrolling: false,
   });
 
-  // open 변경 시 peek로 초기화
+  // open 변경 시 defaultSnap 으로 초기화
   useEffect(() => {
     if (open && mounted) {
-      setSnap("peek"); // eslint-disable-line react-hooks/set-state-in-effect -- open 변경 시 초기화 필수
-      setSheetHeight(getSnapHeight("peek"));
+      setSnap(defaultSnap); // eslint-disable-line react-hooks/set-state-in-effect -- open 변경 시 초기화 필수
+      setSheetHeight(getSnapHeight(defaultSnap));
     }
-  }, [open, mounted]);
+  }, [open, mounted, defaultSnap]);
 
   const animateTo = useCallback(
     (target: SnapPoint) => {

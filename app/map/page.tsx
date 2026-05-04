@@ -325,6 +325,16 @@ function HomeContent() {
         ? { type: "event" as const, event: selectedEvent, eventDetail: selectedEventDetail }
         : null;
 
+  // 일정 상세 — 진행중 + 장소 있음만 peek(지도 동시 노출), 아니면 full(보여줄 위치 없음)
+  const mobileDetailDefaultSnap: "peek" | "full" = (() => {
+    if (mobileDetailData?.type !== "event") return "peek";
+    const e = mobileDetailData.event;
+    const todayStr = getTodayString();
+    const isLive = e.active && (e.endDate ?? e.startDate) >= todayStr;
+    const hasLocation = e.lat != null && e.lng != null;
+    return isLive && hasLocation ? "peek" : "full";
+  })();
+
   return (
     <main className="h-[calc(100dvh-5rem-env(safe-area-inset-bottom))] md:h-[100dvh] w-full overflow-hidden bg-surface-container-lowest flex md:pl-16">
       {/* 글로벌 NavBar(사이드) / BottomNav(하단) 은 app/providers.tsx 의 AppNav 가 마운트 */}
@@ -473,6 +483,7 @@ function HomeContent() {
             open={mobileDetailOpen}
             onClose={handleDetailClose}
             onSnapChange={setDetailSnap}
+            defaultSnap={mobileDetailDefaultSnap}
           />
         </div>
       </div>
