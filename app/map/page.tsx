@@ -38,8 +38,11 @@ function HomeContent() {
   const searchParams = useSearchParams();
   const initialPlaceId = searchParams.get("placeId");
   const initialEventId = searchParams.get("eventId");
+  // eventId 만 있는 진입(?eventId=9)도 일정탭으로 — tab 쿼리 명시 없는 공유 URL 대응
   const initialTab: ActiveTab =
-    searchParams.get("tab") === "events" ? "events" : "places";
+    searchParams.get("tab") === "events" || searchParams.get("eventId")
+      ? "events"
+      : "places";
   const mapRef = useRef<NaverMapHandle>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>(initialTab);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -121,9 +124,12 @@ function HomeContent() {
   }, [userLocation]);
 
   // 글로벌 nav 의 Link 클릭으로 ?tab= 가 바뀌면 activeTab 동기화 + 상세 닫기
+  // eventId 쿼리가 있으면 일정탭 유지 — fetch 후 setActiveTab("events") 한 걸 되돌리지 않도록
   const tabQuery = searchParams.get("tab");
+  const eventIdQuery = searchParams.get("eventId");
   useEffect(() => {
-    const next: ActiveTab = tabQuery === "events" ? "events" : "places";
+    const next: ActiveTab =
+      tabQuery === "events" || eventIdQuery ? "events" : "places";
     setActiveTab((prev) => {
       if (prev === next) return prev;
       handlePanelClose();
@@ -131,7 +137,7 @@ function HomeContent() {
       setSelectedEventDetail(null);
       return next;
     });
-  }, [tabQuery, handlePanelClose]);
+  }, [tabQuery, eventIdQuery, handlePanelClose]);
 
   // initialPlaceId로 진입 시 상세 조회
   useEffect(() => {
