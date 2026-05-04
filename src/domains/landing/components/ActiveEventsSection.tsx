@@ -63,7 +63,7 @@ export default async function ActiveEventsSection() {
             return (
               <TrackedLink
                 key={event.id}
-                href={`/map?eventId=${event.id}`}
+                href={`/map?tab=events&eventId=${event.id}`}
                 event="event_select"
                 params={{ event_id: event.id, source: "landing_active" }}
                 className="bg-surface rounded-2xl p-5 md:p-6 transition-all hover:shadow-xl active:scale-[0.98]"
