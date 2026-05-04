@@ -182,9 +182,10 @@ function HomeContent() {
     return new Set<number>();
   }, [allEvents]);
 
+  // 종료된(active=false) 이벤트는 마커에서 제외 — 캘린더 history 는 그대로 노출
   const eventMarkers = useMemo(() => {
     return allEvents
-      .filter((e) => e.lat != null && e.lng != null)
+      .filter((e) => e.active && e.lat != null && e.lng != null)
       .map((e) => ({
         id: String(e.id),
         title: e.title,
