@@ -76,13 +76,14 @@ export default function PlacePanel({
     isScrolling: false,
   });
 
-  // open 변경 시 defaultSnap 으로 초기화
+  // open 변경 시 defaultSnap 으로 초기화 — 부모도 동기화해야 검색바 가림 등 의존 UI 가 맞물림
   useEffect(() => {
     if (open && mounted) {
       setSnap(defaultSnap); // eslint-disable-line react-hooks/set-state-in-effect -- open 변경 시 초기화 필수
       setSheetHeight(getSnapHeight(defaultSnap));
+      onSnapChange?.(defaultSnap);
     }
-  }, [open, mounted, defaultSnap]);
+  }, [open, mounted, defaultSnap, onSnapChange]);
 
   const animateTo = useCallback(
     (target: SnapPoint) => {
