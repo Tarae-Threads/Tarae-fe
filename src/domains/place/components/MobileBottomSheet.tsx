@@ -116,7 +116,10 @@ export default function MobileBottomSheet({
   searchBarBottom = DEFAULT_SEARCH_BAR_BOTTOM,
 }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [snap, setSnap] = useState<SnapPoint>("peek");
+  // 일정탭 첫 진입은 캘린더 노출이 핵심이라 full 로 시작 — 장소탭은 지도 가림 최소화 위해 peek
+  const [snap, setSnap] = useState<SnapPoint>(
+    activeTab === "events" ? "full" : "peek",
+  );
   const [sheetHeight, setSheetHeight] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   // visualViewport.resize 핸들러용 — isDragging state 의 stale closure 회피
@@ -157,15 +160,16 @@ export default function MobileBottomSheet({
     () => false,
   );
 
-  // 초기 높이 설정
+  // 초기 높이 설정 — snap 초기값(activeTab 에 따라 full/peek) 따라감
   useEffect(() => {
     const h = getSnapHeight(
-      "peek",
+      snap,
       bottomNavHeightRef.current,
       searchBarBottomRef.current,
     );
     setSheetHeight(h); // eslint-disable-line react-hooks/set-state-in-effect
     onHeightChange?.(h);
+    onSnapChange?.(snap);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // iOS 동적 toolbar 로 뷰포트 높이가 바뀌면 현재 snap 높이도 재계산.
@@ -223,16 +227,16 @@ export default function MobileBottomSheet({
     [onHeightChange, onSnapChange],
   );
 
-  // 탭 전환 시
+  // 탭 전환 시 일정탭으로 들어오면 항상 full — 캘린더가 한 눈에 보이도록
   const prevTabRef = useRef(activeTab);
   useEffect(() => {
     if (prevTabRef.current !== activeTab) {
       prevTabRef.current = activeTab;
-      if (activeTab === "events" && snap === "closed") {
-        animateTo("peek"); // eslint-disable-line react-hooks/set-state-in-effect
+      if (activeTab === "events") {
+        animateTo("full"); // eslint-disable-line react-hooks/set-state-in-effect
       }
     }
-  }, [activeTab, snap, animateTo]);
+  }, [activeTab, animateTo]);
 
   // 높이 변경 알림
   useEffect(() => {
@@ -346,7 +350,9 @@ export default function MobileBottomSheet({
 
   return (
     <div
-      className="bg-surface-container-low fixed right-0 bottom-0 left-0 z-30 flex flex-col rounded-t-[2rem] shadow-[0_-12px_48px_rgba(29,27,22,0.15)]"
+      className={`bg-surface-container-low fixed right-0 bottom-0 left-0 z-30 flex flex-col shadow-[0_-12px_48px_rgba(29,27,22,0.15)] transition-[border-radius] duration-300 ${
+        snap === "full" ? "rounded-t-none" : "rounded-t-[2rem]"
+      }`}
       style={
         mounted
           ? {
