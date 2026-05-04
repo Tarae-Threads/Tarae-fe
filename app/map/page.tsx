@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import type { NaverMapHandle } from "@/domains/place/components/NaverMap";
 import { usePlaceExplorer } from "@/domains/place/hooks/usePlaceExplorer";
 import { getEvents, getEvent } from "@/domains/event/queries/eventApi";
+import { getTodayString } from "@/domains/event/utils/date";
 import { getPlace } from "@/domains/place/queries/placeApi";
 import type { Event, EventDetail } from "@/domains/event/types";
 import type { PlaceDetail } from "@/domains/place/types";
@@ -182,10 +183,18 @@ function HomeContent() {
     return new Set<number>();
   }, [allEvents]);
 
-  // 종료된(active=false) 이벤트는 마커에서 제외 — 캘린더 history 는 그대로 노출
+  // 종료된(active=false) + 만료된(endDate < 오늘) 이벤트는 마커에서 제외
+  // 캘린더 history 는 그대로 노출 — 마커만 진행중인 것으로 한정
   const eventMarkers = useMemo(() => {
+    const todayStr = getTodayString();
     return allEvents
-      .filter((e) => e.active && e.lat != null && e.lng != null)
+      .filter(
+        (e) =>
+          e.active &&
+          (e.endDate ?? e.startDate) >= todayStr &&
+          e.lat != null &&
+          e.lng != null,
+      )
       .map((e) => ({
         id: String(e.id),
         title: e.title,
