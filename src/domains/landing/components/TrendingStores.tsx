@@ -35,9 +35,9 @@ export default async function TrendingStores() {
         </div>
       </div>
 
-      {/* 가로 스크롤 */}
-      <div className="hide-scrollbar overflow-x-auto pb-4 pl-4 md:pl-8">
-        <div className="inline-flex gap-4 pr-4 md:pr-8">
+      {/* 가로 스크롤 — 카드가 viewport 보다 좁으면 중앙 정렬, 넘치면 스크롤 */}
+      <div className="hide-scrollbar overflow-x-auto pb-4">
+        <div className="mx-auto flex w-max gap-4 px-4 md:px-8">
           {trending.map((shop) => (
             <TrendingStoreCard key={shop.id} shop={shop} />
           ))}
