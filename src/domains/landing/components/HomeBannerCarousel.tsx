@@ -66,7 +66,7 @@ export default function HomeBannerCarousel({ banners }: Props) {
 
   return (
     <section
-      className="bg-surface relative pt-4 md:pt-8"
+      className="bg-surface relative pt-4 pb-4 md:pt-8"
       aria-roledescription="carousel"
       aria-label="홈 배너"
     >
