@@ -69,6 +69,22 @@ function HomeContent() {
   }, []);
   const [mobileSheetSnap, setMobileSheetSnap] = useState<"closed" | "peek" | "full">("peek");
   const [detailSnap, setDetailSnap] = useState<"peek" | "full">("peek");
+  // 모바일 검색바 블록 하단 y 좌표 (px). 카테고리 칩이 추가되는 장소탭에서
+  // 일정탭보다 큼 — ResizeObserver 로 실측해 MobileBottomSheet 의 full snap 계산에 전달.
+  const searchBarWrapperRef = useRef<HTMLDivElement>(null);
+  const [mobileSearchBarBottom, setMobileSearchBarBottom] = useState(72);
+  useEffect(() => {
+    const el = searchBarWrapperRef.current;
+    if (!el) return;
+    const measure = () => {
+      const rect = el.getBoundingClientRect();
+      setMobileSearchBarBottom(rect.bottom);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const {
     filteredPlaces,
@@ -391,7 +407,9 @@ function HomeContent() {
 
         {/* Mobile UI */}
         <div className="md:hidden">
-          <div className={`absolute top-0 left-0 right-0 z-50 px-4 pb-2 pt-[calc(env(safe-area-inset-top)+1rem)] transition-colors duration-300 ${
+          <div
+            ref={searchBarWrapperRef}
+            className={`absolute top-0 left-0 right-0 z-50 px-4 pb-2 pt-[calc(env(safe-area-inset-top)+1rem)] transition-colors duration-300 ${
             mobileSheetSnap === "full" || (mobileDetailOpen && detailSnap === "peek") ? "bg-surface-container-low" : ""
           } ${mobileDetailOpen && detailSnap === "full" ? "hidden" : ""}`}>
             <PlaceSearchBar
@@ -430,6 +448,7 @@ function HomeContent() {
               selectedRegion={selectedRegion}
               sortBy={sortBy}
               userLocation={userLocation}
+              searchBarBottom={mobileSearchBarBottom}
             />
           )}
 

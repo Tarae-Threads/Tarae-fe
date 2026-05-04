@@ -27,7 +27,10 @@ const SNAP_RATIOS: Record<SnapPoint, number> = {
   full: 1,
 };
 const DEFAULT_BOTTOM_NAV_HEIGHT = 64; // BottomNav 측정 전 fallback (safe area 미포함)
-const SEARCH_BAR_BOTTOM = 72; // top-4(16px) + h-14(56px)
+// 검색바 블록(검색 input + 카테고리 칩 등) 측정 전 fallback.
+// top-4(16px) + h-14(56px) 만 가정 — 카테고리 칩이 추가되는 장소탭에서는
+// 실측값을 prop 으로 받아야 시트 상단이 검색바 아래로 정확히 정렬됨.
+const DEFAULT_SEARCH_BAR_BOTTOM = 72;
 
 // iOS Chrome/Safari 의 동적 toolbar 로 뷰포트 높이가 수시로 변함.
 // visualViewport 가 지원되면 실제 가시 영역을, 아니면 innerHeight 를 사용.
@@ -36,11 +39,15 @@ function getViewportHeight(): number {
   return window.visualViewport?.height ?? window.innerHeight;
 }
 
-function getSnapHeight(snap: SnapPoint, bottomNavHeight: number): number {
+function getSnapHeight(
+  snap: SnapPoint,
+  bottomNavHeight: number,
+  searchBarBottom: number,
+): number {
   const vh = getViewportHeight();
   if (vh === 0) return 0;
   // full: 검색창 아래까지
-  if (snap === "full") return vh - SEARCH_BAR_BOTTOM - bottomNavHeight;
+  if (snap === "full") return vh - searchBarBottom - bottomNavHeight;
   return vh * SNAP_RATIOS[snap];
 }
 
@@ -80,6 +87,9 @@ interface Props {
   selectedRegion?: string;
   sortBy?: SortBy;
   userLocation?: { lat: number; lng: number } | null;
+  // 검색바 블록 하단 y 좌표 (px). 장소탭은 카테고리 칩 때문에 일정탭보다 큼.
+  // 부모에서 ResizeObserver 로 실측 후 전달.
+  searchBarBottom?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -103,6 +113,7 @@ export default function MobileBottomSheet({
   selectedRegion,
   sortBy,
   userLocation,
+  searchBarBottom = DEFAULT_SEARCH_BAR_BOTTOM,
 }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [snap, setSnap] = useState<SnapPoint>("peek");
@@ -114,6 +125,11 @@ export default function MobileBottomSheet({
   // 하드코딩 상수가 실제와 안 맞으면 시트 marginBottom 이 어긋나 갈색 갭이 노출됨.
   const [bottomNavHeight, setBottomNavHeight] = useState(DEFAULT_BOTTOM_NAV_HEIGHT);
   const bottomNavHeightRef = useRef(DEFAULT_BOTTOM_NAV_HEIGHT);
+  // searchBarBottom 도 ref 로 미러링 — resize/visualViewport 핸들러의 stale closure 회피
+  const searchBarBottomRef = useRef(searchBarBottom);
+  useEffect(() => {
+    searchBarBottomRef.current = searchBarBottom;
+  }, [searchBarBottom]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -143,7 +159,11 @@ export default function MobileBottomSheet({
 
   // 초기 높이 설정
   useEffect(() => {
-    const h = getSnapHeight("peek", bottomNavHeightRef.current);
+    const h = getSnapHeight(
+      "peek",
+      bottomNavHeightRef.current,
+      searchBarBottomRef.current,
+    );
     setSheetHeight(h); // eslint-disable-line react-hooks/set-state-in-effect
     onHeightChange?.(h);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -161,7 +181,11 @@ export default function MobileBottomSheet({
       const newVh = getViewportHeight();
       if (Math.abs(newVh - lastVh) < RESIZE_THRESHOLD_PX) return;
       lastVh = newVh;
-      const h = getSnapHeight(snap, bottomNavHeightRef.current);
+      const h = getSnapHeight(
+        snap,
+        bottomNavHeightRef.current,
+        searchBarBottomRef.current,
+      );
       setSheetHeight(h); // eslint-disable-line react-hooks/set-state-in-effect
       onHeightChange?.(h);
     };
@@ -186,7 +210,11 @@ export default function MobileBottomSheet({
 
   const animateTo = useCallback(
     (target: SnapPoint) => {
-      const h = getSnapHeight(target, bottomNavHeightRef.current);
+      const h = getSnapHeight(
+        target,
+        bottomNavHeightRef.current,
+        searchBarBottomRef.current,
+      );
       setSnap(target);
       setSheetHeight(h);
       onHeightChange?.(h);
@@ -210,6 +238,19 @@ export default function MobileBottomSheet({
   useEffect(() => {
     onHeightChange?.(sheetHeight);
   }, [sheetHeight, onHeightChange]);
+
+  // 검색바 블록 높이 변동(필터 펼침/카테고리 칩 추가 등) 시 full snap 재계산
+  useEffect(() => {
+    if (snap !== "full") return;
+    if (isDraggingRef.current) return;
+    const h = getSnapHeight(
+      "full",
+      bottomNavHeightRef.current,
+      searchBarBottom,
+    );
+    setSheetHeight(h);
+    onHeightChange?.(h);
+  }, [searchBarBottom, snap, onHeightChange]);
 
   // ---------------------------------------------------------------------------
   // Touch handlers — 핸들/헤더 전용 (스크롤 체크 없이 항상 드래그)
