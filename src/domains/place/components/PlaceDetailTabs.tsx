@@ -17,6 +17,7 @@ type TabId = "info" | "brands" | "reviews";
 
 export default function PlaceDetailTabs({ place, detail }: Props) {
   const [active, setActive] = useState<TabId>("info");
+  const [reviewCount, setReviewCount] = useState<number | undefined>(undefined);
   const brandCount = detail?.brands.length;
 
   return (
@@ -24,7 +25,7 @@ export default function PlaceDetailTabs({ place, detail }: Props) {
       <DetailTabs
         tabs={[
           { id: "info", label: "정보" },
-          { id: "reviews", label: "리뷰" },
+          { id: "reviews", label: "리뷰", count: reviewCount },
           { id: "brands", label: "취급 브랜드", count: brandCount },
         ]}
         activeId={active}
@@ -36,9 +37,14 @@ export default function PlaceDetailTabs({ place, detail }: Props) {
       <div className="pt-5">
         {active === "info" && <PlaceDetailView place={place} detail={detail} />}
         {active === "brands" && <PlaceBrandsView brands={detail?.brands} />}
-        {active === "reviews" && (
-          <ReviewSection type="place" targetId={place.id} />
-        )}
+        {/* 리뷰는 탭 진입 전에도 카운트 노출 위해 항상 마운트 — 비활성 시 시각만 숨김 */}
+        <div className={active === "reviews" ? "" : "hidden"}>
+          <ReviewSection
+            type="place"
+            targetId={place.id}
+            onCountChange={setReviewCount}
+          />
+        </div>
       </div>
     </>
   );
