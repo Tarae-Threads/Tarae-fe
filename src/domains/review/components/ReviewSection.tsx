@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { MessageSquare, PenSquare } from "lucide-react";
 import { ReviewCardSkeleton } from "@/shared/components/ui/Skeleton";
 import EmptyState from "@/shared/components/ui/EmptyState";
@@ -14,12 +15,19 @@ import type { ReviewResponse } from "@/shared/api/client";
 interface Props {
   type: ReviewTargetType;
   targetId: number;
+  // 부모 탭 라벨에 카운트 노출용 — loading 중엔 호출하지 않음
+  onCountChange?: (count: number) => void;
 }
 
-export default function ReviewSection({ type, targetId }: Props) {
+export default function ReviewSection({ type, targetId, onCountChange }: Props) {
   const { reviews, loading, ownedIds, addLocalReview, removeLocalReview } =
     useReviews(type, targetId);
   const { openModal } = useModal();
+
+  useEffect(() => {
+    if (loading) return;
+    onCountChange?.(reviews.length);
+  }, [reviews.length, loading, onCountChange]);
 
   const handleWrite = async () => {
     const result = (await openModal(
