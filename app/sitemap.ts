@@ -48,10 +48,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ])
 
   const placeEntries: MetadataRoute.Sitemap = places.map((p) => ({
-    url: `${SITE_URL}/map?placeId=${p.id}`,
+    url: `${SITE_URL}/places/${p.id}`,
     lastModified: now,
     changeFrequency: 'weekly',
-    priority: 0.7,
+    priority: 0.8,
   }))
 
   const eventEntries: MetadataRoute.Sitemap = events.map((e) => ({

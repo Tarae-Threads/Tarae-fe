@@ -32,6 +32,20 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // /map?placeId=123 외부 진입·새로고침 → /places/123 (SEO 정식 라우트)
+      // 지도 내부 핀 클릭은 history.replaceState 만 호출하므로 영향 없음.
+      {
+        source: "/map",
+        has: [
+          { type: "query", key: "placeId", value: "(?<placeId>\\d+)" },
+        ],
+        destination: "/places/:placeId",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
