@@ -5,6 +5,7 @@ import type { SortBy } from "./PlaceFilter";
 import PlaceCategoryTabs from "./PlaceCategoryTabs";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import type { NavTab } from "@/shared/components/layout/NavBar";
+import { track } from "@/shared/lib/analytics";
 
 interface PlaceSearchBarProps {
   activeTab?: NavTab;
@@ -57,7 +58,10 @@ export default function PlaceSearchBar({
         />
         {searchQuery && (
           <button
-            onClick={() => onSearchChange("")}
+            onClick={() => {
+              track("search_clear");
+              onSearchChange("");
+            }}
             aria-label="검색 초기화"
             className="text-outline hover:text-on-surface p-1.5"
           >

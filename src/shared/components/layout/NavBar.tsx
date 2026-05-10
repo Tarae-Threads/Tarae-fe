@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Home, Map, Calendar, Store, Plus } from 'lucide-react'
+import { track } from '@/shared/lib/analytics'
 
 export type NavTab = 'home' | 'places' | 'events' | 'store'
 
@@ -46,6 +47,7 @@ export default function NavBar({ activeTab, onSubmit }: Props) {
             key={id}
             href={href}
             aria-label={label}
+            onClick={() => track('nav_tab_click', { tab: id, surface: 'side' })}
             className={`relative flex flex-col items-center justify-center w-12 h-14 rounded-xl transition-all ${
               isActive
                 ? 'text-primary'

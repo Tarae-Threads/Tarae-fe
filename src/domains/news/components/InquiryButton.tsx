@@ -12,7 +12,11 @@ export default function InquiryButton({ label = "문의하기" }: Props) {
   const { openModal } = useModal();
 
   const handleClick = () => {
-    openModal(InquiryForm, {}, { title: "문의하기", size: "md" });
+    openModal(
+      InquiryForm,
+      { source: "news_button" },
+      { title: "문의하기", size: "md" },
+    );
   };
 
   return (

@@ -7,6 +7,9 @@ import {
   notifyGeolocationError,
   requestUserLocation,
 } from "@/shared/lib/geolocation";
+import { track } from "@/shared/lib/analytics";
+
+type SortBy = "name-asc" | "name-desc" | "distance";
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
   const R = 6371;
@@ -22,7 +25,7 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
   const [allPlaces, setAllPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [sortBy, setSortBy] = useState<"name-asc" | "name-desc" | "distance">("name-asc");
+  const [sortBy, setSortBy] = useState<SortBy>("name-asc");
   const [selectedCategories, setSelectedCategories] = useState<
     Set<string>
   >(new Set());
@@ -85,7 +88,22 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     };
   }, [searchQuery]);
 
+  // 검색어 추적: debouncedQuery가 의미 있는 값으로 바뀔 때만. 첫 mount는 제외.
+  const isFirstSearchTrack = useRef(true);
+  useEffect(() => {
+    if (isFirstSearchTrack.current) {
+      isFirstSearchTrack.current = false;
+      return;
+    }
+    const trimmed = debouncedQuery.trim();
+    if (trimmed) {
+      track("search_query_change", { query_len: trimmed.length });
+    }
+  }, [debouncedQuery]);
+
   const toggleCategory = useCallback((category: string) => {
+    const isOn = !selectedCategories.has(category);
+    track("filter_category_toggle", { category, on: isOn });
     setSelectedCategories((prev) => {
       const next = new Set(prev);
       if (next.has(category)) {
@@ -95,11 +113,22 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
       }
       return next;
     });
-  }, [setSelectedCategories]);
+  }, [selectedCategories]);
 
   const clearCategories = useCallback(() => {
+    track("filter_clear_categories");
     setSelectedCategories(new Set());
-  }, [setSelectedCategories]);
+  }, []);
+
+  const handleRegionChange = useCallback((region: string) => {
+    track("filter_region_change", { region });
+    setSelectedRegion(region);
+  }, []);
+
+  const handleSortChange = useCallback((sort: SortBy) => {
+    track("sort_order_change", { order: sort });
+    setSortBy(sort);
+  }, []);
 
   const filteredPlaces = useMemo(() => {
     const q = debouncedQuery.trim().toLowerCase();
@@ -189,8 +218,9 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
   }, []);
 
   const toggleFilter = useCallback(() => {
+    track("filter_toggle", { open: !filterOpen });
     setFilterOpen((prev) => !prev);
-  }, []);
+  }, [filterOpen]);
 
   const getDistance = useCallback((place: Place) => {
     if (!userLocation) return null;
@@ -200,6 +230,7 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
   }, [userLocation]);
 
   const requestDistanceSort = useCallback(() => {
+    track("distance_sort_request");
     if (userLocation) {
       setSortBy("distance");
       return;
@@ -225,7 +256,7 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     toggleCategory,
     clearCategories,
     selectedRegion,
-    setSelectedRegion,
+    setSelectedRegion: handleRegionChange,
     searchQuery,
     setSearchQuery,
     // viewport filter
@@ -243,7 +274,7 @@ export const usePlaceExplorer = (initialPlaceId: string | null) => {
     toggleFilter,
     // sort
     sortBy,
-    setSortBy,
+    setSortBy: handleSortChange,
     requestDistanceSort,
     // distance
     userLocation,

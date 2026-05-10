@@ -5,6 +5,7 @@ import Header from '@/domains/landing/components/Header'
 import Footer from '@/domains/landing/components/Footer'
 import { fetchEventsForLanding } from '@/domains/landing/queries/landingApi'
 import type { EventListResponse } from '@/shared/api/client'
+import TrackedLink from '@/shared/components/analytics/TrackedLink'
 import { CATEGORY_ROUTES, SITE_URL } from '../constants'
 import { buildBreadcrumbJsonLd } from '../utils/breadcrumb'
 
@@ -201,12 +202,14 @@ export default async function EventLandingPage() {
               <ul className="flex flex-wrap gap-2">
                 {CATEGORY_ROUTES.map((c) => (
                   <li key={c.slug}>
-                    <Link
+                    <TrackedLink
                       href={`/${c.slug}`}
+                      event="seo_related_chip_click"
+                      params={{ to: `/${c.slug}`, source: 'event' }}
                       className="inline-flex items-center px-4 py-2 rounded-full bg-surface-container-high hover:bg-surface-container text-label-md text-on-surface transition-colors"
                     >
                       {c.emoji} {c.category}
-                    </Link>
+                    </TrackedLink>
                   </li>
                 ))}
               </ul>
