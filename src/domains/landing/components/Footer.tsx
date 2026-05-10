@@ -7,6 +7,7 @@ import PrivacyPolicyButton from "@/shared/components/legal/PrivacyPolicyButton";
 import TermsOfServiceButton from "@/shared/components/legal/TermsOfServiceButton";
 import { useModal } from "@/shared/hooks/useModal";
 import InquiryForm from "@/domains/inquiry/components/InquiryForm";
+import { track } from "@/shared/lib/analytics";
 
 export default function Footer() {
   const { openModal } = useModal();
@@ -55,7 +56,11 @@ export default function Footer() {
             <button
               type="button"
               onClick={() =>
-                openModal(InquiryForm, {}, { title: "문의하기", size: "md" })
+                openModal(
+                  InquiryForm,
+                  { source: "footer" },
+                  { title: "문의하기", size: "md" },
+                )
               }
               className="hover:text-on-surface transition-colors"
             >
@@ -72,6 +77,7 @@ export default function Footer() {
           <div className="text-label-xs text-outline mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
             <a
               href="mailto:taraethreads@gmail.com"
+              onClick={() => track("footer_link_click", { kind: "email" })}
               className="hover:text-on-surface-variant inline-flex items-center gap-1.5 transition-colors"
             >
               <Mail className="h-3.5 w-3.5" aria-hidden="true" />
@@ -81,6 +87,7 @@ export default function Footer() {
               href="https://www.instagram.com/tarae.threads?igsh=cXNhdmoxYWlmdm0y&utm_source=qr"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track("footer_link_click", { kind: "instagram" })}
               className="hover:text-on-surface-variant inline-flex items-center gap-1.5 transition-colors"
               aria-label="타래 인스타그램"
             >

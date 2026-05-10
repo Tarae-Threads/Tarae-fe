@@ -4,6 +4,7 @@ import Header from '@/domains/landing/components/Header'
 import Footer from '@/domains/landing/components/Footer'
 import type { Place } from '@/domains/place/types'
 import { REGION_ORDER } from '@/domains/place/constants'
+import TrackedLink from '@/shared/components/analytics/TrackedLink'
 import SeoPlaceListItem from './SeoPlaceListItem'
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
   intro: string
   places: Place[]
   groupBy: 'region' | 'category'
+  source: 'category' | 'region'
   emptyMessage?: string
   related?: { label: string; href: string }[]
 }
@@ -22,6 +24,7 @@ export default function PlaceLandingLayout({
   intro,
   places,
   groupBy,
+  source,
   emptyMessage = '아직 등록된 장소가 없어요. 곧 추가될 예정이에요.',
   related,
 }: Props) {
@@ -66,7 +69,7 @@ export default function PlaceLandingLayout({
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {items.map((p) => (
-                      <SeoPlaceListItem key={p.id} place={p} />
+                      <SeoPlaceListItem key={p.id} place={p} source={source} />
                     ))}
                   </div>
                 </section>
@@ -82,12 +85,14 @@ export default function PlaceLandingLayout({
               <ul className="flex flex-wrap gap-2">
                 {related.map((r) => (
                   <li key={r.href}>
-                    <Link
+                    <TrackedLink
                       href={r.href}
+                      event="seo_related_chip_click"
+                      params={{ to: r.href, source }}
                       className="inline-flex items-center px-4 py-2 rounded-full bg-surface-container-high hover:bg-surface-container text-label-md text-on-surface transition-colors"
                     >
                       {r.label}
-                    </Link>
+                    </TrackedLink>
                   </li>
                 ))}
               </ul>

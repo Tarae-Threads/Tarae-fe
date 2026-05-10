@@ -211,9 +211,10 @@ export default function PlaceDetailView({ place, detail }: Props) {
       {/* 제보 유도 CTA */}
       <button
         type="button"
-        onClick={() =>
-          openModal(SubmitForm, {}, { title: "제보하기", size: "md" })
-        }
+        onClick={() => {
+          track("modal_open_submit", { source: "place_detail" });
+          openModal(SubmitForm, {}, { title: "제보하기", size: "md" });
+        }}
         className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors group text-left"
       >
         <Flag className="w-4 h-4 text-outline shrink-0" />

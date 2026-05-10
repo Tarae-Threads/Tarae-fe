@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Home, Map, Calendar, Store, Plus } from 'lucide-react'
 import type { NavTab } from './NavBar'
+import { track } from '@/shared/lib/analytics'
 
 interface Props {
   activeTab: NavTab | null
@@ -30,6 +31,7 @@ export default function BottomNav({ activeTab, onSubmit }: Props) {
             key={id}
             href={href}
             aria-label={label}
+            onClick={() => track('nav_tab_click', { tab: id, surface: 'bottom' })}
             className={`relative flex flex-col items-center justify-center px-3 py-2 active:scale-90 transition-transform ${
               isActive ? 'text-primary' : 'text-outline'
             }`}

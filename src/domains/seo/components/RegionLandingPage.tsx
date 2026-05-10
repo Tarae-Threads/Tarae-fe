@@ -98,6 +98,7 @@ export default async function RegionLandingPage({ slug }: Props) {
         intro={`${region}에 위치한 뜨개샵·공방·뜨개카페·손염색실·공예용품점을 카테고리별로 정리했어요. 가까운 동네부터 둘러보세요.`}
         places={filtered}
         groupBy="category"
+        source="region"
         related={related}
       />
     </>

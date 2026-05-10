@@ -11,6 +11,7 @@ import ReviewForm from "./ReviewForm";
 import ReviewDeleteConfirm from "./ReviewDeleteConfirm";
 import type { ReviewTargetType } from "../constants";
 import type { ReviewResponse } from "@/shared/api/client";
+import { track } from "@/shared/lib/analytics";
 
 interface Props {
   type: ReviewTargetType;
@@ -30,6 +31,7 @@ export default function ReviewSection({ type, targetId, onCountChange }: Props) 
   }, [reviews.length, loading, onCountChange]);
 
   const handleWrite = async () => {
+    track("modal_open_review", { target: type, target_id: targetId });
     const result = (await openModal(
       ReviewForm,
       { type, targetId },
