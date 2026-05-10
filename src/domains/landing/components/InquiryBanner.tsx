@@ -8,7 +8,11 @@ export default function InquiryBanner() {
   const { openModal } = useModal();
 
   const handleClick = () => {
-    openModal(InquiryForm, {}, { title: "문의하기", size: "md" });
+    openModal(
+      InquiryForm,
+      { source: "landing_banner" },
+      { title: "문의하기", size: "md" },
+    );
   };
 
   return (

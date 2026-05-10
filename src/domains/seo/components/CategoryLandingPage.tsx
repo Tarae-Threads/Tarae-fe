@@ -100,6 +100,7 @@ export default async function CategoryLandingPage({ meta }: Props) {
         intro={meta.intro}
         places={filtered}
         groupBy="region"
+        source="category"
         related={related}
       />
     </>

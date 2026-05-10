@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Send } from "lucide-react";
@@ -11,12 +11,17 @@ import { track } from "@/shared/lib/analytics";
 
 interface Props {
   onClose: () => void;
+  source?: string;
 }
 
 const BODY_MAX = 2000;
 
-export default function InquiryForm({ onClose }: Props) {
+export default function InquiryForm({ onClose, source = "unknown" }: Props) {
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    track("modal_open_inquiry", { source });
+  }, [source]);
 
   const {
     register,
