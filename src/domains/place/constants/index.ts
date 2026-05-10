@@ -40,6 +40,21 @@ export const STATUS_COLOR: Record<string, string> = {
 
 export const REGION_ORDER = ['서울', '경기', '인천', '강원', '충청', '경상', '전라', '제주']
 
+export const REGION_SLUG: Record<string, string> = {
+  seoul: '서울',
+  gyeonggi: '경기',
+  incheon: '인천',
+  gangwon: '강원',
+  chungcheong: '충청',
+  gyeongsang: '경상',
+  jeolla: '전라',
+  jeju: '제주',
+}
+
+export const REGION_TO_SLUG: Record<string, string> = Object.fromEntries(
+  Object.entries(REGION_SLUG).map(([slug, name]) => [name, slug]),
+)
+
 export const REGION_CENTER: Record<string, { lat: number; lng: number; zoom: number }> = {
   '서울': { lat: 37.5665, lng: 126.978, zoom: 11 },
   '경기': { lat: 37.27, lng: 127.0, zoom: 9 },

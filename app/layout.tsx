@@ -65,6 +65,12 @@ export const metadata: Metadata = {
     other: {
       "naver-site-verification":
         "9bec814a7a61869ae9181ac0ef30f4a5627df934",
+      ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+        ? {
+            "google-site-verification":
+              process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+          }
+        : {}),
     },
   },
   other: {

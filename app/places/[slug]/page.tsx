@@ -17,15 +17,27 @@ import PlaceBrandsView from "@/domains/place/components/PlaceBrandsView"
 import TagChip from "@/shared/components/ui/TagChip"
 import ReviewSection from "@/domains/review/components/ReviewSection"
 import { getPlace } from "@/domains/place/queries/placeApi"
-import { STATUS_LABEL } from "@/domains/place/constants"
+import { STATUS_LABEL, REGION_SLUG, REGION_TO_SLUG } from "@/domains/place/constants"
+import RegionLandingPage, {
+  buildRegionMetadata,
+} from "@/domains/seo/components/RegionLandingPage"
+import { buildBreadcrumbJsonLd } from "@/domains/seo/utils/breadcrumb"
 
 export const revalidate = 3600
 
 interface Params {
-  id: string
+  slug: string
+}
+
+export function generateStaticParams() {
+  return Object.keys(REGION_SLUG).map((slug) => ({ slug }))
 }
 
 const SITE_URL = "https://www.taraethreads.com"
+
+function isNumericSlug(slug: string) {
+  return /^\d+$/.test(slug)
+}
 
 function buildLocationLabel(region: string, district: string) {
   const parts = [region, district].filter(Boolean)
@@ -42,8 +54,14 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>
 }): Promise<Metadata> {
-  const { id } = await params
-  const placeId = Number(id)
+  const { slug } = await params
+
+  if (!isNumericSlug(slug)) {
+    const meta = await buildRegionMetadata(slug)
+    return meta ?? { title: "페이지를 찾을 수 없어요" }
+  }
+
+  const placeId = Number(slug)
   if (!Number.isFinite(placeId)) {
     return { title: "장소를 찾을 수 없어요" }
   }
@@ -79,13 +97,19 @@ export async function generateMetadata({
   }
 }
 
-export default async function PlaceDetailPage({
+export default async function PlacesSlugPage({
   params,
 }: {
   params: Promise<Params>
 }) {
-  const { id } = await params
-  const placeId = Number(id)
+  const { slug } = await params
+
+  if (!isNumericSlug(slug)) {
+    if (!REGION_SLUG[slug]) notFound()
+    return <RegionLandingPage slug={slug} />
+  }
+
+  const placeId = Number(slug)
   if (!Number.isFinite(placeId)) notFound()
 
   let place
@@ -134,6 +158,14 @@ export default async function PlaceDetailPage({
   if (place.hoursText) jsonLd.openingHours = place.hoursText
   if (sameAs.length) jsonLd.sameAs = sameAs
 
+  const regionSlug = place.region ? REGION_TO_SLUG[place.region] : undefined
+  const breadcrumbItems = [{ name: "홈", path: "/" }]
+  if (place.region && regionSlug) {
+    breadcrumbItems.push({ name: place.region, path: `/places/${regionSlug}` })
+  }
+  breadcrumbItems.push({ name: place.name, path: `/places/${placeId}` })
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd(breadcrumbItems)
+
   return (
     <div className="min-h-screen flex flex-col bg-surface md:pl-16 pb-20 md:pb-0">
       <Script
@@ -141,6 +173,12 @@ export default async function PlaceDetailPage({
         type="application/ld+json"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Script
+        id={`ld-json-breadcrumb-place-${placeId}`}
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Header />
       <main className="flex-1">

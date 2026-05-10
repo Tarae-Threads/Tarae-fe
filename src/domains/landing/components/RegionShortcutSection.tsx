@@ -1,5 +1,6 @@
 import { MapPin } from "lucide-react";
 import { fetchPlacesForLanding } from "../queries/landingApi";
+import { REGION_TO_SLUG } from "@/domains/place/constants";
 import TrackedLink from "@/shared/components/analytics/TrackedLink";
 
 const REGIONS = ["서울", "경기", "인천", "강원", "충청", "경상", "전라", "제주"];
@@ -28,7 +29,7 @@ export default async function RegionShortcutSection() {
           {REGIONS.map((region) => (
             <TrackedLink
               key={region}
-              href="/map"
+              href={`/places/${REGION_TO_SLUG[region]}`}
               event="region_shortcut_click"
               params={{ region }}
               className="bg-surface rounded-2xl p-4 md:p-5 transition-all hover:shadow-md active:scale-[0.97] flex items-center justify-between"
