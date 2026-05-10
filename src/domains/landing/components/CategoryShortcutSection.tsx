@@ -4,30 +4,35 @@ import TrackedLink from "@/shared/components/analytics/TrackedLink";
 const CATEGORIES = [
   {
     name: "뜨개샵",
+    href: "/knitting-shop",
     emoji: "🧶",
     color: "#91472b",
     bg: "#ffdbcf",
   },
   {
     name: "공방",
+    href: "/knitting-workshop",
     emoji: "🪡",
     color: "#53624f",
     bg: "#d4e5cc",
   },
   {
     name: "뜨개카페",
+    href: "/knitting-cafe",
     emoji: "☕",
     color: "#68594a",
     bg: "#f4dfcb",
   },
   {
     name: "손염색실",
+    href: "/knitting-yarn",
     emoji: "🎨",
     color: "#6b5b73",
     bg: "#e8dced",
   },
   {
     name: "공예용품점",
+    href: "/knitting-supplies",
     emoji: "✂️",
     color: "#7a6840",
     bg: "#e8dfcc",
@@ -60,7 +65,7 @@ export default async function CategoryShortcutSection() {
           {CATEGORIES.map((cat) => (
             <TrackedLink
               key={cat.name}
-              href="/map"
+              href={cat.href}
               event="category_shortcut_click"
               params={{ category: cat.name }}
               className="group rounded-2xl p-5 md:p-6 transition-all hover:shadow-lg active:scale-[0.97]"

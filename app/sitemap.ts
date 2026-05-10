@@ -1,10 +1,9 @@
 import type { MetadataRoute } from 'next'
-import {
-  fetchPlacesForLanding,
-  fetchEventsForLanding,
-} from '@/domains/landing/queries/landingApi'
+import { fetchPlacesForLanding } from '@/domains/landing/queries/landingApi'
 import { listArticles } from '@/domains/news/queries/newsSource'
 import { getShops } from '@/domains/shop/queries/shopApi'
+import { CATEGORY_ROUTES } from '@/domains/seo/constants'
+import { REGION_SLUG } from '@/domains/place/constants'
 
 const SITE_URL = 'https://www.taraethreads.com'
 
@@ -38,27 +37,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}/knitting-event`,
+      lastModified: now,
+      changeFrequency: 'daily',
+      priority: 0.85,
+    },
+    ...CATEGORY_ROUTES.map((c) => ({
+      url: `${SITE_URL}/${c.slug}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    })),
+    ...Object.keys(REGION_SLUG).map((slug) => ({
+      url: `${SITE_URL}/places/${slug}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    })),
   ]
 
-  const [places, events, shops, articles] = await Promise.all([
+  const [places, shops, articles] = await Promise.all([
     fetchPlacesForLanding(),
-    fetchEventsForLanding(),
     getShops().catch(() => []),
     listArticles(),
   ])
 
   const placeEntries: MetadataRoute.Sitemap = places.map((p) => ({
-    url: `${SITE_URL}/map?placeId=${p.id}`,
+    url: `${SITE_URL}/places/${p.id}`,
     lastModified: now,
     changeFrequency: 'weekly',
-    priority: 0.7,
-  }))
-
-  const eventEntries: MetadataRoute.Sitemap = events.map((e) => ({
-    url: `${SITE_URL}/map?eventId=${e.id}`,
-    lastModified: e.endDate ?? e.startDate ?? now,
-    changeFrequency: 'daily',
-    priority: 0.6,
+    priority: 0.8,
   }))
 
   const newsEntries: MetadataRoute.Sitemap = articles.map((a) => ({
@@ -78,7 +87,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticEntries,
     ...placeEntries,
-    ...eventEntries,
     ...shopEntries,
     ...newsEntries,
   ]
