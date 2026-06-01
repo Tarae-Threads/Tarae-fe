@@ -62,7 +62,7 @@ export interface HomeBanner {
 export const HOME_BANNERS: HomeBanner[] = [
   {
     // 오픈 이벤트 당첨자 발표 배너.
-    // 대응 뉴스: content/news/2026-06-03-open-event-winners.mdx (slug: open-event-winners)
+    // 대응 뉴스: content/news/2026-06-01-open-event-winners.mdx (slug: open-event-winners)
     id: "open-event-winners",
     image: {
       desktop: "/banners/prize-desktop.png",
