@@ -61,6 +61,30 @@ export interface HomeBanner {
 
 export const HOME_BANNERS: HomeBanner[] = [
   {
+    // 오픈 이벤트 당첨자 발표 배너.
+    // 대응 뉴스: content/news/2026-06-03-open-event-winners.mdx (slug: open-event-winners)
+    id: "open-event-winners",
+    image: {
+      desktop: "/banners/prize-desktop.png",
+      mobile: "/banners/prize-mobile.png",
+    },
+    alt: "타래 오픈 이벤트 당첨자 발표 — 참여해주셔서 감사합니다",
+    link: {
+      href: "/news/open-event-winners",
+      track: {
+        event: "landing_cta_click",
+        params: { cta: "banner_open_event_winners" },
+      },
+    },
+    active: true,
+    // 이미지에 이미 "당첨자 발표" 카피가 들어가 있어 title/description 은 생략하고
+    // 클릭 유도용 CTA 라벨만 노출 (텍스트 중복·겹침 방지)
+    overlay: {
+      ctaLabel: "당첨자 명단 확인하기",
+      theme: "light",
+    },
+  },
+  {
     // 런칭 기념 이벤트 배너.
     // image 가 있으면 Background 는 자동 무시. 이미지를 내려고 싶으면 image 필드를
     // 다시 주석 처리하면 YarnBackground 로 fallback.
