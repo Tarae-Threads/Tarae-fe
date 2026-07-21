@@ -28,6 +28,7 @@ function toSummary(
     date: frontmatter.date,
     excerpt: frontmatter.excerpt,
     coverImage: frontmatter.coverImage,
+    coverAlign: frontmatter.coverAlign,
     tags: frontmatter.tags ?? [],
     author: frontmatter.author,
   }

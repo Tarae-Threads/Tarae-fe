@@ -122,7 +122,13 @@ export default async function NewsDetailPage({
                 fill
                 priority
                 sizes="(max-width: 767px) 100vw, 768px"
-                className="object-cover"
+                className={
+                  article.coverAlign === "left"
+                    ? "object-cover object-left"
+                    : article.coverAlign === "right"
+                      ? "object-cover object-right"
+                      : "object-cover object-center"
+                }
               />
             </div>
           )}
