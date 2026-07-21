@@ -61,6 +61,33 @@ export interface HomeBanner {
 
 export const HOME_BANNERS: HomeBanner[] = [
   {
+    // 플레이스낙양 'Sunday Garden Club' 오프라인 행사 소개 배너.
+    // 대응 뉴스: content/news/2026-07-21-nakyang-sunday-garden-club.mdx (slug: nakyang-sunday-garden-club)
+    // 행사일 07.26(일). 행사 종료 후 자동 비노출.
+    id: "nakyang-sunday-garden-club",
+    image: {
+      desktop: "/banners/nakyang-desktop.png",
+      mobile: "/banners/nakyang-mobile.png",
+    },
+    alt: "플레이스낙양 Sunday Garden Club — 07.26(일) 도심 속 토마토 정원 뜨개·가죽 공예 행사",
+    link: {
+      href: "/news/nakyang-sunday-garden-club",
+      track: {
+        event: "landing_cta_click",
+        params: { cta: "banner_nakyang_sunday_garden_club" },
+      },
+    },
+    active: true,
+    endAt: "2026-07-26T23:59:59+09:00",
+    overlay: {
+      eyebrow: "여름을 가장 싱그럽게 보내는 방법",
+      title: "Sunday Garden Club Event",
+      description: "7/26 | 플레이스 낙양",
+      ctaLabel: "행사 자세히 보기",
+      theme: "light",
+    },
+  },
+  {
     // 오픈 이벤트 당첨자 발표 배너.
     // 대응 뉴스: content/news/2026-06-01-open-event-winners.mdx (slug: open-event-winners)
     id: "open-event-winners",

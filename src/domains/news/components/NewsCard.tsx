@@ -20,7 +20,13 @@ export default function NewsCard({ article }: Props) {
             alt=""
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            className={`object-cover transition-transform duration-500 group-hover:scale-[1.03] ${
+              article.coverAlign === "left"
+                ? "object-left"
+                : article.coverAlign === "right"
+                  ? "object-right"
+                  : "object-center"
+            }`}
           />
         </div>
       )}
